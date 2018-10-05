@@ -2,21 +2,20 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
 
 #define throw(MSG) fprintf(stderr, "%s\n",MSG)
 
 struct __bbia {
 
 	// some languages don`t have unsigned int
-	signed int at[LEVEL_SIZE];
+	signed int at[BBIA_LEVEL_COUNT];
 	signed int sign;
 };
 
-void bbia_set_value_fromLevel (bbia * self, int level, int value) {
+void bbia_value_set_fromLevel (bbia * self, int level, int value) {
 
 	if (self == NULL) {
-		throw("null pointer in bbia_set_value_fromLevel()");
+		throw("null pointer in bbia_value_set_fromLevel()");
 		return;
 	}
 
@@ -24,42 +23,20 @@ void bbia_set_value_fromLevel (bbia * self, int level, int value) {
 		self->at[i] = value;
 }
 
-void bbia_set_value_toLevel (bbia * self, int level, int value) {
+void bbia_value_set_toLevel (bbia * self, int level, int value) {
 
 	if (self == NULL) {
-		throw("null pointer in bbia_set_value_fromLevel()");
+		throw("null pointer in bbia_value_set_fromLevel()");
 		return;
 	}
 
-	for (int i = level; i <= LEVEL_TOP; i++)
+	for (int i = level; i <= BBIA_LEVEL_TOP; i++)
 		self->at[i] = value;
 }
 
-void bbia_set_value (bbia * self, int value) {
+void bbia_value_set (bbia * self, int value) {
 
-	bbia_set_value_fromLevel (self, LEVEL_TOP, value);
-}
-
-
-bbia * bbia_new (void) {
-
-	bbia * self = malloc (sizeof(bbia));
-	if (self == NULL) abort();
-
-	self->sign = 0;
-	bbia_set_value (self, 0);
-
-	return self;
-}
-
-void bbia_free (bbia * self) {
-
-	if (self == NULL) {
-		throw("null pointer in bbia_free()");
-		return;
-	}
-
-	free(self);
+	bbia_value_set_fromLevel (self, BBIA_LEVEL_TOP, value);
 }
 
 int bbia_at_get (bbia * self, int index) {
@@ -89,9 +66,30 @@ void bbia_print_levelValue (bbia * self) {
 		return;
 	}
 
-	for (int i = 0; i <= LEVEL_TOP; i++) {
+	for (int i = 0; i <= BBIA_LEVEL_TOP; i++) {
 
 		printf("%d_", self->at[i]);
 	}
 	puts("");
+}
+
+bbia * bbia_new (void) {
+
+	bbia * self = malloc (sizeof(bbia));
+	if (self == NULL) abort();
+
+	self->sign = BBIA_UNSIGNED;
+	bbia_value_set (self, BBIA_LEVEL_IS_EMPTY);
+
+	return self;
+}
+
+void bbia_free (bbia * self) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_free()");
+		return;
+	}
+
+	free(self);
 }

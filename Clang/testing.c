@@ -8,7 +8,7 @@ int main (int argc, char * argv[]) {
 
 	bbia * firstTest = bbia_new();
 
-	bbia_at_set (firstTest, LEVEL_TOP, INT_MAX);
+	bbia_at_set (firstTest, BBIA_LEVEL_TOP, BBIA_LEVEL_IS_FULL);
 
 	bbia_print_levelValue (firstTest);
 
