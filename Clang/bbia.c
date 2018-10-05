@@ -1,4 +1,4 @@
-#include <bbia.h>
+#include "bbia.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,7 +46,7 @@ bbia * bbia_new (void) {
 	bbia * self = malloc (sizeof(bbia));
 	if (self == NULL) abort();
 
-	bbia->sign = 0;
+	self->sign = 0;
 	bbia_set_value (self, 0);
 
 	return self;
@@ -60,4 +60,38 @@ void bbia_free (bbia * self) {
 	}
 
 	free(self);
+}
+
+int bbia_at_get (bbia * self, int index) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_at_get()");
+		return -42;
+	}
+
+	return self->at[index];
+}
+
+void bbia_at_set (bbia * self, int index, int value) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_at_set()");
+		return;
+	}
+
+	self->at[index] = value;
+}
+
+void bbia_print_levelValue (bbia * self) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_print_levelValue()");
+		return;
+	}
+
+	for (int i = 0; i <= LEVEL_TOP; i++) {
+
+		printf("%d_", self->at[i]);
+	}
+	puts("");
 }
