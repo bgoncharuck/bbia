@@ -41,8 +41,8 @@ int bbia_at_get (bbia * self, int index) ;
 
 void bbia_at_set (bbia * self, int index, int value) ;
 
+void bbia_print_levelValue (bbia * self) ;
+
 bbia * bbia_new (void) ;
 
 void bbia_free (bbia * self) ;
-
-void bbia_print_levelValue (bbia * self) ;
