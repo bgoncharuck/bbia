@@ -1,7 +1,5 @@
 #pragma once
 
-#include <limits.h>
-
 #define BBIA_INTEGER_SIZE 32
 
 /*SIZE*/
@@ -25,7 +23,7 @@
 #define BBIA_LEVEL_TOP -1 + BBIA_LEVEL_COUNT
 
 /*DIGIT*/
-#define BBIA_LEVEL_IS_FULL INT_MAX
+#define BBIA_LEVEL_IS_FULL -1
 #define BBIA_LEVEL_IS_EMPTY 0
 
 /*SIGN*/

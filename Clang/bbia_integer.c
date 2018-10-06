@@ -6,13 +6,13 @@
 #include <string.h>
 #include <math.h>
 
-#define throw(MSG) fprintf(stderr, "%s\n",MSG)
+#define throw(MSG) fprintf(stderr, "%s\n", MSG)
 
 static const char * numerics =
 "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ/-+=_!@#$";
 
 static inline double log_base(float base, float num) {
-	return log(num) / log(base);
+	return log2(num) / log2(base);
 }
 
 char * bbia_integer_toBase (int integer, int base) {
@@ -31,27 +31,14 @@ char * bbia_integer_toBase (int integer, int base) {
 
 	printf("%i\n", start);
 
-	if (base == 10)
-		sprintf (result, "%i", integer);
+	while(integer){
+		result[start] =
+		numerics [ integer % base ];
 
-	else {
-		if (base < 10)
-			while(integer){
-				sprintf(&result[start], "%i", integer % base);
-				integer /= base;
-				currentDigit--;
-				start--;
+		integer /= base;
 
-		}
-
-		else if (base > 10)
-			while(integer){
-				result[start] =
-				numerics[(integer % base)];
-				integer /= base;
-				currentDigit--;
-				start--;
-		}
+		currentDigit--;
+		start--;
 	}
 
 	for (int i = 0; i < BBIA_INTEGER_SIZE+1; i++)
