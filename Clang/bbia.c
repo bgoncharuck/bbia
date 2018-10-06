@@ -1,4 +1,4 @@
-#include "bbia_integer.h"
+#include "stuaa.h"
 #include "bbia.h"
 
 #include <stdio.h>

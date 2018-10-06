@@ -1,9 +1,10 @@
-#include "bbia_integer.h"
+#include "stuaa.h"
 #include "bbia.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include <math.h>
 
 #define throw(MSG) fprintf(stderr, "%s\n", MSG)
@@ -15,12 +16,15 @@ static inline double log_base(float base, float num) {
 	return log2(num) / log2(base);
 }
 
-char * bbia_integer_toBase (int integer, int base) {
+char * stuaa_toBase (int sinteger, int base) {
 
 	if ( !(base < 65 && base > 1) ) {
 		throw ("The base must be from 2 to 64");
 		return NULL;
 	}
+
+	// TODO Signed To Unsigned Arithmetic Algorithm
+	unsigned integer = sinteger;
 
 	char * result = malloc (sizeof(char) * BBIA_INTEGER_SIZE + 1);
 	if (result == NULL) abort();
@@ -38,11 +42,10 @@ char * bbia_integer_toBase (int integer, int base) {
 		start--;
 	}
 
-
 	return result;
 }
 
-int bbia_integer_fromBase (char * integer, int base) {
+int stuaa_fromBase (char * integer, int base) {
 
 	return -1;
 }
