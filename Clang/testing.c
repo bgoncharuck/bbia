@@ -17,8 +17,10 @@ int main (int argc, char * argv[]) {
 	bbia_free (firstTest);
 	*/
 
+	// int secondTest = 0x12345678;
 	int secondTest = BBIA_LEVEL_IS_FULL;
-	char * secondTestToBase = bbia_integer_toBase (secondTest, 2);
+
+	char * secondTestToBase = bbia_integer_toBase (secondTest, 16);
 	// printf("%s\n", secondTestToBase);
 
 	if (secondTestToBase) free(secondTestToBase);
