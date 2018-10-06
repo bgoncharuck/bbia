@@ -23,7 +23,9 @@
 #define BBIA_LEVEL_TOP -1 + BBIA_LEVEL_COUNT
 
 /*DIGIT*/
+// signed int 1111...n (n == BBIA_INTEGER_SIZE)
 #define BBIA_LEVEL_IS_FULL -1
+// signed int 0000...n (n == BBIA_INTEGER_SIZE)
 #define BBIA_LEVEL_IS_EMPTY 0
 
 /*SIGN*/

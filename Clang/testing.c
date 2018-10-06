@@ -22,8 +22,11 @@ int main (int argc, char * argv[]) {
 	int secondTest = INT_MAX;
 
 
-	char * secondTestToBase = bbia_integer_toBase (secondTest, 16);
-	printf("%s\n", secondTestToBase);
+	char * secondTestToBase = bbia_integer_toBase (secondTest, 64);
+	/*
+	*/
+	for (int i = 0; i < BBIA_INTEGER_SIZE+1; i++)
+	putchar ( (secondTestToBase[i] != '\0') ? secondTestToBase[i] : '_' );
 
 	if (secondTestToBase) free(secondTestToBase);
 
