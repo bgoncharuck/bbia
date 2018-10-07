@@ -81,7 +81,7 @@ char * stuaa_toBase (int sinteger, int base) {
 		return result;
 	}
 
-	else return stuaa_toBase_Clang (sinteger, base);
+	return stuaa_toBase_Clang (sinteger, base);
 }
 
 int stuaa_fromBase (char * integer, int base) {
@@ -109,7 +109,7 @@ int stuaa_fromBase (char * integer, int base) {
 		return result;
 	}
 
-	else return stuaa_fromBase_Clang (integer, base);
+	return stuaa_fromBase_Clang (integer, base);
 }
 char * stuaa_toBase_Clang (int sinteger, int base) {
 
