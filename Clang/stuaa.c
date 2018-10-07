@@ -16,6 +16,15 @@ static inline double log_base(float base, float num) {
 	return log2(num) / log2(base);
 }
 
+static inline int findDigitInNumerics (const char * numicsStr, char digit) {
+	for ( int curNumicsInd = 0; curNumicsInd < BBIA_INTEGER_SIZE;
+		curNumicsInd++)
+	if (numicsStr [curNumicsInd] == digit)
+		return curNumicsInd;
+
+	return -1;
+}
+
 char * stuaa_toBase (int sinteger, int base) {
 
 	if ( !(base < 65 && base > 1) ) {
@@ -23,29 +32,44 @@ char * stuaa_toBase (int sinteger, int base) {
 		return NULL;
 	}
 
-	// TODO Signed To Unsigned Arithmetic Algorithm
+	// TODO
 	unsigned integer = sinteger;
 
 	char * result = malloc (sizeof(char) * BBIA_INTEGER_SIZE + 1);
 	if (result == NULL) abort();
 
-	int start = ceil ( log_base (base, integer) ) - 1;
-	int currentDigit = BBIA_INTEGER_SIZE-1;
+	for (
+		int start = ceil ( log_base (base, integer) ) - 1;
 
-	while(integer){
-		result[start] =
-		numerics [ integer % base ];
+		integer != 0;
 
-		integer /= base;
-
-		currentDigit--;
-		start--;
-	}
+		result[start] = numerics [ integer % base ],
+		integer /= base,
+		start--
+	);
 
 	return result;
 }
 
 int stuaa_fromBase (char * integer, int base) {
 
-	return -1;
+	if (integer == NULL) {
+		throw ("null pointer in stuaa_fromBase()");
+		return -1;
+	}
+
+	// TODO
+	unsigned int result = 0;
+
+	for (
+		int curDigit = 0;
+
+		curDigit < BBIA_INTEGER_SIZE;
+
+		result *= base,
+		result += findDigitInNumerics (numerics, integer[curDigit]),
+		curDigit++
+	);
+
+	return (signed) result;
 }

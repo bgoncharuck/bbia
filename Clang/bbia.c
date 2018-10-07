@@ -13,38 +13,38 @@ struct __bbia {
 	signed int sign;
 };
 
-void bbia_value_set_fromLevel (bbia * self, int level, int value) {
+void bbia_set_value_fromLevel (bbia * self, int level, int value) {
 
 	if (self == NULL) {
-		throw("null pointer in bbia_value_set_fromLevel()");
+		throw("null pointer in bbia_set_value_fromLevel()");
 		return;
 	}
 
-	for (int i = level; i >= 0; i--)
-		self->at[i] = value;
+	for (int curLvl = level; curLvl >= 0; curLvl--)
+		self->at[curLvl] = value;
 }
 
-void bbia_value_set_toLevel (bbia * self, int level, int value) {
+void bbia_set_value_toLevel (bbia * self, int level, int value) {
 
 	if (self == NULL) {
-		throw("null pointer in bbia_value_set_fromLevel()");
+		throw("null pointer in bbia_set_value_fromLevel()");
 		return;
 	}
 
-	for (int i = level; i <= BBIA_LEVEL_TOP; i++)
-		self->at[i] = value;
+	for (int curLvl = level; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+		self->at[curLvl] = value;
 }
 
-void bbia_value_set (bbia * self, int value) {
+void bbia_set_value (bbia * self, int value) {
 
-	bbia_value_set_fromLevel (self, BBIA_LEVEL_TOP, value);
+	bbia_set_value_fromLevel (self, BBIA_LEVEL_TOP, value);
 }
 
 int bbia_at_get (bbia * self, int index) {
 
 	if (self == NULL) {
 		throw("null pointer in bbia_at_get()");
-		return -42;
+		return -1;
 	}
 
 	return self->at[index];
@@ -67,10 +67,16 @@ void bbia_print_levelValue (bbia * self) {
 		return;
 	}
 
-	for (int i = 0; i <= BBIA_LEVEL_TOP; i++) {
+	char * tempMemory = NULL;
 
-		printf("%d_", self->at[i]);
+	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++) {
+
+		tempMemory = stuaa_toBase (self->at[curLvl], 2);
+		printf ("%s_", tempMemory);
+
+		if (tempMemory != NULL) free (tempMemory);
 	}
+
 	puts("");
 }
 
@@ -80,7 +86,7 @@ bbia * bbia_new (void) {
 	if (self == NULL) abort();
 
 	self->sign = BBIA_UNSIGNED;
-	bbia_value_set (self, BBIA_LEVEL_IS_EMPTY);
+	bbia_set_value (self, BBIA_LEVEL_IS_EMPTY);
 
 	return self;
 }
