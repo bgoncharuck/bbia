@@ -57,14 +57,60 @@ int stuaa_bitflag (int num) {
 
 char * stuaa_toBase (int sinteger, int base) {
 
-	return stuaa_toBase_Clang (sinteger, base);
+	if ( !(base < 65 && base > 1) ) {
+		throw ("The base must be from 2 to 64");
+		return NULL;
+	}
+
+	if (base == 2) {
+
+		char * result = malloc (sizeof(char) * BBIA_INTEGER_SIZE + 1);
+		if (result == NULL) abort();
+
+		for (
+			int currentBit = 1;
+
+			currentBit <= BBIA_INTEGER_SIZE;
+
+			result[BBIA_INTEGER_SIZE-currentBit] =
+			(sinteger & stuaa_bitflag(currentBit)) ? '1' : '0',
+			currentBit++
+		);
+
+
+		return result;
+	}
+
+	else return stuaa_toBase_Clang (sinteger, base);
 }
 
 int stuaa_fromBase (char * integer, int base) {
 
-	return stuaa_fromBase_Clang (integer, base);
-}
+	if (integer == NULL) {
+		throw ("null pointer in stuaa_fromBase()");
+		return -1;
+	}
 
+	if (base == 2) {
+
+		int result = 0;
+
+		for (
+			int currentBit = 1;
+
+			currentBit <= BBIA_INTEGER_SIZE;
+
+			result |= (integer[BBIA_INTEGER_SIZE-currentBit] == '1')
+			? stuaa_bitflag(currentBit) : 0,
+			currentBit++
+		);
+
+
+		return result;
+	}
+
+	else return stuaa_fromBase_Clang (integer, base);
+}
 char * stuaa_toBase_Clang (int sinteger, int base) {
 
 	if ( !(base < 65 && base > 1) ) {
