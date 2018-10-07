@@ -19,20 +19,59 @@ static inline double log_base(float base, float num) {
 static inline int findDigitInNumerics (const char * numicsStr, char digit) {
 	for ( int curNumicsInd = 0; curNumicsInd < BBIA_INTEGER_SIZE;
 		curNumicsInd++)
+
 	if (numicsStr [curNumicsInd] == digit)
 		return curNumicsInd;
 
 	return -1;
 }
 
+int stuaa_bitflag (int num) {
+
+	if ( !(num >= 0 && num <= BBIA_INTEGER_SIZE) )
+		return 0;
+
+	if (BBIA_INTEGER_SIZE < 32 || num < 32) {
+
+		const int bitDigit[] = { 0,
+			0x1, 0x2, 0x4, 0x8,
+			0x10, 0x20, 0x40, 0x80,
+			0x100, 0x200, 0x400, 0x800,
+			0x1000, 0x2000, 0x4000, 0x8000,
+			0x10000, 0x20000, 0x40000, 0x80000,
+			0x100000, 0x200000, 0x400000, 0x800000,
+			0x1000000, 0x2000000, 0x4000000, 0x8000000,
+			0x10000000, 0x20000000, 0x40000000, 0x80000000
+		};
+
+		return bitDigit[num];
+	}
+
+	int bitDigit = 0x40000000;
+
+	while (num-- != 31)
+		bitDigit <<= 1;
+
+	return bitDigit;
+}
+
 char * stuaa_toBase (int sinteger, int base) {
+
+	return stuaa_toBase_Clang (sinteger, base);
+}
+
+int stuaa_fromBase (char * integer, int base) {
+
+	return stuaa_fromBase_Clang (integer, base);
+}
+
+char * stuaa_toBase_Clang (int sinteger, int base) {
 
 	if ( !(base < 65 && base > 1) ) {
 		throw ("The base must be from 2 to 64");
 		return NULL;
 	}
 
-	// TODO
 	unsigned integer = sinteger;
 
 	char * result = malloc (sizeof(char) * BBIA_INTEGER_SIZE + 1);
@@ -51,14 +90,13 @@ char * stuaa_toBase (int sinteger, int base) {
 	return result;
 }
 
-int stuaa_fromBase (char * integer, int base) {
+int stuaa_fromBase_Clang (char * integer, int base) {
 
 	if (integer == NULL) {
 		throw ("null pointer in stuaa_fromBase()");
 		return -1;
 	}
 
-	// TODO
 	unsigned int result = 0;
 
 	for (
