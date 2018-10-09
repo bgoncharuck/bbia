@@ -80,7 +80,41 @@ void bbia_print_levelValue (bbia * self) {
 	puts("");
 }
 
-void bbia_shift_left (bbia * self, int value) {
+void bbia_bitflag_set (bbia * self, int num) {
+
+	int lvl = num / BBIA_INTEGER_SIZE;
+	num %= BBIA_INTEGER_SIZE;
+
+	self->at[lvl] |= stuaa_bitflag (num);
+}
+
+void bbia_bitflag_unset (bbia * self, int num) {
+
+	int lvl = num / BBIA_INTEGER_SIZE;
+	num %= BBIA_INTEGER_SIZE;
+
+	self->at[lvl] &= ~stuaa_bitflag (num);
+}
+
+void bbia_bitflag_set_mult (bbia * self, int * numArray) {
+
+	while (*numArray != NULL)
+		bbia_bitflag_set (self, *numArray++);
+}
+
+void bbia_bitflag_unset_mult (bbia * self, int * numArray) {
+
+	while (*numArray != NULL)
+		bbia_bitflag_unset (self, *numArray++);
+}
+
+void bbia_bitshift_left (bbia * self, int value) {
+
+
+}
+
+void bbia_bitshift_right (bbia * self, int value) {
+
 
 }
 
