@@ -55,6 +55,18 @@ int stuaa_bitflag (int num) {
 	return bitDigit;
 }
 
+bbia * stuaa_bbia_bitflag (int num) {
+
+	bbia * self = bbia_new ();
+
+	int lvl = num / BBIA_INTEGER_SIZE;
+	num %= BBIA_INTEGER_SIZE;
+
+	self->at[lvl] |= stuaa_bitflag (num);
+
+	return self;
+}
+
 char * stuaa_toBase (int sinteger, int base) {
 
 	if ( !(base < 65 && base > 1) ) {
@@ -111,14 +123,12 @@ int stuaa_fromBase (char * integer, int base) {
 
 	return stuaa_fromBase_Clang (integer, base);
 }
-char * stuaa_toBase_Clang (int sinteger, int base) {
+char * stuaa_toBase_Clang (unsigned integer, int base) {
 
 	if ( !(base < 65 && base > 1) ) {
 		throw ("The base must be from 2 to 64");
 		return NULL;
 	}
-
-	unsigned integer = sinteger;
 
 	char * result = malloc (sizeof(char) * BBIA_INTEGER_SIZE + 1);
 	if (result == NULL) abort();

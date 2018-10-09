@@ -2,7 +2,7 @@
 
 int stuaa_bitflag (int num) ;
 
-char * stuaa_toBase_Clang (int integer, int base) ;
+char * stuaa_toBase_Clang (unsigned integer, int base) ;
 
 int stuaa_fromBase_Clang (char * integer, int base) ;
 

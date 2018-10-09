@@ -80,6 +80,10 @@ void bbia_print_levelValue (bbia * self) {
 	puts("");
 }
 
+void bbia_shift_left (bbia * self, int value) {
+
+}
+
 bbia * bbia_new (void) {
 
 	bbia * self = malloc (sizeof(bbia));
