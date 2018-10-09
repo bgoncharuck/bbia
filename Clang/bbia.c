@@ -111,7 +111,7 @@ void bbia_bitflag_unset_mult (bbia * self, int * numArray) {
 void bbia_bitshift_left (bbia * self, int value) {
 
 	int savedBits [BBIA_LEVEL_COUNT-1][value];
-	// memset
+	// memset (savedBits, );
 
 	// bitshift with bit overflow saving
 	for (
@@ -128,7 +128,9 @@ void bbia_bitshift_left (bbia * self, int value) {
 	) if (lvl > 0) savedBits [lvl-1][-1 + value - (BBIA_INTEGER_SIZE-currentBit)]
 	|= self->at[lvl] & stuaa_bitflag (currentBit);
 
-
+	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
+		for (int currentBit = 0; currentBit < value; currentBit++)
+			self->at[lvl] |= savedBits[lvl][currentBit];
 }
 
 void bbia_bitshift_right (bbia * self, int value) {
