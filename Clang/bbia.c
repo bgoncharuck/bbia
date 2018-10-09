@@ -13,6 +13,66 @@ struct __bbia {
 	signed int sign;
 };
 
+
+void bbia_bitshift_left (bbia * self, int value) {
+
+	int savedBits [BBIA_LEVEL_COUNT-1][value];
+	// memset (savedBits, );
+
+	// bitshift with bit overflow saving
+	for (
+		int lvl = BBIA_LEVEL_TOP;
+		lvl >= 0;
+
+		self->at[lvl] << value,
+		lvl--
+	) for (
+		int currentBit = BBIA_INTEGER_SIZE;
+		currentBit >= BBIA_INTEGER_SIZE-value;
+
+		currentBit--
+	) if (lvl > 0) savedBits [lvl-1][-1 + value - (BBIA_INTEGER_SIZE-currentBit)]
+	|= self->at[lvl] & stuaa_bitflag (currentBit);
+
+	// set savedBits in start
+	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
+		for (int currentBit = 0; currentBit < value; currentBit++)
+			self->at[lvl] |= savedBits[lvl][currentBit];
+}
+
+void bbia_bitshift_right (bbia * self, int value) {
+
+
+}
+
+void bbia_bitflag_set (bbia * self, int num) {
+
+	int lvl = num / BBIA_INTEGER_SIZE;
+	num %= BBIA_INTEGER_SIZE;
+
+	self->at[lvl] |= stuaa_bitflag (num);
+}
+
+void bbia_bitflag_unset (bbia * self, int num) {
+
+	int lvl = num / BBIA_INTEGER_SIZE;
+	num %= BBIA_INTEGER_SIZE;
+
+	self->at[lvl] &= ~stuaa_bitflag (num);
+}
+
+void bbia_bitflag_set_mult (bbia * self, int * numArray) {
+
+	while (*numArray != NULL)
+		bbia_bitflag_set (self, *numArray++);
+}
+
+void bbia_bitflag_unset_mult (bbia * self, int * numArray) {
+
+	while (*numArray != NULL)
+		bbia_bitflag_unset (self, *numArray++);
+}
+
 void bbia_set_value_fromLevel (bbia * self, int level, int value) {
 
 	if (self == NULL) {
@@ -78,64 +138,6 @@ void bbia_print_levelValue (bbia * self) {
 	}
 
 	puts("");
-}
-
-void bbia_bitflag_set (bbia * self, int num) {
-
-	int lvl = num / BBIA_INTEGER_SIZE;
-	num %= BBIA_INTEGER_SIZE;
-
-	self->at[lvl] |= stuaa_bitflag (num);
-}
-
-void bbia_bitflag_unset (bbia * self, int num) {
-
-	int lvl = num / BBIA_INTEGER_SIZE;
-	num %= BBIA_INTEGER_SIZE;
-
-	self->at[lvl] &= ~stuaa_bitflag (num);
-}
-
-void bbia_bitflag_set_mult (bbia * self, int * numArray) {
-
-	while (*numArray != NULL)
-		bbia_bitflag_set (self, *numArray++);
-}
-
-void bbia_bitflag_unset_mult (bbia * self, int * numArray) {
-
-	while (*numArray != NULL)
-		bbia_bitflag_unset (self, *numArray++);
-}
-
-void bbia_bitshift_left (bbia * self, int value) {
-
-	int savedBits [BBIA_LEVEL_COUNT-1][value];
-	// memset (savedBits, );
-
-	// bitshift with bit overflow saving
-	for (
-		int lvl = BBIA_LEVEL_TOP;
-		lvl >= 0;
-
-		self->at[lvl] << value,
-		lvl--
-	) for (
-		int currentBit = BBIA_INTEGER_SIZE;
-		currentBit >= BBIA_INTEGER_SIZE-value;
-
-		currentBit--
-	) if (lvl > 0) savedBits [lvl-1][-1 + value - (BBIA_INTEGER_SIZE-currentBit)]
-	|= self->at[lvl] & stuaa_bitflag (currentBit);
-
-	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
-		for (int currentBit = 0; currentBit < value; currentBit++)
-			self->at[lvl] |= savedBits[lvl][currentBit];
-}
-
-void bbia_bitshift_right (bbia * self, int value) {
-
-
 }
 
 bbia * bbia_new (void) {
