@@ -20,8 +20,17 @@ void bbia_bitshift_left (bbia * self, int value) {
 	int savedBits [BBIA_LEVEL_COUNT-1][value];
 	memset(savedBits, 0, sizeof(int) * value * BBIA_LEVEL_COUNT-1);
 
+	// 1. Shift with saved bits
+	// we shift all levels from top to zero
+	// but save the part which is lost
+	// zero level not count in saving
 
-	// bitshift with bit overflow saving
+	// 2. Set saved bits
+	// for all levels lesser then top
+	// we set saved bits
+	// we saved bits in position INTEGER_SIZE...INTEGER_SIZE-value
+	// but need set bits in position value...1
+
 	for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; self->at[lvl] <<= value, lvl--)
 	for (int currentBit = BBIA_INTEGER_SIZE;
 		currentBit > BBIA_INTEGER_SIZE-value; currentBit--)
@@ -29,7 +38,6 @@ void bbia_bitshift_left (bbia * self, int value) {
 		savedBits[lvl-1][-1 + value - (BBIA_INTEGER_SIZE-currentBit)]
 		|= self->at[lvl] & stuaa_bitflag (currentBit);
 
-	// set savedBits in start
 	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
 	for (int currentBit = value; currentBit > 0; currentBit--)
 
