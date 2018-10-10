@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+// #include <string.h>
 
 #define throw(MSG) fprintf(stderr, "%s\n",MSG)
 
@@ -17,23 +18,26 @@ struct __bbia {
 void bbia_bitshift_left (bbia * self, int value) {
 
 	int savedBits [BBIA_LEVEL_COUNT-1][value];
-	// memset (savedBits, );
+	for (int i = 0; i < BBIA_LEVEL_COUNT-1; i++)
+		for (int j = 0; j < value; j++)
+			savedBits[i][j] = 0;
 
 
 	// bitshift with bit overflow saving
-	for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; self->at[lvl] << value, lvl--)
+	for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; self->at[lvl] <<= value, lvl--)
 	for (int currentBit = BBIA_INTEGER_SIZE;
-		currentBit >= BBIA_INTEGER_SIZE-value; currentBit--)
+		currentBit > BBIA_INTEGER_SIZE-value; currentBit--)
 	if (lvl > 0)
 		savedBits[lvl-1][-1 + value - (BBIA_INTEGER_SIZE-currentBit)]
 		|= self->at[lvl] & stuaa_bitflag (currentBit);
 
-
 	// set savedBits in start
 	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
-	for (int currentBit = 0; currentBit < value; currentBit++)
+	for (int currentBit = 1; currentBit <= value; currentBit++)
 
-		self->at[lvl] |= savedBits[lvl][currentBit];
+	self->at[lvl] |=
+	(savedBits[lvl][value-currentBit] & stuaa_bitflag(BBIA_INTEGER_SIZE-currentBit+1)) ?
+	stuaa_bitflag (currentBit) : 0;
 }
 
 void bbia_bitshift_right (bbia * self, int value) {
@@ -59,14 +63,26 @@ void bbia_bitflag_unset (bbia * self, int num) {
 
 void bbia_bitflag_set_mult (bbia * self, int * numArray) {
 
-	while (*numArray != NULL)
+	while (numArray != NULL)
 		bbia_bitflag_set (self, *numArray++);
 }
 
 void bbia_bitflag_unset_mult (bbia * self, int * numArray) {
 
-	while (*numArray != NULL)
+	while (numArray != NULL)
 		bbia_bitflag_unset (self, *numArray++);
+}
+
+bbia * bbia_bitflag (int num) {
+
+	bbia * self = bbia_new ();
+
+	int lvl = num / BBIA_INTEGER_SIZE;
+	num %= BBIA_INTEGER_SIZE;
+
+	self->at[lvl] |= stuaa_bitflag (num);
+
+	return self;
 }
 
 void bbia_set_value_fromLevel (bbia * self, int level, int value) {

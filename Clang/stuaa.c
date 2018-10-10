@@ -55,18 +55,6 @@ int stuaa_bitflag (int num) {
 	return bitDigit;
 }
 
-bbia * stuaa_bbia_bitflag (int num) {
-
-	bbia * self = bbia_new ();
-
-	int lvl = num / BBIA_INTEGER_SIZE;
-	num %= BBIA_INTEGER_SIZE;
-
-	self->at[lvl] |= stuaa_bitflag (num);
-
-	return self;
-}
-
 char * stuaa_toBase (int sinteger, int base) {
 
 	if ( !(base < 65 && base > 1) ) {

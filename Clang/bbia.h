@@ -47,6 +47,8 @@ void bbia_bitflag_set_mult (bbia * self, int * numArray) ;
 
 void bbia_bitflag_unset_mult (bbia * self, int * numArray) ;
 
+bbia * bbia_bitflag (int num) ;
+
 void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
 
 void bbia_set_value_toLevel (bbia * self, int level, int value) ;
