@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-// #include <string.h>
+#include <string.h>
 
 #define throw(MSG) fprintf(stderr, "%s\n",MSG)
 
@@ -18,9 +18,7 @@ struct __bbia {
 void bbia_bitshift_left (bbia * self, int value) {
 
 	int savedBits [BBIA_LEVEL_COUNT-1][value];
-	for (int i = 0; i < BBIA_LEVEL_COUNT-1; i++)
-		for (int j = 0; j < value; j++)
-			savedBits[i][j] = 0;
+	memset(savedBits, 0, sizeof(int) * value * BBIA_LEVEL_COUNT-1);
 
 
 	// bitshift with bit overflow saving
@@ -33,11 +31,13 @@ void bbia_bitshift_left (bbia * self, int value) {
 
 	// set savedBits in start
 	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
-	for (int currentBit = 1; currentBit <= value; currentBit++)
+	for (int currentBit = value; currentBit > 0; currentBit--)
 
-	self->at[lvl] |=
-	(savedBits[lvl][value-currentBit] & stuaa_bitflag(BBIA_INTEGER_SIZE-currentBit+1)) ?
-	stuaa_bitflag (currentBit) : 0;
+		self->at[lvl] |= (
+			savedBits[lvl][currentBit-1] &
+			stuaa_bitflag(BBIA_INTEGER_SIZE - (value-currentBit))
+		) ?
+		stuaa_bitflag (currentBit) : 0;
 }
 
 void bbia_bitshift_right (bbia * self, int value) {
