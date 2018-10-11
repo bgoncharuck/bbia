@@ -53,31 +53,21 @@ void bbia_bitshift_right (bbia * self, int value) {
 	int savedBits [BBIA_LEVEL_COUNT-1][value];
 	memset(savedBits, 0, sizeof(int) * value * BBIA_LEVEL_COUNT-1);
 
+	
+
 	for (int lvl = 0; lvl <= BBIA_LEVEL_TOP; self->at[lvl] >>= value, lvl++)
 	for (int currentBit = 1; currentBit <= value; currentBit++)
 
 	if (lvl < BBIA_LEVEL_TOP)
 		savedBits[lvl][currentBit-1] |= self->at[lvl] & stuaa_bitflag (currentBit);
 
-		/*
-	for (int i = 0; i <= BBIA_LEVEL_TOP; i++)
-		for (int j = 0; j < value; j++)
-			puts(stuaa_toBase (savedBits[i][j], 2) );
-			*/
+	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
+	for (int currentBit = 0;
+		currentBit < value; currentBit++)
 
-	for (int lvl = BBIA_LEVEL_TOP-1; lvl >= 0; lvl--)
-	for (int currentBit = BBIA_INTEGER_SIZE-value+1;
-		currentBit <= BBIA_INTEGER_SIZE; currentBit++)
-
-/*
-		self->at[lvl+1] |= (
-			savedBits[lvl][BBIA_INTEGER_SIZE-currentBit-value+1] &
-			stuaa_bitflag (BBIA_INTEGER_SIZE-currentBit-value+2)
-		) ?
-		stuaa_bitflag (currentBit) : 0;
-*/
-	puts(stuaa_toBase (savedBits[lvl][BBIA_INTEGER_SIZE-currentBit-value+1], 2) );
-
+		self->at[lvl+1] |=
+		(savedBits[lvl][currentBit] & stuaa_bitflag (currentBit+1)) ?
+		stuaa_bitflag (BBIA_INTEGER_SIZE-value+1+currentBit) : 0;
 }
 
 void bbia_bitflag_set (bbia * self, int num) {

@@ -28,7 +28,7 @@ int main (int argc, char * argv[]) {
 	bbia_print_levelValue (firstTest);
 
 	bbia_bitshift_right (firstTest, 3);
-	// bbia_print_levelValue (firstTest);
+	bbia_print_levelValue (firstTest);
 
 
 	bbia_free (firstTest);
