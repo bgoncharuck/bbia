@@ -32,6 +32,14 @@ int main (int argc, char * argv[]) {
 	puts("After right shift by 3 :");
 	bbia_print_levelValue (firstTest);
 
+	/*
+	int shiftTest = 0x40000000;
+	// int shiftTest1 = -1;
+	// unsigned int shiftTest = shiftTest1;
+	shiftTest >>= 3;
+	printf("\n%d\n", shiftTest);
+	puts(stuaa_toBase(shiftTest,2));
+	*/
 
 	bbia_free (firstTest);
 

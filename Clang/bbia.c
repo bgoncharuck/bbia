@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+// #include <string.h>
 
 #define throw(MSG) fprintf(stderr, "%s\n",MSG)
 
@@ -17,67 +17,86 @@ struct __bbia {
 
 void bbia_bitshift_left (bbia * self, int value) {
 
-	int savedBits [BBIA_LEVEL_COUNT-1][value];
-	memset(savedBits, 0, sizeof(int) * value * BBIA_LEVEL_COUNT-1);
+	int savedBits [BBIA_LEVEL_TOP-1];
+
+	int bitMask[2] = {0,0}, signedDebug = 0;
+	for (int curBit = BBIA_INTEGER_SIZE-value+1; curBit <= BBIA_INTEGER_SIZE; curBit++)
+		bitMask[0] |= stuaa_bitflag(curBit);
 
 	// 1. Shift with saved bits
 	// we shift all levels from top to zero
 	// but save the part which is lost
 	// zero level not count in saving
+	// we saved bits in position INTEGER_SIZE...INTEGER_SIZE-value
+	// but need set bits in position value...1
 
 	// 2. Set saved bits
 	// for all levels lesser then top
 	// we set saved bits
-	// we saved bits in position INTEGER_SIZE...INTEGER_SIZE-value
-	// but need set bits in position value...1
 
 	for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; self->at[lvl] <<= value, lvl--)
-	for (int currentBit = BBIA_INTEGER_SIZE-value+1;
-		currentBit <= BBIA_INTEGER_SIZE; currentBit++)
-	if (lvl > 0)
-		savedBits[lvl-1][-1 + value - (BBIA_INTEGER_SIZE-currentBit)]
-		|= self->at[lvl] & stuaa_bitflag (currentBit);
+	if (lvl > 0) {
+		bitMask[1] = self->at[lvl] & bitMask[0];
+
+		if (stuaa_bitflag(BBIA_INTEGER_SIZE) & bitMask[1]) {
+			signedDebug = 1;
+			bitMask[1] &= ~stuaa_bitflag(BBIA_INTEGER_SIZE);
+		}
+
+		bitMask[1] >>= BBIA_INTEGER_SIZE-value;
+
+		if (signedDebug) {
+			signedDebug = 0;
+			bitMask[1] |= stuaa_bitflag(value);
+		}
+
+		savedBits[lvl-1] = bitMask[1];
+	}
 
 	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
-	for (int currentBit = value; currentBit > 0; currentBit--)
-
-		self->at[lvl] |= (
-			savedBits[lvl][currentBit-1] &
-			stuaa_bitflag(BBIA_INTEGER_SIZE - (value-currentBit))
-		) ?
-		stuaa_bitflag (currentBit) : 0;
+		self->at[lvl] |= savedBits[lvl];
 }
 
 void bbia_bitshift_right (bbia * self, int value) {
 
-	int savedBits [BBIA_LEVEL_COUNT-1][value];
-	memset(savedBits, 0, sizeof(int) * value * BBIA_LEVEL_COUNT-1);
+	int savedBits [BBIA_LEVEL_TOP-1];
+
+	int bitMask[2] = {0,0}, signedDebug = 0;
+	for (int curBit = 1; curBit <= value; curBit++)
+		bitMask[0] |= stuaa_bitflag(curBit);
 
 	// 1. Shift with saved bits
 	// we shift all levels from zero to top
 	// but save the part which is lost
+	// we saved bits in position 1...value
+	// but need set bits in position INTEGER_SIZE-value...INTEGER_SIZE
 	// top level not count in saving
 
 	// 2. Set saved bits
 	// for all levels bigger then 0
 	// we set saved bits
-	// we saved bits in position 1...value
-	// but need set bits in position INTEGER_SIZE-value...INTEGER_SIZE
 
-	for (int lvl = 0; lvl <= BBIA_LEVEL_TOP; self->at[lvl] >>= value, lvl++)
-	for (int currentBit = 1; currentBit <= value; currentBit++)
+	for (int lvl = 0; lvl <= BBIA_LEVEL_TOP; lvl++) {
+		if (stuaa_bitflag(BBIA_INTEGER_SIZE) & self->at[lvl]) {
+			signedDebug = 1;
+			self->at[lvl] &= ~stuaa_bitflag(BBIA_INTEGER_SIZE);
+		}
 
-	if (lvl < BBIA_LEVEL_TOP)
-		savedBits[lvl][currentBit-1] |=
-		self->at[lvl] & stuaa_bitflag (currentBit);
+		if (lvl < BBIA_LEVEL_TOP) {
+			bitMask[1] = self->at[lvl] & bitMask[0];
+			bitMask[1] <<= BBIA_INTEGER_SIZE-value;
+			savedBits[lvl] = bitMask[1];
+		}
+
+		self->at[lvl] >>= value;
+		if (signedDebug) {
+			signedDebug = 0;
+			self->at[lvl] |= stuaa_bitflag(value);
+		}
+	}
 
 	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
-	for (int currentBit = 0;
-		currentBit < value; currentBit++)
-
-		self->at[lvl+1] |=
-		(savedBits[lvl][currentBit] & stuaa_bitflag (currentBit+1)) ?
-		stuaa_bitflag (BBIA_INTEGER_SIZE-value+1+currentBit) : 0;
+		self->at[lvl+1] |= savedBits[lvl];
 }
 
 void bbia_bitflag_set (bbia * self, int num) {
