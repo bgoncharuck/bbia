@@ -32,8 +32,8 @@ void bbia_bitshift_left (bbia * self, int value) {
 	// but need set bits in position value...1
 
 	for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; self->at[lvl] <<= value, lvl--)
-	for (int currentBit = BBIA_INTEGER_SIZE;
-		currentBit > BBIA_INTEGER_SIZE-value; currentBit--)
+	for (int currentBit = BBIA_INTEGER_SIZE-value+1;
+		currentBit <= BBIA_INTEGER_SIZE; currentBit++)
 	if (lvl > 0)
 		savedBits[lvl-1][-1 + value - (BBIA_INTEGER_SIZE-currentBit)]
 		|= self->at[lvl] & stuaa_bitflag (currentBit);

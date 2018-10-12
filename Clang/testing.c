@@ -7,8 +7,6 @@
 
 int main (int argc, char * argv[]) {
 
-	/*
-	*/
 	bbia * firstTest = bbia_new();
 
 	// bbia_at_set (firstTest, BBIA_LEVEL_TOP, BBIA_LEVEL_IS_FULL);
@@ -17,17 +15,21 @@ int main (int argc, char * argv[]) {
 		bbia_at_set (firstTest, lvl, (stuaa_bitflag(32) | stuaa_bitflag(31) ));
 		// bbia_at_set (firstTest, lvl, (stuaa_bitflag(31) ));
 
+	puts("Before left shift by 2 :");
 	bbia_print_levelValue (firstTest);
 
 	bbia_bitshift_left (firstTest, 2);
+	puts("After left shift by 2 :");
 	bbia_print_levelValue (firstTest);
 
 	for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; lvl--)
 		bbia_at_set (firstTest, lvl, (stuaa_bitflag(1) | stuaa_bitflag(2)
 	| stuaa_bitflag(3) | stuaa_bitflag(4) ));
+	puts("Before right shift by 3 :");
 	bbia_print_levelValue (firstTest);
 
 	bbia_bitshift_right (firstTest, 3);
+	puts("After right shift by 3 :");
 	bbia_print_levelValue (firstTest);
 
 
