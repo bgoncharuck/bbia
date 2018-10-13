@@ -19,7 +19,7 @@ void bbia_bitshift_left (bbia * self, int value) {
 
 	int savedBits [BBIA_LEVEL_TOP-1];
 
-	int bitMask[2] = {0,0}, signedDebug = 0;
+	int bitMask[2] = {0,0};
 	for (int curBit = BBIA_INTEGER_SIZE-value+1; curBit <= BBIA_INTEGER_SIZE; curBit++)
 		bitMask[0] |= stuaa_bitflag(curBit);
 
@@ -49,7 +49,7 @@ void bbia_bitshift_right (bbia * self, int value) {
 
 	int savedBits [BBIA_LEVEL_TOP-1];
 
-	int bitMask[2] = {0,0}, signedDebug = 0;
+	int bitMask[2] = {0,0};
 	for (int curBit = 1; curBit <= value; curBit++)
 		bitMask[0] |= stuaa_bitflag(curBit);
 
@@ -77,16 +77,18 @@ void bbia_bitshift_right (bbia * self, int value) {
 
 void bbia_bitflag_set (bbia * self, int num) {
 
-	int lvl = num / BBIA_INTEGER_SIZE;
+	int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
 	num %= BBIA_INTEGER_SIZE;
+	num = (num == 0) ? BBIA_INTEGER_SIZE * (lvl+1) : num;
 
 	self->at[lvl] |= stuaa_bitflag (num);
 }
 
 void bbia_bitflag_unset (bbia * self, int num) {
 
-	int lvl = num / BBIA_INTEGER_SIZE;
+	int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
 	num %= BBIA_INTEGER_SIZE;
+	num = (num == 0) ? BBIA_INTEGER_SIZE : num;
 
 	self->at[lvl] &= ~stuaa_bitflag (num);
 }
