@@ -37,19 +37,7 @@ void bbia_bitshift_left (bbia * self, int value) {
 	for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; self->at[lvl] <<= value, lvl--)
 	if (lvl > 0) {
 		bitMask[1] = self->at[lvl] & bitMask[0];
-
-		if (stuaa_bitflag(BBIA_INTEGER_SIZE) & bitMask[1]) {
-			signedDebug = 1;
-			bitMask[1] &= ~stuaa_bitflag(BBIA_INTEGER_SIZE);
-		}
-
-		bitMask[1] >>= BBIA_INTEGER_SIZE-value;
-
-		if (signedDebug) {
-			signedDebug = 0;
-			bitMask[1] |= stuaa_bitflag(value);
-		}
-
+		stuaa_shiftr (bitMask+1, BBIA_INTEGER_SIZE-value);
 		savedBits[lvl-1] = bitMask[1];
 	}
 
@@ -76,23 +64,11 @@ void bbia_bitshift_right (bbia * self, int value) {
 	// for all levels bigger then 0
 	// we set saved bits
 
-	for (int lvl = 0; lvl <= BBIA_LEVEL_TOP; lvl++) {
-		if (stuaa_bitflag(BBIA_INTEGER_SIZE) & self->at[lvl]) {
-			signedDebug = 1;
-			self->at[lvl] &= ~stuaa_bitflag(BBIA_INTEGER_SIZE);
-		}
-
-		if (lvl < BBIA_LEVEL_TOP) {
-			bitMask[1] = self->at[lvl] & bitMask[0];
-			bitMask[1] <<= BBIA_INTEGER_SIZE-value;
-			savedBits[lvl] = bitMask[1];
-		}
-
-		self->at[lvl] >>= value;
-		if (signedDebug) {
-			signedDebug = 0;
-			self->at[lvl] |= stuaa_bitflag(value);
-		}
+	for (int lvl = 0; lvl <= BBIA_LEVEL_TOP; stuaa_shiftr (self->at+lvl,value), lvl++)
+	if (lvl < BBIA_LEVEL_TOP) {
+		bitMask[1] = self->at[lvl] & bitMask[0];
+		bitMask[1] <<= BBIA_INTEGER_SIZE-value;
+		savedBits[lvl] = bitMask[1];
 	}
 
 	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)

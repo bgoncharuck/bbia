@@ -55,6 +55,22 @@ int stuaa_bitflag (int num) {
 	return bitDigit;
 }
 
+void stuaa_shiftr (int * self, int value) {
+	int signedDebug = 0;
+
+	if (stuaa_bitflag(BBIA_INTEGER_SIZE) & *self) {
+		signedDebug = 1;
+		*self &= ~stuaa_bitflag(BBIA_INTEGER_SIZE);
+	}
+
+	*self >>= value;
+
+	if (signedDebug) {
+		signedDebug = 0;
+		*self |= stuaa_bitflag(BBIA_INTEGER_SIZE-value);
+	}
+}
+
 char * stuaa_toBase (int sinteger, int base) {
 
 	if ( !(base < 65 && base > 1) ) {
