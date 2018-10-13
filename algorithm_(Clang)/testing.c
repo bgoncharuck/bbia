@@ -15,11 +15,11 @@ int main (int argc, char * argv[]) {
 	bbia_print_levelValue (secondTest);
 
 	puts ("After bitflag set :");
-	bbia_bitflag_set (secondTest, 63);
+	bbia_bitflag_set (secondTest, 127);
 	bbia_print_levelValue (secondTest);
 
 	puts ("After bitflag unset :");
-	bbia_bitflag_unset (secondTest, 63);
+	bbia_bitflag_unset (secondTest, 127);
 	bbia_print_levelValue (secondTest);
 
 	puts ("\nShift tests :\n");
