@@ -78,8 +78,8 @@ void bbia_bitshift_right (bbia * self, int value) {
 void bbia_bitflag_set (bbia * self, int num) {
 
 	int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
-	num %= BBIA_INTEGER_SIZE;
-	num = (num == 0) ? BBIA_INTEGER_SIZE * (lvl+1) : num;
+	num = (num % BBIA_INTEGER_SIZE == 0)
+	? BBIA_INTEGER_SIZE : num % BBIA_INTEGER_SIZE;
 
 	self->at[lvl] |= stuaa_bitflag (num);
 }
@@ -87,8 +87,8 @@ void bbia_bitflag_set (bbia * self, int num) {
 void bbia_bitflag_unset (bbia * self, int num) {
 
 	int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
-	num %= BBIA_INTEGER_SIZE;
-	num = (num == 0) ? BBIA_INTEGER_SIZE : num;
+	num = (num % BBIA_INTEGER_SIZE == 0)
+	? BBIA_INTEGER_SIZE : num % BBIA_INTEGER_SIZE;
 
 	self->at[lvl] &= ~stuaa_bitflag (num);
 }
