@@ -207,6 +207,12 @@ public class bbia {
 		return this.at[lvl];
 	}
 
+	public void level_value_set (int lvl, int val) {
+		if (lvl < 0 || lvl > BBIA_LEVEL_TOP)
+			return;
+		this.at[lvl] = val;
+	}
+
 	void bitshift_left (int value) {
 
 		int[] savedBits = new int[BBIA_LEVEL_TOP-1];
@@ -229,7 +235,7 @@ public class bbia {
 		for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; this.at[lvl] <<= value, lvl--)
 		if (lvl > 0) {
 			bitMask[1] = this.at[lvl] & bitMask[0];
-			stuaa.shiftr (bitMask+1, BBIA_INTEGER_SIZE-value);
+			bitMask[1] = stuaa.shiftr (bitMask[1], BBIA_INTEGER_SIZE-value);
 			savedBits[lvl-1] = bitMask[1];
 		}
 
@@ -237,5 +243,94 @@ public class bbia {
 			this.at[lvl] |= savedBits[lvl];
 	}
 
+	void bitshift_right (int value) {
 
+		int[] savedBits = new int[BBIA_LEVEL_TOP-1];
+
+		int[2] bitMask = {0,0};
+		for (int curBit = 1; curBit <= value; curBit++)
+			bitMask[0] |= stuaa.bitflag(curBit);
+
+		// 1. Shift with saved bits
+		// we shift all levels from zero to top
+		// but save the part which is lost
+		// we saved bits in position 1...value
+		// but need set bits in position INTEGER_SIZE-value...INTEGER_SIZE
+		// top level not count in saving
+
+		// 2. Set saved bits
+		// for all levels bigger then 0
+		// we set saved bits
+
+		for (int lvl = 0; lvl <= BBIA_LEVEL_TOP;
+			this.at[lvl] = stuaa.shiftr (this.at[lvl],value),
+			lvl++)
+
+			if (lvl < BBIA_LEVEL_TOP) {
+				bitMask[1] = this.at[lvl] & bitMask[0];
+				bitMask[1] <<= BBIA_INTEGER_SIZE-value;
+				savedBits[lvl] = bitMask[1];
+			}
+
+		for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
+			this.at[lvl+1] |= savedBits[lvl];
+	}
+
+	void bitflag_set (int num) {
+
+		int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
+		num %= BBIA_INTEGER_SIZE;
+
+		if (num != 0)
+			this.at[lvl] |= stuaa.bitflag (num);
+		else
+			this.at[lvl+1] |= stuaa.bitflag (BBIA_INTEGER_SIZE);
+	}
+
+	void bitflag_unset (int num) {
+
+		int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
+		num %= BBIA_INTEGER_SIZE;
+
+		if (num != 0)
+			this.at[lvl] &= ~stuaa.bitflag (num);
+		else
+			this.at[lvl+1] &= ~stuaa.bitflag (BBIA_INTEGER_SIZE);
+	}
+
+	void bitflag_set_mult (int[] numArray) {
+		for (int num : numArray)
+			bitflag_set (num);
+	}
+
+	void bitflag_unset_mult (int[] numArray) {
+		for (int num : numArray)
+			bitflag_unset (num);
+	}
+
+	// @TODO bitflag
+
+	void levels_set_value_from (int level, int value) {
+
+		if (lvl < 0 || lvl > BBIA_LEVEL_TOP)
+			return;
+
+		for (int curLvl = level; curLvl >= 0; curLvl--)
+			this.at[curLvl] = value;
+	}
+
+	void levels_set_value_to (int level, int value) {
+
+		if (lvl < 0 || lvl > BBIA_LEVEL_TOP)
+			return;
+
+		for (int curLvl = level; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			this.at[curLvl] = value;
+	}
+
+	void levels_set_value (int value) {
+		levels_set_value_from (BBIA_LEVEL_TOP, value);
+	}
+
+	// @TODO print_levels_value
 }
