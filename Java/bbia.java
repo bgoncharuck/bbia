@@ -1,4 +1,4 @@
-public class bitBigInt {
+public class bbia {
 
 	public final int BBIA_INTEGER_SIZE = 32;
 
@@ -17,11 +17,6 @@ public class bitBigInt {
 	public final int BBIA_BITS_1048576 = 1048576/BBIA_INTEGER_SIZE; // 2^20
 
 
-	/*LEVEL*/
-	/*@CHOOSE size here*/
-	public final int BBIA_LEVEL_COUNT = BBIA_BITS_512 ;
-	public final int BBIA_LEVEL_TOP = -1 + BBIA_LEVEL_COUNT ;
-
 	/*DIGIT*/
 	// signed int 1111...n (n == BBIA_INTEGER_SIZE)
 	public final int BBIA_LEVEL_IS_FULL = -1 ;
@@ -29,26 +24,26 @@ public class bitBigInt {
 	public final int BBIA_LEVEL_IS_EMPTY = 0 ;
 
 	/*SIGN*/
-	public final int BBIA_SIGNED = 1 ;
-	public final int BBIA_UNSIGNED = 0 ;
+	public final bool BBIA_SIGNED = true ;
+	public final bool BBIA_UNSIGNED = false ;
 
 	// @STUAA
-	static private class signedToUnsigned {
+	private class stuaa {
 
-		static final char[65] numerics =
+		final char[65] numerics =
 		"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-		static int intPow (int value, int pow) {
+		int intPow (int value, int pow) {
 			if (pow != 1)
 				return value * intPow(value, pow - 1);
 			else return value;
 		}
 
-		static double log_base(double base, double num) {
+		double log_base(double base, double num) {
 			return log2(num) / log2(base);
 		}
 
-		static int findDigitInNumerics (char[] numicsStr, char digit) {
+		int findDigitInNumerics (char[] numicsStr, char digit) {
 			for (int curNumicsInd = 0; curNumicsInd < BBIA_INTEGER_SIZE;
 				curNumicsInd++)
 
@@ -58,7 +53,7 @@ public class bitBigInt {
 			return -1;
 		}
 
-		static int bitflag (int num) {
+		int bitflag (int num) {
 
 			if ( !(num >= 0 && num <= BBIA_INTEGER_SIZE) )
 				return 0;
@@ -87,7 +82,7 @@ public class bitBigInt {
 			return bitDigit;
 		}
 
-		static int shiftr (int self, int value) {
+		int shiftr (int self, int value) {
 			int signedDebug = 0;
 
 			if (bitflag(BBIA_INTEGER_SIZE) & self) {
@@ -105,7 +100,7 @@ public class bitBigInt {
 			return self;
 		}
 
-		static char[] toBase (int sinteger, int base) {
+		char[] toBase (int sinteger, int base) {
 
 			if ( !(base < 65 && base > 1) ) {
 				// throw ("The base must be from 2 to 64");
@@ -126,7 +121,7 @@ public class bitBigInt {
 			return toBase_from2Base (result, base);
 		}
 
-		static int from2Base (char[] integer) {
+		int from2Base (char[] integer) {
 
 			int result = 0;
 			for (int currentBit = 1; currentBit <= BBIA_INTEGER_SIZE;
@@ -139,7 +134,7 @@ public class bitBigInt {
 			return result;
 		}
 
-		static char[] toBase_from2Base (char[] buffer, int base) {
+		char[] toBase_from2Base (char[] buffer, int base) {
 
 			int inDec = from2Base (buffer);
 			// @TODO STUAA
@@ -147,14 +142,99 @@ public class bitBigInt {
 			return buffer;
 		}
 
-		static int fromBase (char[] integer, int base) {
+		int fromBase (char[] integer, int base) {
 
 			// @TODO STUAA
 
 			return -1;
 		}
+	}
 
+	// @BBIA
 
+	private int[] at;
+	private bool sign;
+
+	// default size of bbia
+	private int BBIA_LEVEL_COUNT = BBIA_BITS_512 ;
+	private int BBIA_LEVEL_TOP = -1 + BBIA_LEVEL_COUNT ;
+
+	// @Constructor
+	public bbia () {
+		this.at = new int[BBIA_LEVEL_COUNT];
+		this.sign = BBIA_UNSIGNED;
+	}
+
+	// @Constructor for custom sign
+	public bbia (bool sign) {
+		this.at = new int[BBIA_LEVEL_COUNT];
+		this.sign = sign;
+	}
+
+	// @Constructor for custom bitsize
+	public bbia (int bits) {
+		this.BBIA_LEVEL_COUNT = bits / BBIA_INTEGER_SIZE;
+		if (bits % BBIA_INTEGER_SIZE != 0) this.BBIA_LEVEL_COUNT++;
+		this.BBIA_LEVEL_TOP = -1 + BBIA_LEVEL_COUNT;
+		this.at = new int[BBIA_LEVEL_COUNT];
+		this.sign = BBIA_UNSIGNED;
+	}
+
+	// @Constructor for custom bitsize and sign
+	public bbia (int bits, bool sign) {
+		this.BBIA_LEVEL_COUNT = bits / BBIA_INTEGER_SIZE;
+		if (bits % BBIA_INTEGER_SIZE != 0) this.BBIA_LEVEL_COUNT++;
+		this.BBIA_LEVEL_TOP = -1 + BBIA_LEVEL_COUNT;
+		this.at = new int[BBIA_LEVEL_COUNT];
+		this.sign = sign;
+	}
+
+	public void sign_change () {
+		this.sign = (this.sign) ? false : true;
+	}
+
+	public void sign_set (bool sign) {
+		this.sign = sign;
+	}
+
+	public bool sign_is () {
+		return this.sign;
+	}
+
+	public int level_value_get (int lvl) {
+		if (lvl < 0 || lvl > BBIA_LEVEL_TOP)
+			return -1;
+		return this.at[lvl];
+	}
+
+	void bitshift_left (int value) {
+
+		int[] savedBits = new int[BBIA_LEVEL_TOP-1];
+
+		int[2] bitMask = {0,0};
+		for (int curBit = BBIA_INTEGER_SIZE-value+1; curBit <= BBIA_INTEGER_SIZE; curBit++)
+			bitMask[0] |= stuaa.bitflag(curBit);
+
+		// 1. Shift with saved bits
+		// we shift all levels from top to zero
+		// but save the part which is lost
+		// zero level not count in saving
+		// we saved bits in position INTEGER_SIZE...INTEGER_SIZE-value
+		// but need set bits in position value...1
+
+		// 2. Set saved bits
+		// for all levels lesser then top
+		// we set saved bits
+
+		for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; this.at[lvl] <<= value, lvl--)
+		if (lvl > 0) {
+			bitMask[1] = this.at[lvl] & bitMask[0];
+			stuaa.shiftr (bitMask+1, BBIA_INTEGER_SIZE-value);
+			savedBits[lvl-1] = bitMask[1];
+		}
+
+		for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
+			this.at[lvl] |= savedBits[lvl];
 	}
 
 
