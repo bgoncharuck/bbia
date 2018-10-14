@@ -12,7 +12,7 @@
 static const char * numerics =
 "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-static inline double log_base(float base, float num) {
+static inline double log_base(double base, double num) {
 	return log2(num) / log2(base);
 }
 
