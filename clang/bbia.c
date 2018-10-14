@@ -8,10 +8,8 @@
 #define throw(MSG) fprintf(stderr, "%s\n",MSG)
 
 struct __bbia {
-
-	// some languages don`t have unsigned int
-	signed int at[BBIA_LEVEL_COUNT];
-	signed int sign;
+	unsigned at[BBIA_LEVEL_COUNT];
+	unsigned sign;
 };
 
 // @STUAA
@@ -19,12 +17,12 @@ struct __bbia {
 static const char * numerics =
 "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-static inline double log_base(float base, float num) {
+static inline double log_base(double base, double num) {
 	return log2(num) / log2(base);
 }
 
 static inline int findDigitInNumerics (const char * numicsStr, char digit) {
-	for ( int curNumicsInd = 0; curNumicsInd < BBIA_INTEGER_SIZE;
+	for ( unsigned curNumicsInd = 0; curNumicsInd < BBIA_INTEGER_SIZE;
 		curNumicsInd++)
 
 	if (numicsStr [curNumicsInd] == digit)
@@ -33,14 +31,14 @@ static inline int findDigitInNumerics (const char * numicsStr, char digit) {
 	return -1;
 }
 
-static inline int stuaa_bitflag (int num) {
+static inline unsigned bitflag (unsigned num) {
 
 	if ( !(num >= 0 && num <= BBIA_INTEGER_SIZE) )
 		return 0;
 
 	if (BBIA_INTEGER_SIZE < 32 || num < 32) {
 
-		const int bitDigit[] = { 0,
+		const unsigned bitDigit[] = { 0,
 			0x1, 0x2, 0x4, 0x8,
 			0x10, 0x20, 0x40, 0x80,
 			0x100, 0x200, 0x400, 0x800,
@@ -54,7 +52,7 @@ static inline int stuaa_bitflag (int num) {
 		return bitDigit[num];
 	}
 
-	int bitDigit = 0x40000000;
+	unsigned bitDigit = 0x40000000;
 
 	while (num-- != 31)
 		bitDigit <<= 1;
@@ -62,25 +60,7 @@ static inline int stuaa_bitflag (int num) {
 	return bitDigit;
 }
 
-static inline void stuaa_shiftr (int * self, int value) {
-	int signedDebug = 0;
-
-	if (BBIA_BIT_LAST & *self) {
-		signedDebug = 1;
-		*self &= ~BBIA_BIT_LAST;
-	}
-
-	*self >>= value;
-
-	if (signedDebug) {
-		signedDebug = 0;
-		*self |= BBIA_BIT_LAST >> value;
-		// *self |= stuaa_bitflag(BBIA_INTEGER_SIZE-value);
-	}
-}
-
-
-static char * stuaa_toBase_Clang (unsigned integer, int base) {
+static char * toBase (unsigned integer, unsigned base) {
 
 	if ( !(base < 65 && base > 1) ) {
 		throw ("The base must be from 2 to 64");
@@ -90,10 +70,18 @@ static char * stuaa_toBase_Clang (unsigned integer, int base) {
 	char * result = malloc (sizeof(char) * BBIA_INTEGER_SIZE + 1);
 	if (result == NULL) abort();
 
-	for (
-		int start = ceil ( log_base (base, integer) ) - 1;
+	if (base == 2) {
+		for (unsigned currentBit = 1; currentBit <= BBIA_INTEGER_SIZE;
 
-		integer != 0;
+			result[BBIA_INTEGER_SIZE-currentBit] =
+			(integer & bitflag(currentBit)) ? '1' : '0',
+			currentBit++
+		);
+
+		return result;
+	}
+
+	for (unsigned start = ceil ( log_base (base, integer) ) - 1; integer != 0;
 
 		result[start] = numerics [ integer % base ],
 		integer /= base,
@@ -103,94 +91,49 @@ static char * stuaa_toBase_Clang (unsigned integer, int base) {
 	return result;
 }
 
-static int stuaa_fromBase_Clang (char * integer, int base) {
+static unsigned fromBase (char * integer, unsigned base) {
 
 	if (integer == NULL) {
-		throw ("null pointer in stuaa_fromBase()");
+		throw ("null pointer in fromBase()");
 		return -1;
 	}
 
-	unsigned int result = 0;
+	unsigned result = 0;
 
-	for (
-		int curDigit = 0;
+	if (base == 2) {
+		for (unsigned currentBit = 1; currentBit <= BBIA_INTEGER_SIZE;
 
-		curDigit < BBIA_INTEGER_SIZE;
+			result |= (integer[BBIA_INTEGER_SIZE-currentBit] == '1')
+			? bitflag(currentBit) : 0,
+			currentBit++
+		);
+
+		return result;
+	}
+
+	for ( unsigned curDigit = 0; curDigit < BBIA_INTEGER_SIZE;
 
 		result *= base,
 		result += findDigitInNumerics (numerics, integer[curDigit]),
 		curDigit++
 	);
 
-	return (signed) result;
+	return result;
 }
-
-static char * stuaa_toBase (int sinteger, int base) {
-
-	if ( !(base < 65 && base > 1) ) {
-		throw ("The base must be from 2 to 64");
-		return NULL;
-	}
-
-	if (base == 2) {
-
-		char * result = malloc (sizeof(char) * BBIA_INTEGER_SIZE + 1);
-		if (result == NULL) abort();
-
-		for (
-			int currentBit = 1;
-
-			currentBit <= BBIA_INTEGER_SIZE;
-
-			result[BBIA_INTEGER_SIZE-currentBit] =
-			(sinteger & stuaa_bitflag(currentBit)) ? '1' : '0',
-			currentBit++
-		);
-
-
-		return result;
-	}
-
-	return stuaa_toBase_Clang (sinteger, base);
-}
-
-static int stuaa_fromBase (char * integer, int base) {
-
-	if (integer == NULL) {
-		throw ("null pointer in stuaa_fromBase()");
-		return -1;
-	}
-
-	if (base == 2) {
-
-		int result = 0;
-
-		for (
-			int currentBit = 1;
-
-			currentBit <= BBIA_INTEGER_SIZE;
-
-			result |= (integer[BBIA_INTEGER_SIZE-currentBit] == '1')
-			? stuaa_bitflag(currentBit) : 0,
-			currentBit++
-		);
-
-
-		return result;
-	}
-
-	return stuaa_fromBase_Clang (integer, base);
-}
-
 
 // @BBIA
 
 void bbia_bitshift_left (bbia * self, int value) {
 
-	int savedBits [BBIA_LEVEL_TOP-1];
+	if (self == NULL) {
+		throw("null pointer in bbia_bitshift_left()");
+		return;
+	}
 
-	int bitMask[2] = {0,0};
-	for (int curBit = BBIA_INTEGER_SIZE-value; curBit < BBIA_INTEGER_SIZE; curBit++)
+	unsigned savedBits [BBIA_LEVEL_TOP-1];
+
+	unsigned bitMask[2] = {0,0};
+	for (unsigned curBit = BBIA_INTEGER_SIZE-value; curBit < BBIA_INTEGER_SIZE; curBit++)
 		bitMask[0] |= 0x1 << curBit;
 
 	// 1. Shift with saved bits
@@ -207,7 +150,7 @@ void bbia_bitshift_left (bbia * self, int value) {
 	for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; self->at[lvl] <<= value, lvl--)
 	if (lvl > 0) {
 		bitMask[1] = self->at[lvl] & bitMask[0];
-		stuaa_shiftr (bitMask+1, BBIA_INTEGER_SIZE-value);
+		bitMask[1] >>= BBIA_INTEGER_SIZE-value;
 		savedBits[lvl-1] = bitMask[1];
 	}
 
@@ -217,10 +160,15 @@ void bbia_bitshift_left (bbia * self, int value) {
 
 void bbia_bitshift_right (bbia * self, int value) {
 
-	int savedBits [BBIA_LEVEL_TOP-1];
+	if (self == NULL) {
+		throw("null pointer in bbia_bitshift_right()");
+		return;
+	}
 
-	int bitMask[2] = {0,0};
-	for (int curBit = 0; curBit < value; curBit++)
+	unsigned savedBits [BBIA_LEVEL_TOP-1];
+
+	unsigned bitMask[2] = {0,0};
+	for (unsigned curBit = 0; curBit < value; curBit++)
 		bitMask[0] |= 0x1 << curBit;
 
 	// 1. Shift with saved bits
@@ -234,7 +182,7 @@ void bbia_bitshift_right (bbia * self, int value) {
 	// for all levels bigger then 0
 	// we set saved bits
 
-	for (int lvl = 0; lvl <= BBIA_LEVEL_TOP; stuaa_shiftr (self->at+lvl,value), lvl++)
+	for (int lvl = 0; lvl <= BBIA_LEVEL_TOP; self->at[lvl] >>= value, lvl++)
 	if (lvl < BBIA_LEVEL_TOP) {
 		bitMask[1] = self->at[lvl] & bitMask[0];
 		bitMask[1] <<= BBIA_INTEGER_SIZE-value;
@@ -245,57 +193,77 @@ void bbia_bitshift_right (bbia * self, int value) {
 		self->at[lvl+1] |= savedBits[lvl];
 }
 
-void bbia_bitflag_set (bbia * self, int num) {
+void bbia_bitflag_set (bbia * self, unsigned num) {
 
-	int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
+	if (self == NULL) {
+		throw("null pointer in bbia_bitflag_set()");
+		return;
+	}
+
+	unsigned lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
 	num %= BBIA_INTEGER_SIZE;
 
 	if (num != 0)
-		self->at[lvl] |= stuaa_bitflag (num);
+		self->at[lvl] |= bitflag (num);
 	else
 		self->at[lvl+1] |= BBIA_BIT_LAST;
 }
 
-void bbia_bitflag_unset (bbia * self, int num) {
+void bbia_bitflag_unset (bbia * self, unsigned num) {
 
-	int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
+	if (self == NULL) {
+		throw("null pointer in bbia_bitflag_unset()");
+		return;
+	}
+
+	unsigned lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
 	num %= BBIA_INTEGER_SIZE;
 
 	if (num != 0)
-		self->at[lvl] &= ~stuaa_bitflag (num);
+		self->at[lvl] &= ~bitflag (num);
 	else
 		self->at[lvl+1] &= ~BBIA_BIT_LAST;
 
 }
 
-void bbia_bitflag_set_mult (bbia * self, int * numArray) {
+void bbia_bitflag_set_mult (bbia * self, unsigned * numArray) {
+
+	if (self == NULL || !numArray) {
+		throw("null pointer in bbia_bitflag_set_mult()");
+		return;
+	}
 
 	while (numArray != NULL)
 		bbia_bitflag_set (self, *numArray++);
 }
 
-void bbia_bitflag_unset_mult (bbia * self, int * numArray) {
+void bbia_bitflag_unset_mult (bbia * self, unsigned * numArray) {
+
+	if (self == NULL || !numArray) {
+		throw("null pointer in bbia_bitflag_unset_mult()");
+		return;
+	}
 
 	while (numArray != NULL)
 		bbia_bitflag_unset (self, *numArray++);
 }
 
-bbia * bbia_bitflag (int num) {
+bbia * bbia_bitflag (unsigned num) {
 
 	bbia * self = bbia_new ();
 
-	int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
+	unsigned lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
 	num %= BBIA_INTEGER_SIZE;
 
 	if (num != 0)
-		self->at[lvl] |= stuaa_bitflag (num);
+		self->at[lvl] |= bitflag (num);
 	else
 		self->at[lvl+1] |= BBIA_BIT_LAST;
 
 	return self;
 }
 
-void bbia_set_value_fromLevel (bbia * self, int level, int value) {
+void bbia_set_value_fromLevel (bbia * self, unsigned level, int value) {
 
 	if (self == NULL) {
 		throw("null pointer in bbia_set_value_fromLevel()");
@@ -306,7 +274,7 @@ void bbia_set_value_fromLevel (bbia * self, int level, int value) {
 		self->at[curLvl] = value;
 }
 
-void bbia_set_value_toLevel (bbia * self, int level, int value) {
+void bbia_set_value_toLevel (bbia * self, unsigned level, int value) {
 
 	if (self == NULL) {
 		throw("null pointer in bbia_set_value_fromLevel()");
@@ -322,7 +290,7 @@ void bbia_set_value (bbia * self, int value) {
 	bbia_set_value_fromLevel (self, BBIA_LEVEL_TOP, value);
 }
 
-int bbia_at_get (bbia * self, int index) {
+int bbia_at_get (bbia * self, unsigned index) {
 
 	if (self == NULL) {
 		throw("null pointer in bbia_at_get()");
@@ -332,7 +300,7 @@ int bbia_at_get (bbia * self, int index) {
 	return self->at[index];
 }
 
-void bbia_at_set (bbia * self, int index, int value) {
+void bbia_at_set (bbia * self, unsigned index, int value) {
 
 	if (self == NULL) {
 		throw("null pointer in bbia_at_set()");
@@ -353,7 +321,7 @@ void bbia_print_levelValue (bbia * self) {
 
 	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++) {
 
-		tempMemory = stuaa_toBase (self->at[curLvl], 2);
+		tempMemory = toBase (self->at[curLvl], 2);
 		printf ("%s_", tempMemory);
 
 		if (tempMemory != NULL) free (tempMemory);

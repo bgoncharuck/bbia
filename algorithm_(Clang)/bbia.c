@@ -17,6 +17,11 @@ struct __bbia {
 
 void bbia_bitshift_left (bbia * self, int value) {
 
+	if (self == NULL) {
+		throw("null pointer in bbia_bitshift_left()");
+		return;
+	}
+
 	int savedBits [BBIA_LEVEL_TOP-1];
 
 	int bitMask[2] = {0,0};
@@ -46,6 +51,11 @@ void bbia_bitshift_left (bbia * self, int value) {
 }
 
 void bbia_bitshift_right (bbia * self, int value) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_bitshift_right()");
+		return;
+	}
 
 	int savedBits [BBIA_LEVEL_TOP-1];
 
@@ -77,6 +87,11 @@ void bbia_bitshift_right (bbia * self, int value) {
 
 void bbia_bitflag_set (bbia * self, int num) {
 
+	if (self == NULL) {
+		throw("null pointer in bbia_bitflag_set()");
+		return;
+	}
+
 	int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
 	num %= BBIA_INTEGER_SIZE;
 
@@ -87,6 +102,11 @@ void bbia_bitflag_set (bbia * self, int num) {
 }
 
 void bbia_bitflag_unset (bbia * self, int num) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_bitflag_unset()");
+		return;
+	}
 
 	int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
 	num %= BBIA_INTEGER_SIZE;
@@ -100,15 +120,26 @@ void bbia_bitflag_unset (bbia * self, int num) {
 
 void bbia_bitflag_set_mult (bbia * self, int * numArray) {
 
+	if (self == NULL || numArray == NULL) {
+		throw("null pointer in bbia_bitflag_set_mult()");
+		return;
+	}
+
 	while (numArray != NULL)
 		bbia_bitflag_set (self, *numArray++);
 }
 
 void bbia_bitflag_unset_mult (bbia * self, int * numArray) {
 
+	if (self == NULL || numArray == NULL) {
+		throw("null pointer in bbia_bitflag_unset_mult()");
+		return;
+	}
+
 	while (numArray != NULL)
 		bbia_bitflag_unset (self, *numArray++);
 }
+
 
 bbia * bbia_bitflag (int num) {
 

@@ -40,25 +40,25 @@ void bbia_bitshift_left (bbia * self, int value) ;
 
 void bbia_bitshift_right (bbia * self, int value) ;
 
-void bbia_bitflag_set (bbia * self, int num) ;
+void bbia_bitflag_set (bbia * self, unsigned num) ;
 
-void bbia_bitflag_unset (bbia * self, int num) ;
+void bbia_bitflag_unset (bbia * self, unsigned num) ;
 
-void bbia_bitflag_set_mult (bbia * self, int * numArray) ;
+void bbia_bitflag_set_mult (bbia * self, unsigned * numArray) ;
 
-void bbia_bitflag_unset_mult (bbia * self, int * numArray) ;
+void bbia_bitflag_unset_mult (bbia * self, unsigned * numArray) ;
 
-bbia * bbia_bitflag (int num) ;
+bbia * bbia_bitflag (unsigned num) ;
 
-void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
+void bbia_set_value_fromLevel (bbia * self, unsigned level, int value) ;
 
-void bbia_set_value_toLevel (bbia * self, int level, int value) ;
+void bbia_set_value_toLevel (bbia * self, unsigned level, int value) ;
 
 void bbia_set_value (bbia * self, int value) ;
 
-int bbia_at_get (bbia * self, int index) ;
+int bbia_at_get (bbia * self, unsigned level) ;
 
-void bbia_at_set (bbia * self, int index, int value) ;
+void bbia_at_set (bbia * self, unsigned level, int value) ;
 
 void bbia_print_levelValue (bbia * self) ;
 
