@@ -8,7 +8,7 @@ First release will be in 24 january of 2019
 ## Syntax
 Algorithm will be written in C language syntax.
 Some languages don't have unsigned integer type, so was created
-[Signed To Unsigned and Arithmetic Algorithm for BBIA][https://github.com/bgoncharuck/stuaa]
+[Signed To Unsigned and Arithmetic Algorithm for BBIA](https://github.com/bgoncharuck/stuaa)
 
 ## Languages
 It will support any statically typed language.
