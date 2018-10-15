@@ -160,6 +160,18 @@ bbia * bbia_bitflag (int num) {
 // @SUM
 static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
 
+	if (stuaa_outofbounders_max(self->at[previousLevel-1],1) == 0) {
+
+	}
+
+	else {
+		if (previousLevel != 1)
+			bbia_add_int_out_level (self, integer, previousLevel-1, fromLevel);
+
+		else {
+
+		}
+	}
 }
 
 static void bbia_add_int_level (bbia * self, int integer, int level) {
@@ -174,6 +186,18 @@ static void bbia_add_int_level (bbia * self, int integer, int level) {
 
 static void bbia_sub_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
 
+	if (stuaa_outofbounders_min(self->at[previousLevel-1],1) == 0) {
+
+	}
+
+	else {
+		if (previousLevel != 1)
+			bbia_sub_int_out_level (self, integer, previousLevel-1, fromLevel);
+
+		else {
+
+		}
+	}
 }
 
 static void bbia_sub_int_level (bbia * self, int integer, int level) {

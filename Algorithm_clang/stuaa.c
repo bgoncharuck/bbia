@@ -83,12 +83,22 @@ void stuaa_sign_change (int * toChange) {
 
 int stuaa_outofbounders_max (int to, int test) {
 
-	return 0;
+	if (to >= 0)
+		if (to <= BBIA_LEVEL_IS_PFULL - test) return 0;
+	else if (to < 0)
+		if (to <= BBIA_LEVEL_IS_FULL - test) return 0;
+
+	return 1;
 }
 
 int stuaa_outofbounders_min (int to, int test) {
 
-	return 0;
+	if (to < 0)
+		if (to >= BBIA_LEVEL_IS_NFULL + test) return 0;
+	else if (to >= 0)
+		if (to >= BBIA_LEVEL_IS_EMPTY + test) return 0;
+
+	return 1;
 }
 
 char * stuaa_toBase (int sinteger, int base) {
