@@ -83,10 +83,12 @@ void stuaa_sign_change (int * toChange) {
 
 int stuaa_outofbounders_max (int to, int test) {
 
+	return 0;
 }
 
 int stuaa_outofbounders_min (int to, int test) {
 
+	return 0;
 }
 
 char * stuaa_toBase (int sinteger, int base) {

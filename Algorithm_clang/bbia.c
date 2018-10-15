@@ -14,6 +14,7 @@ struct __bbia {
 	signed int sign;
 };
 
+// @BITSHIFT
 
 void bbia_bitshift_left (bbia * self, int value) {
 
@@ -85,6 +86,8 @@ void bbia_bitshift_right (bbia * self, int value) {
 		self->at[lvl+1] |= savedBits[lvl];
 }
 
+// @BITFLAG
+
 void bbia_bitflag_set (bbia * self, int num) {
 
 	if (self == NULL) {
@@ -154,31 +157,64 @@ bbia * bbia_bitflag (int num) {
 		self->at[lvl+1] |= stuaa_bitflag (BBIA_INTEGER_SIZE);
 }
 
-static void bbia_add_int (bbia * self, int integer) {
+// @SUM
+static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
 
 }
 
-static void bbia_sub_int (bbia * self, int integer) {
+static void bbia_add_int_level (bbia * self, int integer, int level) {
+
+	if (stuaa_outofbounders_max (self->at[level], integer) == 0) {
+		self->at[level] += integer;
+		return;
+	}
+
+	else bbia_add_int_out (self, integer, level, level);
+}
+
+static void bbia_sub_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
 
 }
 
-void bbia_sum_int (bbia * self, int integer) {
+static void bbia_sub_int_level (bbia * self, int integer, int level) {
+
+	if (stuaa_outofbounders_min (self->at[level], integer) == 0) {
+		self->at[level] -= integer;
+		return;
+	}
+
+	else bbia_sub_int_out (self, integer, level, level);
+}
+
+void bbia_sum_int_level (bbia * self, int integer, int level) {
+
+	if (level < 0 || level > BBIA_LEVEL_TOP) {
+		throw ("level out of bounders, be sure you choose correct level");
+		return;
+	}
+
+	if (integer >= 0 && self->sign == 0 || integer < 0 && self->sign == 1) {
+		if (integer < 0) integer = ~integer + 1;
+		bbia_add_int_level (self, integer);
+	}
+
+	else {
+		if (integer < 0) integer = ~integer + 1;
+		bbia_sub_int_level (self, integer);
+	}
+}
+
+void bbia_sum_int_level (bbia * self, int integer) {
 
 	if (self == NULL) {
 		throw ("null pointer in bbia_sum_int");
 		return;
 	}
 
-	if (integer >= 0 && self->sign == 0 || integer < 0 && self->sign == 1) {
-		if (integer < 0) integer = ~integer + 1;
-		bbia_add_int (self, integer);
-	}
-
-	else {
-		if (integer < 0) integer = ~integer + 1;
-		bbia_sub_int (self, integer);
-	}
+	bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
 }
+
+// @SET
 
 void bbia_set_value_fromLevel (bbia * self, int level, int value) {
 
@@ -227,6 +263,8 @@ void bbia_at_set (bbia * self, int index, int value) {
 	self->at[index] = value;
 }
 
+// @PRINT
+
 void bbia_print_levelValue (bbia * self) {
 
 	if (self == NULL) {
@@ -260,6 +298,8 @@ void bbia_print_levelValue_dec (bbia * self) {
 	puts("");
 }
 
+// @SIGN
+
 int bbia_sign_is (bbia * self) {
 
 	if (self == NULL) {
@@ -289,6 +329,8 @@ void bbia_sign_set (bbia * self, int sign) {
 
 	self->sign = sign;
 }
+
+// @CONSTRUCTOR
 
 bbia * bbia_new (void) {
 
