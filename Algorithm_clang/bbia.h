@@ -1,5 +1,7 @@
 #pragma once
 
+#include <limits.h>
+
 #define BBIA_INTEGER_SIZE 32
 
 /*SIZE*/
@@ -25,6 +27,8 @@
 /*DIGIT*/
 // signed int 1111...n (n == BBIA_INTEGER_SIZE)
 #define BBIA_LEVEL_IS_FULL -1
+#define BBIA_LEVEL_IS_PFULL INT_MAX
+#define BBIA_LEVEL_IS_NFULL INT_MIN
 // signed int 0000...n (n == BBIA_INTEGER_SIZE)
 #define BBIA_LEVEL_IS_EMPTY 0
 
@@ -60,6 +64,12 @@ int bbia_at_get (bbia * self, int index) ;
 void bbia_at_set (bbia * self, int index, int value) ;
 
 void bbia_print_levelValue (bbia * self) ;
+
+int bbia_sign_is (bbia * self) ;
+
+void bbia_sign_change (bbia * self) ;
+
+void bbia_sign_set (bbia * self, int sign) ;
 
 bbia * bbia_new (void) ;
 

@@ -154,6 +154,32 @@ bbia * bbia_bitflag (int num) {
 		self->at[lvl+1] |= stuaa_bitflag (BBIA_INTEGER_SIZE);
 }
 
+static void bbia_add_int (bbia * self, int integer) {
+
+}
+
+static void bbia_sub_int (bbia * self, int integer) {
+
+}
+
+void bbia_sum_int (bbia * self, int integer) {
+
+	if (self == NULL) {
+		throw ("null pointer in bbia_sum_int");
+		return;
+	}
+
+	if (integer >= 0 && self->sign == 0 || integer < 0 && self->sign == 1) {
+		if (integer < 0) integer = ~integer + 1;
+		bbia_add_int (self, integer);
+	}
+
+	else {
+		if (integer < 0) integer = ~integer + 1;
+		bbia_sub_int (self, integer);
+	}
+}
+
 void bbia_set_value_fromLevel (bbia * self, int level, int value) {
 
 	if (self == NULL) {
@@ -219,6 +245,49 @@ void bbia_print_levelValue (bbia * self) {
 	}
 
 	puts("");
+}
+
+void bbia_print_levelValue_dec (bbia * self) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_print_levelValue()");
+		return;
+	}
+
+	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+		printf ("%u_", self->at[curLvl]);
+
+	puts("");
+}
+
+int bbia_sign_is (bbia * self) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_sign_is()");
+		return -1;
+	}
+
+	return self->sign;
+}
+
+void bbia_sign_change (bbia * self) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_sign_change()");
+		return;
+	}
+
+	self->sign = (self->sign) ? 0 : 1;
+}
+
+void bbia_sign_set (bbia * self, int sign) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_sign_set()");
+		return;
+	}
+
+	self->sign = sign;
 }
 
 bbia * bbia_new (void) {

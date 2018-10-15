@@ -24,8 +24,8 @@ public class bbia {
 	public final int BBIA_LEVEL_IS_EMPTY = 0 ;
 
 	/*SIGN*/
-	public final bool BBIA_SIGNED = true ;
-	public final bool BBIA_UNSIGNED = false ;
+	public final boolean BBIA_SIGNED = true ;
+	public final boolean BBIA_UNSIGNED = false ;
 
 	// @STUAA
 	private class stuaa {
@@ -100,6 +100,24 @@ public class bbia {
 			return self;
 		}
 
+		int sign_change (int toChange) {
+
+			if (toChange == 0) return toChange;
+
+			else if (toChange < 0)
+				return ~toChange + 1;
+
+			return ~(toChange - 1);
+		}
+
+		boolean outofbounders_max (int to, int test) {
+
+		}
+
+		boolean outofbounders_min (int to, int test) {
+
+		}
+
 		char[] toBase (int sinteger, int base) {
 
 			if ( !(base < 65 && base > 1) ) {
@@ -153,7 +171,7 @@ public class bbia {
 	// @BBIA
 
 	private int[] at;
-	private bool sign;
+	private boolean sign;
 
 	// default size of bbia
 	private int BBIA_LEVEL_COUNT = BBIA_BITS_512 ;
@@ -166,7 +184,7 @@ public class bbia {
 	}
 
 	// @Constructor for custom sign
-	public bbia (bool sign) {
+	public bbia (boolean sign) {
 		this.at = new int[BBIA_LEVEL_COUNT];
 		this.sign = sign;
 	}
@@ -181,7 +199,7 @@ public class bbia {
 	}
 
 	// @Constructor for custom bitsize and sign
-	public bbia (int bits, bool sign) {
+	public bbia (int bits, boolean sign) {
 		this.BBIA_LEVEL_COUNT = bits / BBIA_INTEGER_SIZE;
 		if (bits % BBIA_INTEGER_SIZE != 0) this.BBIA_LEVEL_COUNT++;
 		this.BBIA_LEVEL_TOP = -1 + BBIA_LEVEL_COUNT;
@@ -193,11 +211,11 @@ public class bbia {
 		this.sign = (this.sign) ? false : true;
 	}
 
-	public void sign_set (bool sign) {
+	public void sign_set (boolean sign) {
 		this.sign = sign;
 	}
 
-	public bool sign_is () {
+	public boolean sign_is () {
 		return this.sign;
 	}
 
@@ -213,7 +231,7 @@ public class bbia {
 		this.at[lvl] = val;
 	}
 
-	void bitshift_left (int value) {
+	public void bitshift_left (int value) {
 
 		int[] savedBits = new int[BBIA_LEVEL_TOP-1];
 
@@ -243,7 +261,7 @@ public class bbia {
 			this.at[lvl] |= savedBits[lvl];
 	}
 
-	void bitshift_right (int value) {
+	public void bitshift_right (int value) {
 
 		int[] savedBits = new int[BBIA_LEVEL_TOP-1];
 
@@ -276,7 +294,7 @@ public class bbia {
 			this.at[lvl+1] |= savedBits[lvl];
 	}
 
-	void bitflag_set (int num) {
+	public void bitflag_set (int num) {
 
 		int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
 		num %= BBIA_INTEGER_SIZE;
@@ -287,7 +305,7 @@ public class bbia {
 			this.at[lvl+1] |= stuaa.bitflag (BBIA_INTEGER_SIZE);
 	}
 
-	void bitflag_unset (int num) {
+	public void bitflag_unset (int num) {
 
 		int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
 		num %= BBIA_INTEGER_SIZE;
@@ -298,19 +316,41 @@ public class bbia {
 			this.at[lvl+1] &= ~stuaa.bitflag (BBIA_INTEGER_SIZE);
 	}
 
-	void bitflag_set_mult (int[] numArray) {
+	public void bitflag_set_mult (int[] numArray) {
 		for (int num : numArray)
 			bitflag_set (num);
 	}
 
-	void bitflag_unset_mult (int[] numArray) {
+	public void bitflag_unset_mult (int[] numArray) {
 		for (int num : numArray)
 			bitflag_unset (num);
 	}
 
 	// @TODO bitflag
 
-	void levels_set_value_from (int level, int value) {
+	private void add_int (int integer) {
+
+	}
+
+	private void sub_int (int integer) {
+
+	}
+
+	public void sum_int (int integer) {
+
+		if (integer >= 0 && this.sign == false || integer < 0 && this.sign == true) {
+			if (integer < 0) integer = ~integer + 1;
+			add_int (integer);
+		}
+
+		else {
+			if (integer < 0) integer = ~integer + 1;
+			sub_int (integer);
+		}
+	}
+
+
+	public void levels_set_value_from (int level, int value) {
 
 		if (lvl < 0 || lvl > BBIA_LEVEL_TOP)
 			return;
@@ -319,7 +359,7 @@ public class bbia {
 			this.at[curLvl] = value;
 	}
 
-	void levels_set_value_to (int level, int value) {
+	public void levels_set_value_to (int level, int value) {
 
 		if (lvl < 0 || lvl > BBIA_LEVEL_TOP)
 			return;
@@ -328,7 +368,7 @@ public class bbia {
 			this.at[curLvl] = value;
 	}
 
-	void levels_set_value (int value) {
+	public void levels_set_value (int value) {
 		levels_set_value_from (BBIA_LEVEL_TOP, value);
 	}
 

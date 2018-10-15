@@ -9,6 +9,7 @@ int main (int argc, char * argv[]) {
 
 	bbia * firstTest = bbia_new();
 	bbia * secondTest = bbia_new();
+	bbia * thirdTest = bbia_new();
 
 	puts ("BBIA Bitflag tests : \n");
 	puts ("Before bitflag :");
@@ -46,6 +47,10 @@ int main (int argc, char * argv[]) {
 	puts ("After right shift by 3 :");
 	bbia_print_levelValue (firstTest);
 
+	puts("\nSum && sub tests\n")
+	bbia_print_levelValue_dec (thirdTest);
+	
+
 	/*
 	int shiftTest = 0x40000000;
 	// int shiftTest1 = -1;
@@ -55,6 +60,7 @@ int main (int argc, char * argv[]) {
 	puts(stuaa_toBase(shiftTest,2));
 	*/
 
+	bbia_free (thirdTest);
 	bbia_free (secondTest);
 	bbia_free (firstTest);
 

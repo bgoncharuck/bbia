@@ -60,6 +60,24 @@ static inline unsigned bitflag (unsigned num) {
 	return bitDigit;
 }
 
+static inline void stuaa_sign_change (int * toChange) {
+
+	if (!toChange || *toChange == 0) return;
+
+	if (*toChange < 0)
+		*toChange = ~*toChange + 1;
+	else if (*toChange > 0)
+		*toChange = ~(*toChange - 1);
+}
+
+static inline int stuaa_outofbounders_max (int to, int test) {
+
+}
+
+static inline int stuaa_outofbounders_min (int to, int test) {
+
+}
+
 static char * toBase (unsigned integer, unsigned base) {
 
 	if ( !(base < 65 && base > 1) ) {
@@ -329,6 +347,37 @@ void bbia_print_levelValue (bbia * self) {
 
 	puts("");
 }
+
+int bbia_sign_is (bbia * self) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_sign_is()");
+		return -1;
+	}
+
+	return self->sign;
+}
+
+void bbia_sign_change (bbia * self) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_sign_change()");
+		return;
+	}
+
+	self->sign = (self->sign) ? 0 : 1;
+}
+
+void bbia_sign_set (bbia * self, unsigned sign) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_sign_set()");
+		return;
+	}
+
+	self->sign = sign;
+}
+
 
 bbia * bbia_new (void) {
 

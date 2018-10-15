@@ -71,6 +71,24 @@ void stuaa_shiftr (int * self, int value) {
 	}
 }
 
+void stuaa_sign_change (int * toChange) {
+
+	if (!toChange || *toChange == 0) return;
+
+	if (*toChange < 0)
+		*toChange = ~*toChange + 1;
+	else if (*toChange > 0)
+		*toChange = ~(*toChange - 1);
+}
+
+int stuaa_outofbounders_max (int to, int test) {
+
+}
+
+int stuaa_outofbounders_min (int to, int test) {
+
+}
+
 char * stuaa_toBase (int sinteger, int base) {
 
 	if ( !(base < 65 && base > 1) ) {
