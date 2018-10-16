@@ -168,8 +168,7 @@ static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel,
 		for (int i = previousLevel; i < fromLevel; i++)
 			self->at[i] = BBIA_LEVEL_IS_EMPTY;
 
-		// 997 + 5; 9-5 = 4; 9-7 = 2; 9-4-2-1 = 2; 100[2]
-		self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + self->at[fromLevel] + integer;
+		self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + self->at[fromLevel] - integer;
 	}
 	else {
 		if (previousLevel != 1)
