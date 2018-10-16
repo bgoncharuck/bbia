@@ -166,7 +166,10 @@ static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel,
 		for (int i = previousLevel; i < fromLevel; i++)
 			self->at[i] = BBIA_LEVEL_IS_EMPTY;
 
-		self->at[fromLevel] -= integer;
+		// 997 + 5; 9-5 = 4; 9-7 = 2; 9-4-2-1 = 2; 100[2]
+		integer = BBIA_LEVEL_IS_FULL - integer;
+		self->at[fromLevel] = BBIA_LEVEL_IS_FULL - self->at[fromLevel];
+		self->at[fromLevel] = BBIA_LEVEL_IS_FULL - integer - self->at[fromLevel] - 1;
 	}
 	else {
 		if (previousLevel != 1)
@@ -186,7 +189,7 @@ static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel,
 
 			// @TODO check
 			if (fromLevel < TOP_LEVEL)
-				for (int i = fromLevel + 1; i <= TOP_LEVEL;  i++)
+				for (int i = fromLevel + 1; i <= TOP_LEVEL; i++)
 					self->at[i] = BBIA_LEVEL_IS_FULL - self->at[i];
 		}
 	}
@@ -271,6 +274,10 @@ void bbia_sum_int_level (bbia * self, int integer) {
 
 	bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
 }
+
+// @MULT
+
+
 
 // @SET
 
