@@ -160,6 +160,8 @@ bbia * bbia_bitflag (int num) {
 // @SUM
 static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
 
+	integer = BBIA_LEVEL_IS_FULL - integer + 1;
+
 	if (stuaa_outofbounders_max(self->at[previousLevel-1],1) == 0) {
 		self->at[previousLevel-1]++;
 
@@ -167,9 +169,7 @@ static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel,
 			self->at[i] = BBIA_LEVEL_IS_EMPTY;
 
 		// 997 + 5; 9-5 = 4; 9-7 = 2; 9-4-2-1 = 2; 100[2]
-		integer = BBIA_LEVEL_IS_FULL - integer;
-		self->at[fromLevel] = BBIA_LEVEL_IS_FULL - self->at[fromLevel];
-		self->at[fromLevel] = BBIA_LEVEL_IS_FULL - integer - self->at[fromLevel] - 1;
+		self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + self->at[fromLevel] + integer;
 	}
 	else {
 		if (previousLevel != 1)
@@ -178,14 +178,7 @@ static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel,
 			// create out of bounders
 			bbia_sign_change (self);
 
-			if (self->at[fromLevel] >= integer) {
-				self->at[fromLevel] -= integer;
-				self->at[fromLevel] = BBIA_LEVEL_IS_FULL - self->at[fromLevel];
-			}
-			else {
-				integer -= self->at[fromLevel];
-				self->at[fromLevel] = BBIA_LEVEL_IS_FULL - integer;
-			}
+			// @TODO
 
 			// @TODO check
 			if (fromLevel < TOP_LEVEL)
@@ -212,7 +205,7 @@ static void bbia_sub_int_out_level (bbia * self, int integer, int previousLevel,
 		for (int i = previousLevel; i < fromLevel; i++)
 			self->at[i] = BBIA_LEVEL_IS_FULL;
 
-		self->at[fromLevel] += integer;
+		// self->at[fromLevel] += integer;
 	}
 	else {
 		if (previousLevel != 1)
@@ -226,14 +219,14 @@ static void bbia_sub_int_out_level (bbia * self, int integer, int previousLevel,
 				if (self->at[i] != 0 && i != fromLevel)
 					self->at[i] = BBIA_LEVEL_IS_FULL - self->at[i];
 
-			if (self->at[fromLevel] <= integer) {
-				self->at[fromLevel] += integer;
-				self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + self->at[fromLevel];
-			}
-			else {
-				integer += self->at[fromLevel];
-				self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + integer;
-			}
+			// if (self->at[fromLevel] <= integer) {
+			// 	self->at[fromLevel] += integer;
+			// 	self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + self->at[fromLevel];
+			// }
+			// else {
+			// 	integer += self->at[fromLevel];
+			// 	self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + integer;
+			// }
 		}
 	}
 }
