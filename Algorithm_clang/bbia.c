@@ -163,15 +163,30 @@ static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel,
 	if (stuaa_outofbounders_max(self->at[previousLevel-1],1) == 0) {
 		self->at[previousLevel-1]++;
 
-		for (int i = previousLevel; i <= fromLevel; i++)
+		for (int i = previousLevel; i < fromLevel; i++)
 			self->at[i] = BBIA_LEVEL_IS_EMPTY;
+
+		self->at[fromLevel] -= integer;
 	}
 	else {
 		if (previousLevel != 1)
 			bbia_add_int_out_level (self, integer, previousLevel-1, fromLevel);
 		else {
+			// create our own out of bounders
 			bbia_sign_change (self);
-			// @TODO
+
+			if (self->at[fromLevel] >= integer) {
+				self->at[fromLevel] -= integer;
+				self->at[fromLevel] = BBIA_LEVEL_IS_FULL - self->at[fromLevel];
+			}
+			else {
+				integer -= self->at[fromLevel];
+				self->at[fromLevel] = BBIA_LEVEL_IS_FULL - integer;
+			}
+
+			if (fromLevel != TOP_LEVEL) {
+				// @TODO
+			}
 		}
 	}
 }
@@ -190,15 +205,18 @@ static void bbia_sub_int_out_level (bbia * self, int integer, int previousLevel,
 	if (self->at[previousLevel-1] > BBIA_LEVEL_IS_EMPTY) {
 		self->at[previousLevel-1]--;
 
-		for (int i = previousLevel; i <= fromLevel; i++)
+		for (int i = previousLevel; i < fromLevel; i++)
 			self->at[i] = BBIA_LEVEL_IS_FULL;
+
+		self->at[fromLevel] += integer;
 	}
 	else {
 		if (previousLevel != 1)
 			bbia_sub_int_out_level (self, integer, previousLevel-1, fromLevel);
 		else {
+			// create our own out of bounders, but all lower levels are zero
 			bbia_sign_change (self);
-			// @TODO
+			// self->at[fromLevel] =
 		}
 	}
 }
