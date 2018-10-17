@@ -160,7 +160,10 @@ bbia * bbia_bitflag (int num) {
 // @SUM
 static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
 
+	// the number needed to overflow
+	// FULL - y + 1
 	integer = BBIA_LEVEL_IS_FULL - integer + 1;
+	// integer = BBIA_LEVEL_IS_FULL - integer;
 
 	if (stuaa_outofbounders_max(self->at[previousLevel-1],1) == 0) {
 		self->at[previousLevel-1]++;
@@ -168,7 +171,6 @@ static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel,
 		for (int i = previousLevel; i < fromLevel; i++)
 			self->at[i] = BBIA_LEVEL_IS_EMPTY;
 
-		self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + self->at[fromLevel] - integer;
 	}
 	else {
 		if (previousLevel != 1)
@@ -177,14 +179,14 @@ static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel,
 			// create out of bounders
 			bbia_sign_change (self);
 
-			// @TODO
-
 			// @TODO check
 			if (fromLevel < TOP_LEVEL)
 				for (int i = fromLevel + 1; i <= TOP_LEVEL; i++)
 					self->at[i] = BBIA_LEVEL_IS_FULL - self->at[i];
 		}
 	}
+	// EMPTY + x - (FULL - y + 1)
+	self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + self->at[fromLevel] - integer;
 }
 
 static void bbia_add_int_level (bbia * self, int integer, int level) {
@@ -198,13 +200,15 @@ static void bbia_add_int_level (bbia * self, int integer, int level) {
 
 static void bbia_sub_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
 
+	// the number needed to overflow
+	// EMPTY + y - 1
+	integer = BBIA_LEVEL_IS_EMPTY + integer - 1;
+
 	if (self->at[previousLevel-1] > BBIA_LEVEL_IS_EMPTY) {
 		self->at[previousLevel-1]--;
 
 		for (int i = previousLevel; i < fromLevel; i++)
 			self->at[i] = BBIA_LEVEL_IS_FULL;
-
-		// self->at[fromLevel] += integer;
 	}
 	else {
 		if (previousLevel != 1)
@@ -217,17 +221,9 @@ static void bbia_sub_int_out_level (bbia * self, int integer, int previousLevel,
 			for (int i = previousLevel - 1; i <= TOP_LEVEL;  i++)
 				if (self->at[i] != 0 && i != fromLevel)
 					self->at[i] = BBIA_LEVEL_IS_FULL - self->at[i];
-
-			// if (self->at[fromLevel] <= integer) {
-			// 	self->at[fromLevel] += integer;
-			// 	self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + self->at[fromLevel];
-			// }
-			// else {
-			// 	integer += self->at[fromLevel];
-			// 	self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + integer;
-			// }
 		}
 	}
+	self->at[fromLevel] = BBIA_LEVEL_IS_FULL - self->at[fromLevel] + integer;
 }
 
 static void bbia_sub_int_level (bbia * self, int integer, int level) {
