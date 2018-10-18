@@ -53,6 +53,16 @@ void bbia_bitflag_unset_mult (bbia * self, int * numArray) ;
 
 bbia * bbia_bitflag (int num) ;
 
+void bbia_sum_int_level (bbia * self, int integer, int level) ;
+
+void bbia_sum_int (bbia * self, int integer) ;
+
+void bbia_sum_bbia (bbia * first, bbia * second) ;
+
+void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) ;
+
+bbia * bbia_sum_bbia_new (bbia * first, bbia * second) ;
+
 void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
 
 void bbia_set_value_toLevel (bbia * self, int level, int value) ;
@@ -70,6 +80,10 @@ int bbia_sign_is (bbia * self) ;
 void bbia_sign_change (bbia * self) ;
 
 void bbia_sign_set (bbia * self, int sign) ;
+
+void bbia_copy_bbia (bbia * to, bbia * from) ;
+
+bbia * bbia_copy_bbia_new (bbia * from) ;
 
 bbia * bbia_new (void) ;
 

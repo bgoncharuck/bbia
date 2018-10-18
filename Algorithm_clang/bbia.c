@@ -253,7 +253,7 @@ void bbia_sum_int_level (bbia * self, int integer, int level) {
 	}
 }
 
-void bbia_sum_int_level (bbia * self, int integer) {
+void bbia_sum_int (bbia * self, int integer) {
 
 	if (self == NULL) {
 		throw ("null pointer in bbia_sum_int");
@@ -263,9 +263,46 @@ void bbia_sum_int_level (bbia * self, int integer) {
 	bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
 }
 
+void bbia_sum_bbia (bbia * first, bbia * second) {
+
+	if (first == NULL || second == NULL) {
+		throw ("null pointer in bbia_sum_bbia");
+		return;
+	}
+
+}
+
+void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) {
+
+	if (to == NULL || first == NULL || second == NULL) {
+		throw ("null pointer in bbia_sum_bbia");
+		return;
+	}
+
+}
+
+bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
+
+	if (first == NULL || second == NULL) {
+		throw ("null pointer in bbia_sum_bbia");
+		return;
+	}
+
+	bbia * to = bbia_new();
+	bbia_sum_bbia_to (to, first, second);
+	return to;
+}
+
 // @MULT
 
+void bbia_mult_int (bbia * self, int integer) {
 
+	if (self == NULL) {
+		throw ("null pointer in bbia_mult_int");
+		return;
+	}
+
+}
 
 // @SET
 
@@ -381,6 +418,33 @@ void bbia_sign_set (bbia * self, int sign) {
 	}
 
 	self->sign = sign;
+}
+
+// @COPY
+
+void bbia_copy_bbia (bbia * to, bbia * from) {
+
+	if (from == NULL || to == NULL) {
+		throw("null pointer in bbia_copy_bbia()");
+		return;
+	}
+
+	for (int i = 0; i <= BBIA_LEVEL_TOP; i++)
+		to->at[i] = from->at[i]
+
+	to->sign = from->sign;
+}
+
+bbia * bbia_copy_bbia_new (bbia * from) {
+
+	if (from == NULL) {
+		throw("null pointer in bbia_copy_bbia_new()");
+		return;
+	}
+
+	bbia * to = bbia_new();
+	bbia_copy_bbia (to, from);
+	return to;
 }
 
 // @CONSTRUCTOR
