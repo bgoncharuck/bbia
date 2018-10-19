@@ -270,6 +270,8 @@ void bbia_sum_bbia (bbia * first, bbia * second) {
 		return;
 	}
 
+	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+		bbia_sum_int_level (first, second->at[curLvl], curLvl);
 }
 
 void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) {
@@ -279,6 +281,10 @@ void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) {
 		return;
 	}
 
+	bbia_copy_bbia (to, first);
+
+	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+		bbia_sum_int_level (to, second->at[curLvl], curLvl);
 }
 
 bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
@@ -302,6 +308,13 @@ void bbia_mult_int (bbia * self, int integer) {
 		return;
 	}
 
+	// 101 x 010
+	// 101 x 01(0) == 101 & 000 = 000
+	// 101 x 0(1)0 == 1010 & 1111 = 1010
+	// 101 x (0)10 == 10100 & 00000 = 00000
+	// 000 + 1010 + 00000 = 1010 (101 x 010)
+
+	
 }
 
 // @SET
@@ -429,8 +442,8 @@ void bbia_copy_bbia (bbia * to, bbia * from) {
 		return;
 	}
 
-	for (int i = 0; i <= BBIA_LEVEL_TOP; i++)
-		to->at[i] = from->at[i]
+	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+		to->at[curLvl] = from->at[curLvl]
 
 	to->sign = from->sign;
 }
