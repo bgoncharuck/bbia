@@ -157,6 +157,57 @@ bbia * bbia_bitflag (int num) {
 		self->at[lvl+1] |= stuaa_bitflag (BBIA_INTEGER_SIZE);
 }
 
+// AND OR
+// @TODO STUAA is needed? Test
+
+void bbia_or_bbia (bbia * first, bbia * second) {
+
+	if (first == NULL || second == NULL) {
+		throw ("null pointer in bbia_or_int");
+		return;
+	}
+
+	for (int curLvl = BBIA_LEVEL_TOP; curLvl >= 0; curLvl--)
+		first->at[curLvl] |= second->at[curLvl];
+}
+
+void bbia_or_bbia_new (bbia * first, bbia * second) {
+
+	if (first == NULL || second == NULL) {
+		throw ("null pointer in bbia_or_int_new");
+		return;
+	}
+
+	bbia * self = bbia_new();
+
+	for (int curLvl = BBIA_LEVEL_TOP; curLvl >= 0; curLvl--)
+		self->at[curLvl] = first->at[curLvl] | second->at[curLvl];
+}
+
+void bbia_and_bbia (bbia * first, bbia * second) {
+
+	if (first == NULL || second == NULL) {
+		throw ("null pointer in bbia_and_int");
+		return;
+	}
+
+	for (int curLvl = BBIA_LEVEL_TOP; curLvl >= 0; curLvl--)
+		first->at[curLvl] &= second->at[curLvl];
+}
+
+void bbia_and_bbia_new (bbia * first, bbia * second) {
+
+	if (first == NULL || second == NULL) {
+		throw ("null pointer in bbia_and_int_new");
+		return;
+	}
+
+	bbia * self = bbia_new();
+
+	for (int curLvl = BBIA_LEVEL_TOP; curLvl >= 0; curLvl--)
+		self->at[curLvl] = first->at[curLvl] & second->at[curLvl];
+}
+
 // @SUM
 static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
 
@@ -314,7 +365,7 @@ void bbia_mult_int (bbia * self, int integer) {
 	// 101 x (0)10 == 10100 & 00000 = 00000
 	// 000 + 1010 + 00000 = 1010 (101 x 010)
 
-	
+
 }
 
 // @SET
