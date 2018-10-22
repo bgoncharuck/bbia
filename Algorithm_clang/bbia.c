@@ -91,7 +91,7 @@ void bbia_bits_shift_right (bbia * self, int value) {
 void bbia_bits_flag_set (bbia * self, int num) {
 
 	if (self == NULL) {
-		throw("null pointer in bbia_bitflag_set()");
+		throw("null pointer in bbia_bits_flag_set()");
 		return;
 	}
 
@@ -107,7 +107,7 @@ void bbia_bits_flag_set (bbia * self, int num) {
 void bbia_bits_flag_unset (bbia * self, int num) {
 
 	if (self == NULL) {
-		throw("null pointer in bbia_bitflag_unset()");
+		throw("null pointer in bbia_bits_flag_unset()");
 		return;
 	}
 
@@ -124,23 +124,23 @@ void bbia_bits_flag_unset (bbia * self, int num) {
 void bbia_bits_flag_set_mult (bbia * self, int * numArray) {
 
 	if (self == NULL || numArray == NULL) {
-		throw("null pointer in bbia_bitflag_set_mult()");
+		throw("null pointer in bbia_bits_flag_set_mult()");
 		return;
 	}
 
 	while (numArray != NULL)
-		bbia_bitflag_set (self, *numArray++);
+		bbia_bits_flag_set (self, *numArray++);
 }
 
 void bbia_bits_flag_unset_mult (bbia * self, int * numArray) {
 
 	if (self == NULL || numArray == NULL) {
-		throw("null pointer in bbia_bitflag_unset_mult()");
+		throw("null pointer in bbia_bits_flag_unset_mult()");
 		return;
 	}
 
 	while (numArray != NULL)
-		bbia_bitflag_unset (self, *numArray++);
+		bbia_bits_flag_unset (self, *numArray++);
 }
 
 
