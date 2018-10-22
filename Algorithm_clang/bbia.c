@@ -208,6 +208,62 @@ void bbia_and_bbia_new (bbia * first, bbia * second) {
 		self->at[curLvl] = first->at[curLvl] & second->at[curLvl];
 }
 
+// bbia full | bbia is empty
+
+bbia * bbia_bits_isFull () {
+
+	bbia * self = bbia_new();
+	for (int curLvl = BBIA_LEVEL_TOP; curLvl >= 0; curLvl--)
+		self->at[curLvl] = BBIA_LEVEL_IS_FULL;
+
+	return self;
+}
+
+bbia * bbia_bits_isEmpty () {
+
+	bbia * self = bbia_new();
+	for (int curLvl = BBIA_LEVEL_TOP; curLvl >= 0; curLvl--)
+		self->at[curLvl] = BBIA_LEVEL_IS_EMPTY;
+
+	return self;
+}
+
+// bbia full | bbia is empty to bit
+
+bbia * bbia_bits_tillbit_isFull (int num) {
+
+	bbia * self = bbia_new();
+
+	int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
+	num %= BBIA_INTEGER_SIZE;
+	if (num == 0) lvl++;
+
+	for (int curLvl = BBIA_LEVEL_TOP; curLvl > lvl; curLvl--)
+		self->at[curLvl] = BBIA_LEVEL_IS_FULL;
+
+	for (int curBit = 1; curBit <= num; curBit++)
+		self->at[lvl] |= stuaa_bitflag (curBit);
+
+	return self;
+}
+
+bbia * bbia_bits_tillbit_isEmpty (int num) {
+
+	bbia * self = bbia_new();
+
+	int lvl = BBIA_LEVEL_TOP - num / BBIA_INTEGER_SIZE;
+	num %= BBIA_INTEGER_SIZE;
+	if (num == 0) lvl++;
+
+	for (int curLvl = BBIA_LEVEL_TOP; curLvl > lvl; curLvl--)
+		self->at[curLvl] = BBIA_LEVEL_IS_EMPTY;
+
+	for (int curBit = 1; curBit <= num; curBit++)
+		self->at[lvl] &= ~(stuaa_bitflag (curBit));
+
+	return self;
+}
+
 // @SUM
 static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
 
