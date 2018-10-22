@@ -16,7 +16,7 @@ struct __bbia {
 
 // @BITSHIFT
 
-void bbia_bitshift_left (bbia * self, int value) {
+void bbia_bits_shift_left (bbia * self, int value) {
 
 	if (self == NULL) {
 		throw("null pointer in bbia_bitshift_left()");
@@ -51,7 +51,7 @@ void bbia_bitshift_left (bbia * self, int value) {
 		self->at[lvl] |= savedBits[lvl];
 }
 
-void bbia_bitshift_right (bbia * self, int value) {
+void bbia_bits_shift_right (bbia * self, int value) {
 
 	if (self == NULL) {
 		throw("null pointer in bbia_bitshift_right()");
@@ -88,7 +88,7 @@ void bbia_bitshift_right (bbia * self, int value) {
 
 // @BITFLAG
 
-void bbia_bitflag_set (bbia * self, int num) {
+void bbia_bits_flag_set (bbia * self, int num) {
 
 	if (self == NULL) {
 		throw("null pointer in bbia_bitflag_set()");
@@ -104,7 +104,7 @@ void bbia_bitflag_set (bbia * self, int num) {
 		self->at[lvl+1] |= stuaa_bitflag (BBIA_INTEGER_SIZE);
 }
 
-void bbia_bitflag_unset (bbia * self, int num) {
+void bbia_bits_flag_unset (bbia * self, int num) {
 
 	if (self == NULL) {
 		throw("null pointer in bbia_bitflag_unset()");
@@ -121,7 +121,7 @@ void bbia_bitflag_unset (bbia * self, int num) {
 
 }
 
-void bbia_bitflag_set_mult (bbia * self, int * numArray) {
+void bbia_bits_flag_set_mult (bbia * self, int * numArray) {
 
 	if (self == NULL || numArray == NULL) {
 		throw("null pointer in bbia_bitflag_set_mult()");
@@ -132,7 +132,7 @@ void bbia_bitflag_set_mult (bbia * self, int * numArray) {
 		bbia_bitflag_set (self, *numArray++);
 }
 
-void bbia_bitflag_unset_mult (bbia * self, int * numArray) {
+void bbia_bits_flag_unset_mult (bbia * self, int * numArray) {
 
 	if (self == NULL || numArray == NULL) {
 		throw("null pointer in bbia_bitflag_unset_mult()");
@@ -144,7 +144,7 @@ void bbia_bitflag_unset_mult (bbia * self, int * numArray) {
 }
 
 
-bbia * bbia_bitflag (int num) {
+bbia * bbia_bits_flag (int num) {
 
 	bbia * self = bbia_new ();
 
@@ -160,7 +160,7 @@ bbia * bbia_bitflag (int num) {
 // AND OR
 // @TODO STUAA is needed? Test
 
-void bbia_or_bbia (bbia * first, bbia * second) {
+void bbia_bits_or (bbia * first, bbia * second) {
 
 	if (first == NULL || second == NULL) {
 		throw ("null pointer in bbia_or_int");
@@ -171,7 +171,7 @@ void bbia_or_bbia (bbia * first, bbia * second) {
 		first->at[curLvl] |= second->at[curLvl];
 }
 
-void bbia_or_bbia_new (bbia * first, bbia * second) {
+void bbia_bits_or_new (bbia * first, bbia * second) {
 
 	if (first == NULL || second == NULL) {
 		throw ("null pointer in bbia_or_int_new");
@@ -184,7 +184,7 @@ void bbia_or_bbia_new (bbia * first, bbia * second) {
 		self->at[curLvl] = first->at[curLvl] | second->at[curLvl];
 }
 
-void bbia_and_bbia (bbia * first, bbia * second) {
+void bbia_bits_and (bbia * first, bbia * second) {
 
 	if (first == NULL || second == NULL) {
 		throw ("null pointer in bbia_and_int");
@@ -195,7 +195,7 @@ void bbia_and_bbia (bbia * first, bbia * second) {
 		first->at[curLvl] &= second->at[curLvl];
 }
 
-void bbia_and_bbia_new (bbia * first, bbia * second) {
+void bbia_bits_and_new (bbia * first, bbia * second) {
 
 	if (first == NULL || second == NULL) {
 		throw ("null pointer in bbia_and_int_new");
@@ -230,7 +230,7 @@ bbia * bbia_bits_isEmpty () {
 
 // bbia full | bbia is empty to bit
 
-bbia * bbia_bits_tillbit_isFull (int num) {
+bbia * bbia_bits_tillBit_isFull (int num) {
 
 	bbia * self = bbia_new();
 
@@ -247,7 +247,7 @@ bbia * bbia_bits_tillbit_isFull (int num) {
 	return self;
 }
 
-bbia * bbia_bits_tillbit_isEmpty (int num) {
+bbia * bbia_bits_tillBit_isEmpty (int num) {
 
 	bbia * self = bbia_new();
 

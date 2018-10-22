@@ -39,19 +39,35 @@
 typedef struct __bbia bbia;
 
 
-void bbia_bitshift_left (bbia * self, int value) ;
+void bbia_bits_shift_left (bbia * self, int value) ;
 
-void bbia_bitshift_right (bbia * self, int value) ;
+void bbia_bits_shift_right (bbia * self, int value) ;
 
-void bbia_bitflag_set (bbia * self, int num) ;
+void bbia_bits_flag_set (bbia * self, int num) ;
 
-void bbia_bitflag_unset (bbia * self, int num) ;
+void bbia_bits_flag_unset (bbia * self, int num) ;
 
-void bbia_bitflag_set_mult (bbia * self, int * numArray) ;
+void bbia_bits_flag_set_mult (bbia * self, int * numArray) ;
 
-void bbia_bitflag_unset_mult (bbia * self, int * numArray) ;
+void bbia_bits_flag_unset_mult (bbia * self, int * numArray) ;
 
-bbia * bbia_bitflag (int num) ;
+bbia * bbia_bits_flag (int num) ;
+
+void bbia_bits_or (bbia * first, bbia * second) ;
+
+void bbia_bits_or_new (bbia * first, bbia * second) ;
+
+void bbia_bits_and (bbia * first, bbia * second) ;
+
+void bbia_bits_and_new (bbia * first, bbia * second) ;
+
+bbia * bbia_bits_isFull () ;
+
+bbia * bbia_bits_isEmpty () ;
+
+bbia * bbia_bits_tillBit_isFull (int num) ;
+
+bbia * bbia_bits_tillBit_isEmpty (int num) ;
 
 void bbia_sum_int_level (bbia * self, int integer, int level) ;
 
