@@ -107,10 +107,8 @@ Decimal :
 
 After SUM result :
 1035079217151 by algorithm
-1035079217151 by calcualtor
+1035079217151 by calculator
 
 1035079217151 === 1035079217151
 
 All okay
-
-

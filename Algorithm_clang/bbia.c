@@ -421,18 +421,34 @@ bbia * bbia_mult_int_new (bbia * self, int integer) {
 	// 101 x 0(1)0 == 1010 & 1111 = 1010
 	// 101 x (0)10 == 10100 & 00000 = 00000
 	// 000 + 1010 + 00000 = 1010 (101 x 010)
+	// See calculation folder for more information
 
 	bbia * sumArray[BBIA_BITS_COUNT];
+	// bool curBitVal = false;
+	int curBitVal = 0;
 
-	int lvl = BBIA_LEVEL_TOP;
-	for (int curBit = 1; curBit <= BBIA_BITS_COUNT; curBit++) {
+	for (
+		int curBit = 1, lvl = BBIA_LEVEL_TOP,
+		lvlBit = curBit % BBIA_INTEGER_SIZE;
 
+		curBit <= BBIA_BITS_COUNT;
 
+		curBit++, lvlBit = curBit % BBIA_INTEGER_SIZE
+	) {
+		if (lvlBit != 0) {
+			curBitVal = self->at[lvl] & stuaa_bitflag (lvlBit);
+		}
+		else {
+			curBitVal = self->at[--lvl] & stuaa_bitflag (BBIA_INTEGER_SIZE);
+		}
 	}
 
 	bbia * result = bbia_new();
 	for (int curBit = 0; curBit < BBIA_BITS_COUNT; curBit++)
-		bbia_bits_or (result, sumArray[curBit]);
+		if (sumArray[curBit] != NULL)
+			bbia_sum_bbia (result, sumArray[curBit]);
+		else
+			break;
 
 	return result;
 }
