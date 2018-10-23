@@ -424,6 +424,7 @@ bbia * bbia_mult_int_new (bbia * self, int integer) {
 	// See calculation folder for more information
 
 	bbia * sumArray[BBIA_BITS_COUNT];
+	int curAddition = 0;
 	// bool curBitVal = false;
 	int curBitVal = 0;
 
@@ -436,19 +437,20 @@ bbia * bbia_mult_int_new (bbia * self, int integer) {
 		curBit++, lvlBit = curBit % BBIA_INTEGER_SIZE
 	) {
 		if (lvlBit != 0) {
-			curBitVal = self->at[lvl] & stuaa_bitflag (lvlBit);
+			curBitVal = (self->at[lvl] & stuaa_bitflag (lvlBit)) ? 1 : 0;
 		}
 		else {
-			curBitVal = self->at[--lvl] & stuaa_bitflag (BBIA_INTEGER_SIZE);
+			curBitVal = (self->at[--lvl] & stuaa_bitflag (BBIA_INTEGER_SIZE)) ? 1 : 0;
+		}
+
+		if (curBitVal != 0) {
+			sumArray[curAddition++] =  bbia_bits_tillBit_isFull (curBit);
 		}
 	}
 
 	bbia * result = bbia_new();
-	for (int curBit = 0; curBit < BBIA_BITS_COUNT; curBit++)
-		if (sumArray[curBit] != NULL)
-			bbia_sum_bbia (result, sumArray[curBit]);
-		else
-			break;
+	for (; curAddition >= 0; curAddition--)
+		bbia_sum_bbia (result, sumArray[curAddition]);
 
 	return result;
 }
