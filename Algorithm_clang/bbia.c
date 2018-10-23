@@ -408,20 +408,33 @@ bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
 
 // @MULT
 
-void bbia_mult_int (bbia * self, int integer) {
+bbia * bbia_mult_int_new (bbia * self, int integer) {
 
 	if (self == NULL) {
 		throw ("null pointer in bbia_mult_int");
 		return;
 	}
 
+	// Integer x BBIA
 	// 101 x 010
 	// 101 x 01(0) == 101 & 000 = 000
 	// 101 x 0(1)0 == 1010 & 1111 = 1010
 	// 101 x (0)10 == 10100 & 00000 = 00000
 	// 000 + 1010 + 00000 = 1010 (101 x 010)
 
+	bbia * sumArray[BBIA_BITS_COUNT];
 
+	int lvl = BBIA_LEVEL_TOP;
+	for (int curBit = 1; curBit <= BBIA_BITS_COUNT; curBit++) {
+
+
+	}
+
+	bbia * result = bbia_new();
+	for (int curBit = 0; curBit < BBIA_BITS_COUNT; curBit++)
+		bbia_bits_or (result, sumArray[curBit]);
+
+	return result;
 }
 
 // @SET
