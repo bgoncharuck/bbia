@@ -437,6 +437,15 @@ bbia * bbia_mult_int_new (bbia * self, int integer) {
 	return result;
 }
 
+void bbia_mult_int (bbia * self, int integer) {
+
+	bbia * res = bbia_mult_int_new (self, integer);
+
+	bbia_copy_bbia (self, res);
+
+	bbia_free (res);
+}
+
 // @SET
 
 void bbia_set_value_fromLevel (bbia * self, int level, int value) {
