@@ -93,6 +93,8 @@ void bbia_at_set (bbia * self, int index, int value) ;
 
 void bbia_print_levelValue (bbia * self) ;
 
+void bbia_print_levelValue_dec (bbia * self) ;
+
 int bbia_sign_is (bbia * self) ;
 
 void bbia_sign_change (bbia * self) ;

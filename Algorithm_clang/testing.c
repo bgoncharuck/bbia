@@ -16,11 +16,11 @@ int main (int argc, char * argv[]) {
 	bbia_print_levelValue (secondTest);
 
 	puts ("After bitflag set :");
-	bbia_bitflag_set (secondTest, 127);
+	bbia_bits_flag_set (secondTest, 127);
 	bbia_print_levelValue (secondTest);
 
 	puts ("After bitflag unset :");
-	bbia_bitflag_unset (secondTest, 127);
+	bbia_bits_flag_unset (secondTest, 127);
 	bbia_print_levelValue (secondTest);
 
 	puts ("\nShift tests :\n");
@@ -33,7 +33,7 @@ int main (int argc, char * argv[]) {
 	puts ("Before left shift by 2 :");
 	bbia_print_levelValue (firstTest);
 
-	bbia_bitshift_left (firstTest, 2);
+	bbia_bits_shift_left (firstTest, 2);
 	puts ("After left shift by 2 :");
 	bbia_print_levelValue (firstTest);
 
@@ -43,13 +43,13 @@ int main (int argc, char * argv[]) {
 	puts ("Before right shift by 3 :");
 	bbia_print_levelValue (firstTest);
 
-	bbia_bitshift_right (firstTest, 3);
+	bbia_bits_shift_right (firstTest, 3);
 	puts ("After right shift by 3 :");
 	bbia_print_levelValue (firstTest);
 
-	puts("\nSum && sub tests\n")
+	puts("\nSum && sub tests\n");
 	bbia_print_levelValue_dec (thirdTest);
-	
+
 
 	/*
 	int shiftTest = 0x40000000;

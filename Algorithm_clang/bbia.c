@@ -287,8 +287,8 @@ static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel,
 			bbia_sign_change (self);
 
 			// @TODO check
-			if (fromLevel < TOP_LEVEL)
-				for (int i = fromLevel + 1; i <= TOP_LEVEL; i++)
+			if (fromLevel < BBIA_LEVEL_TOP)
+				for (int i = fromLevel + 1; i <= BBIA_LEVEL_TOP; i++)
 					self->at[i] = BBIA_LEVEL_IS_FULL - self->at[i];
 		}
 	}
@@ -302,7 +302,7 @@ static void bbia_add_int_level (bbia * self, int integer, int level) {
 		self->at[level] += integer;
 		return;
 	}
-	else bbia_add_int_out (self, integer, level, level);
+	else bbia_add_int_out_level (self, integer, level, level);
 }
 
 static void bbia_sub_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
@@ -325,7 +325,7 @@ static void bbia_sub_int_out_level (bbia * self, int integer, int previousLevel,
 			bbia_sign_change (self);
 
 			// TODO check
-			for (int i = previousLevel - 1; i <= TOP_LEVEL;  i++)
+			for (int i = previousLevel - 1; i <= BBIA_LEVEL_TOP;  i++)
 				if (self->at[i] != 0 && i != fromLevel)
 					self->at[i] = BBIA_LEVEL_IS_FULL - self->at[i];
 		}
@@ -339,7 +339,7 @@ static void bbia_sub_int_level (bbia * self, int integer, int level) {
 		self->at[level] -= integer;
 		return;
 	}
-	else bbia_sub_int_out (self, integer, level, level);
+	else bbia_sub_int_out_level (self, integer, level, level);
 }
 
 void bbia_sum_int_level (bbia * self, int integer, int level) {
@@ -351,12 +351,12 @@ void bbia_sum_int_level (bbia * self, int integer, int level) {
 
 	if (integer >= 0 && self->sign == 0 || integer < 0 && self->sign == 1) {
 		if (integer < 0) integer = ~integer + 1;
-		bbia_add_int_level (self, integer);
+		bbia_add_int_level (self, integer, level);
 	}
 
 	else {
 		if (integer < 0) integer = ~integer + 1;
-		bbia_sub_int_level (self, integer);
+		bbia_sub_int_level (self, integer, level);
 	}
 }
 
@@ -398,7 +398,7 @@ bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
 
 	if (first == NULL || second == NULL) {
 		throw ("null pointer in bbia_sum_bbia");
-		return;
+		return NULL;
 	}
 
 	bbia * to = bbia_new();
@@ -412,7 +412,7 @@ bbia * bbia_mult_int_new (bbia * self, int integer) {
 
 	if (self == NULL) {
 		throw ("null pointer in bbia_mult_int");
-		return;
+		return NULL;
 	}
 
 	// Integer x BBIA
@@ -436,16 +436,15 @@ bbia * bbia_mult_int_new (bbia * self, int integer) {
 
 		curBit++, lvlBit = curBit % BBIA_INTEGER_SIZE
 	) {
-		if (lvlBit != 0) {
+		if (lvlBit != 0)
 			curBitVal = (self->at[lvl] & stuaa_bitflag (lvlBit)) ? 1 : 0;
-		}
-		else {
-			curBitVal = (self->at[--lvl] & stuaa_bitflag (BBIA_INTEGER_SIZE)) ? 1 : 0;
-		}
 
-		if (curBitVal != 0) {
+		else
+			curBitVal = (self->at[--lvl] & stuaa_bitflag (BBIA_INTEGER_SIZE)) ? 1 : 0;
+
+
+		if (curBitVal != 0)
 			sumArray[curAddition++] =  bbia_bits_tillBit_isFull (curBit);
-		}
 	}
 
 	bbia * result = bbia_new();
@@ -590,7 +589,7 @@ void bbia_copy_bbia (bbia * to, bbia * from) {
 	}
 
 	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
-		to->at[curLvl] = from->at[curLvl]
+		to->at[curLvl] = from->at[curLvl];
 
 	to->sign = from->sign;
 }
@@ -599,7 +598,7 @@ bbia * bbia_copy_bbia_new (bbia * from) {
 
 	if (from == NULL) {
 		throw("null pointer in bbia_copy_bbia_new()");
-		return;
+		return NULL;
 	}
 
 	bbia * to = bbia_new();
