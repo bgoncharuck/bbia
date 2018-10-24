@@ -49,12 +49,16 @@ int main (int argc, char * argv[]) {
 
 	puts("\nSum && sub tests\n");
 	puts("Before sum test :");
-	bbia_print_levelValue (thirdTest);
+	bbia_print_levelValue_dec (thirdTest);
 	// bbia_sum_int (thirdTest, 100);
-	bbia_sum_int_level (thirdTest, INT_MAX, BBIA_LEVEL_TOP - 1);
-	// bbia_sum_int_level (thirdTest, INT_MIN, BBIA_LEVEL_TOP - 1);
+	// bbia_sum_int_level (thirdTest, INT_MAX, BBIA_LEVEL_TOP - 1);
+	bbia_sum_int_level (thirdTest, BBIA_LEVEL_IS_FULL, BBIA_LEVEL_TOP - 1);
 	puts("After sum test :");
-	bbia_print_levelValue (thirdTest);
+	bbia_print_levelValue_dec (thirdTest);
+
+	bbia_sum_int_level (thirdTest, BBIA_LEVEL_IS_FULL, BBIA_LEVEL_TOP - 1);
+	puts("After sum test second :");
+	bbia_print_levelValue_dec (thirdTest);
 
 	/*
 	int shiftTest = 0x40000000;
