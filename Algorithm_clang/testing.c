@@ -48,8 +48,13 @@ int main (int argc, char * argv[]) {
 	bbia_print_levelValue (firstTest);
 
 	puts("\nSum && sub tests\n");
-	bbia_print_levelValue_dec (thirdTest);
-
+	puts("Before sum test :");
+	bbia_print_levelValue (thirdTest);
+	// bbia_sum_int (thirdTest, 100);
+	bbia_sum_int_level (thirdTest, INT_MAX, BBIA_LEVEL_TOP - 1);
+	// bbia_sum_int_level (thirdTest, INT_MIN, BBIA_LEVEL_TOP - 1);
+	puts("After sum test :");
+	bbia_print_levelValue (thirdTest);
 
 	/*
 	int shiftTest = 0x40000000;

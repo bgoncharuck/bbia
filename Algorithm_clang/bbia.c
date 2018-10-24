@@ -330,6 +330,7 @@ static void bbia_sub_int_out_level (bbia * self, int integer, int previousLevel,
 					self->at[i] = BBIA_LEVEL_IS_FULL - self->at[i];
 		}
 	}
+	// printf ("I was used! - Integer is %d", integer);
 	self->at[fromLevel] = BBIA_LEVEL_IS_FULL - self->at[fromLevel] + integer;
 }
 
@@ -352,6 +353,7 @@ void bbia_sum_int_level (bbia * self, int integer, int level) {
 	if (integer >= 0 && self->sign == 0 || integer < 0 && self->sign == 1) {
 		if (integer < 0) integer = ~integer + 1;
 		bbia_add_int_level (self, integer, level);
+		// printf ("I was used!");
 	}
 
 	else {
