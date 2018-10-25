@@ -265,6 +265,7 @@ bbia * bbia_bits_tillBit_isEmpty (int num) {
 }
 
 // @SUM
+/*
 static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
 
 
@@ -346,6 +347,27 @@ static void bbia_sub_int_level (bbia * self, int integer, int level) {
 	else bbia_sub_int_out_level (self, integer, level, level);
 }
 
+void bbia_dif_int_level (bbia * self, int integer, int level) {
+
+	if (level < 0 || level > BBIA_LEVEL_TOP) {
+		throw ("level out of bounders, be sure you choose correct level");
+		return;
+	}
+
+	// if (integer < 0) integer = ~integer + 1;
+	bbia_sub_int_level (self, integer, level);
+}
+
+void bbia_dif_int (bbia * self, int integer) {
+
+	if (self == NULL) {
+		throw ("null pointer in bbia_sum_int");
+		return;
+	}
+
+	bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
+}
+
 void bbia_sum_int_level (bbia * self, int integer, int level) {
 
 	if (level < 0 || level > BBIA_LEVEL_TOP) {
@@ -353,15 +375,8 @@ void bbia_sum_int_level (bbia * self, int integer, int level) {
 		return;
 	}
 
-	if (integer >= 0 && self->sign == 0 || integer < 0 && self->sign == 1) {
-		if (integer < 0) integer = ~integer + 1;
-		bbia_add_int_level (self, integer, level);
-	}
-
-	else {
-		if (integer < 0) integer = ~integer + 1;
-		bbia_sub_int_level (self, integer, level);
-	}
+	// if (integer < 0) integer = ~integer + 1;
+	bbia_add_int_level (self, integer, level);
 }
 
 void bbia_sum_int (bbia * self, int integer) {
@@ -409,6 +424,7 @@ bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
 	bbia_sum_bbia_to (to, first, second);
 	return to;
 }
+*/
 
 // @MULT
 
