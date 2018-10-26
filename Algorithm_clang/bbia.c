@@ -265,118 +265,13 @@ bbia * bbia_bits_tillBit_isEmpty (int num) {
 }
 
 // @SUM
-/*
-static void bbia_add_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
 
+void bbia_sum_int_level (bbia * self, int integer, int level) {
 
-
-	if (stuaa_outofbounders_max(self->at[previousLevel-1],1) == 0) {
-		self->at[previousLevel-1]++;
-
-		for (int i = previousLevel; i < fromLevel; i++)
-			self->at[i] = BBIA_LEVEL_IS_EMPTY;
-
-		// the number needed to overflow
-		// FULL - y + 1
-		// integer = BBIA_LEVEL_IS_FULL - integer + 1;
-		// EMPTY + x - (FULL - y + 1)
-		self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + self->at[fromLevel] - BBIA_LEVEL_IS_FULL - integer + 1;
-	}
-	else {
-		if (previousLevel != 1)
-			bbia_add_int_out_level (self, integer, previousLevel-1, fromLevel);
-		else {
-			// create out of bounders
-			bbia_sign_change (self);
-
-			// @TODO check
-			if (fromLevel < BBIA_LEVEL_TOP)
-				for (int i = fromLevel + 1; i <= BBIA_LEVEL_TOP; i++)
-					self->at[i] = BBIA_LEVEL_IS_FULL - self->at[i];
-
-			self->at[fromLevel] = BBIA_LEVEL_IS_EMPTY + self->at[fromLevel] - BBIA_LEVEL_IS_FULL - integer + 1;
-		}
-	}
-}
-
-static void bbia_add_int_level (bbia * self, int integer, int level) {
-
-	if (stuaa_outofbounders_max (self->at[level], integer) == 0) {
-		self->at[level] += integer;
-		return;
-	}
-	else bbia_add_int_out_level (self, integer, level, level);
-}
-
-static void bbia_sub_int_out_level (bbia * self, int integer, int previousLevel, int fromLevel) {
-
-	if (self->at[previousLevel-1] > BBIA_LEVEL_IS_EMPTY) {
-		self->at[previousLevel-1]--;
-
-		for (int i = previousLevel; i < fromLevel; i++)
-			self->at[i] = BBIA_LEVEL_IS_FULL;
-
-		// the number needed to overflow
-		// EMPTY + y - 1
-		// integer = BBIA_LEVEL_IS_EMPTY + integer - 1;
-		self->at[fromLevel] = BBIA_LEVEL_IS_FULL - self->at[fromLevel] + BBIA_LEVEL_IS_EMPTY + integer - 1;
-	}
-	else {
-		if (previousLevel != 1)
-			bbia_sub_int_out_level (self, integer, previousLevel-1, fromLevel);
-		else {
-			// create out of bounders, but all lower levels are zero
-			bbia_sign_change (self);
-
-			// TODO check
-			for (int i = previousLevel - 1; i <= BBIA_LEVEL_TOP;  i++)
-				if (self->at[i] != 0 && i != fromLevel)
-					self->at[i] = BBIA_LEVEL_IS_FULL - self->at[i];
-
-			self->at[fromLevel] = BBIA_LEVEL_IS_FULL - self->at[fromLevel] + BBIA_LEVEL_IS_EMPTY + integer - 1;
-		}
-	}
-}
-
-static void bbia_sub_int_level (bbia * self, int integer, int level) {
-
-	if (stuaa_outofbounders_min (self->at[level], integer) == 0) {
-		self->at[level] -= integer;
-		return;
-	}
-	else bbia_sub_int_out_level (self, integer, level, level);
 }
 
 void bbia_dif_int_level (bbia * self, int integer, int level) {
 
-	if (level < 0 || level > BBIA_LEVEL_TOP) {
-		throw ("level out of bounders, be sure you choose correct level");
-		return;
-	}
-
-	// if (integer < 0) integer = ~integer + 1;
-	bbia_sub_int_level (self, integer, level);
-}
-
-void bbia_dif_int (bbia * self, int integer) {
-
-	if (self == NULL) {
-		throw ("null pointer in bbia_sum_int");
-		return;
-	}
-
-	bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
-}
-
-void bbia_sum_int_level (bbia * self, int integer, int level) {
-
-	if (level < 0 || level > BBIA_LEVEL_TOP) {
-		throw ("level out of bounders, be sure you choose correct level");
-		return;
-	}
-
-	// if (integer < 0) integer = ~integer + 1;
-	bbia_add_int_level (self, integer, level);
 }
 
 void bbia_sum_int (bbia * self, int integer) {
@@ -387,6 +282,16 @@ void bbia_sum_int (bbia * self, int integer) {
 	}
 
 	bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
+}
+
+void bbia_dif_int (bbia * self, int integer) {
+
+	if (self == NULL) {
+		throw ("null pointer in bbia_dif_int");
+		return;
+	}
+
+	bbia_dif_int_level (self, integer, BBIA_LEVEL_TOP);
 }
 
 void bbia_sum_bbia (bbia * first, bbia * second) {
@@ -424,7 +329,6 @@ bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
 	bbia_sum_bbia_to (to, first, second);
 	return to;
 }
-*/
 
 // @MULT
 
