@@ -266,12 +266,30 @@ bbia * bbia_bits_tillBit_isEmpty (int num) {
 
 // @SUM
 
+void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int curLvl) {
+
+}
+
+void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int curLvl) {
+
+}
+
 void bbia_sum_int_level (bbia * self, int integer, int level) {
 
+	if (stuaa_outofbounders_max (self->at[level], integer) == 0)
+		self->at[level] += integer;
+
+	else
+		bbia_sum_int_levelOut (self, integer, level, level);
 }
 
 void bbia_dif_int_level (bbia * self, int integer, int level) {
 
+	if (stuaa_outofbounders_min (self->at[level], integer) == 0)
+		self->at[level] -= integer;
+
+	else
+		bbia_dif_int_levelOut (self, integer, level, level);
 }
 
 void bbia_sum_int (bbia * self, int integer) {
@@ -281,7 +299,10 @@ void bbia_sum_int (bbia * self, int integer) {
 		return;
 	}
 
-	bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
+	if (self->sign == 0)
+		bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
+	else if (self->sign == 1)
+		bbia_dif_int_level (self, integer, BBIA_LEVEL_TOP);
 }
 
 void bbia_dif_int (bbia * self, int integer) {
@@ -291,7 +312,10 @@ void bbia_dif_int (bbia * self, int integer) {
 		return;
 	}
 
-	bbia_dif_int_level (self, integer, BBIA_LEVEL_TOP);
+	if (self->sign == 0)
+		bbia_dif_int_level (self, integer, BBIA_LEVEL_TOP);
+	else if (self->sign == 1)
+		bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
 }
 
 void bbia_sum_bbia (bbia * first, bbia * second) {
