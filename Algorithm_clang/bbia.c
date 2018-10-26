@@ -266,12 +266,49 @@ bbia * bbia_bits_tillBit_isEmpty (int num) {
 
 // @SUM
 
-void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int curLvl) {
+void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 
+	if (stuaa_outofbounders_max(self->at[prevLvl-1],1) == 0) {
+		self->at[prevLvl-1]++;
+
+		for (int i = prevLvl; i < fromLvl; i++)
+			self->at[i] = BBIA_LEVEL_IS_EMPTY;
+
+		// the number needed to overflow
+		// FULL - y + 1
+		// integer = BBIA_LEVEL_IS_FULL - integer + 1;
+		// EMPTY + x - (FULL - y + 1)
+		self->at[fromLvl] = BBIA_LEVEL_IS_EMPTY + self->at[fromLvl] - BBIA_LEVEL_IS_FULL - integer + 1;
+	}
+	else {
+		if (prevLvl != 1)
+			bbia_sum_int_levelOut (self, integer, fromLvl, prevLvl-1);
+		else {
+
+		}
+	}
 }
 
-void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int curLvl) {
+void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 
+	if (self->at[prevLvl-1] > BBIA_LEVEL_IS_EMPTY) {
+		self->at[prevLvl-1]--;
+
+		for (int i = prevLvl; i < fromLvl; i++)
+			self->at[i] = BBIA_LEVEL_IS_FULL;
+
+		// the number needed to overflow
+		// EMPTY + y - 1
+		// integer = BBIA_LEVEL_IS_EMPTY + integer - 1;
+		self->at[fromLvl] = BBIA_LEVEL_IS_FULL - self->at[fromLvl] + BBIA_LEVEL_IS_EMPTY + integer - 1;
+	}
+	else {
+		if (prevLvl != 1)
+			bbia_dif_int_levelOut (self, integer, fromLvl, prevLvl-1);
+		else {
+
+		}
+	}
 }
 
 void bbia_sum_int_level (bbia * self, int integer, int level) {
