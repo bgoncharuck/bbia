@@ -57,11 +57,11 @@ bbia * bbia_bits_flag (int num) ;
 
 void bbia_bits_or (bbia * first, bbia * second) ;
 
-void bbia_bits_or_new (bbia * first, bbia * second) ;
+bbia * bbia_bits_or_new (bbia * first, bbia * second) ;
 
 void bbia_bits_and (bbia * first, bbia * second) ;
 
-void bbia_bits_and_new (bbia * first, bbia * second) ;
+bbia * bbia_bits_and_new (bbia * first, bbia * second) ;
 
 bbia * bbia_bits_isFull () ;
 

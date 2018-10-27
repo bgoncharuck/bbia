@@ -171,7 +171,7 @@ void bbia_bits_or (bbia * first, bbia * second) {
 		first->at[curLvl] |= second->at[curLvl];
 }
 
-void bbia_bits_or_new (bbia * first, bbia * second) {
+bbia * bbia_bits_or_new (bbia * first, bbia * second) {
 
 	if (first == NULL || second == NULL) {
 		throw ("null pointer in bbia_or_int_new");
@@ -182,6 +182,8 @@ void bbia_bits_or_new (bbia * first, bbia * second) {
 
 	for (int curLvl = BBIA_LEVEL_TOP; curLvl >= 0; curLvl--)
 		self->at[curLvl] = first->at[curLvl] | second->at[curLvl];
+
+	return self;
 }
 
 void bbia_bits_and (bbia * first, bbia * second) {
@@ -195,7 +197,7 @@ void bbia_bits_and (bbia * first, bbia * second) {
 		first->at[curLvl] &= second->at[curLvl];
 }
 
-void bbia_bits_and_new (bbia * first, bbia * second) {
+bbia * bbia_bits_and_new (bbia * first, bbia * second) {
 
 	if (first == NULL || second == NULL) {
 		throw ("null pointer in bbia_and_int_new");
@@ -206,6 +208,8 @@ void bbia_bits_and_new (bbia * first, bbia * second) {
 
 	for (int curLvl = BBIA_LEVEL_TOP; curLvl >= 0; curLvl--)
 		self->at[curLvl] = first->at[curLvl] & second->at[curLvl];
+
+	return self;
 }
 
 // bbia full | bbia is empty
@@ -315,7 +319,6 @@ void bbia_sum_int_level (bbia * self, int integer, int level) {
 
 	if (stuaa_outofbounders_max (self->at[level], integer) == 0)
 		self->at[level] += integer;
-
 	else
 		bbia_sum_int_levelOut (self, integer, level, level);
 }
@@ -324,7 +327,6 @@ void bbia_dif_int_level (bbia * self, int integer, int level) {
 
 	if (stuaa_outofbounders_min (self->at[level], integer) == 0)
 		self->at[level] -= integer;
-
 	else
 		bbia_dif_int_levelOut (self, integer, level, level);
 }
