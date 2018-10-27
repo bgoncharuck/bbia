@@ -273,8 +273,10 @@ bbia * bbia_bits_tillBit_isEmpty (int num) {
 void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 
 	if (prevLvl != 1)
-		if (stuaa_outofbounders_max(self->at[prevLvl-1],1) == 1)
+		if (stuaa_outofbounders_max(self->at[prevLvl-1],1) == 1) {
 			bbia_sum_int_levelOut (self, integer, fromLvl, prevLvl-1);
+			return;
+		}
 		else
 			self->at[prevLvl-1]++;
 
@@ -293,8 +295,10 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 
 	if (prevLvl != 1)
-		if (stuaa_outofbounders_min(self->at[prevLvl-1],1) == 1)
+		if (stuaa_outofbounders_min(self->at[prevLvl-1],1) == 1) {
 			bbia_dif_int_levelOut (self, integer, fromLvl, prevLvl-1);
+			return;
+		}
 		else
 			self->at[prevLvl-1]--;
 
