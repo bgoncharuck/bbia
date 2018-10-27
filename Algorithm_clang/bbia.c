@@ -288,7 +288,13 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 		if (prevLvl != 1)
 			bbia_sum_int_levelOut (self, integer, fromLvl, prevLvl-1);
 		else {
+			for (int curLvl = 0; curLvl < fromLvl; curLvl++)
+				self->at[curLvl] = BBIA_LEVEL_IS_EMPTY;
 
+			self->at[fromLvl] = BBIA_LEVEL_IS_EMPTY + self->at[fromLvl] - (BBIA_LEVEL_IS_FULL - integer + 1);
+
+			for (int curLvl = fromLvl+1; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+				self->at[curLvl] = BBIA_LEVEL_IS_FULL - self->at[curLvl] + 1;
 		}
 	}
 }
@@ -310,7 +316,10 @@ void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 		if (prevLvl != 1)
 			bbia_dif_int_levelOut (self, integer, fromLvl, prevLvl-1);
 		else {
+			for (int curLvl = 0; curLvl < fromLvl; curLvl++)
+				self->at[curLvl] = BBIA_LEVEL_IS_FULL;
 
+			
 		}
 	}
 }
