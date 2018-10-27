@@ -90,7 +90,7 @@ void bbia_bits_shift_right (bbia * self, int value) {
 
 void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 
-	if (prevLvl != 1)
+	if (prevLvl != 0)
 		if (stuaa_outofbounders_max(self->at[prevLvl-1],1) == 1) {
 			bbia_sum_int_levelOut (self, integer, fromLvl, prevLvl-1);
 			return;
@@ -98,7 +98,7 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 		else
 			self->at[prevLvl-1]++;
 
-	for (int curLvl = (prevLvl != 1) ? prevLvl : 0; curLvl < fromLvl; curLvl++)
+	for (int curLvl = prevLvl; curLvl < fromLvl; curLvl++)
 		self->at[curLvl] = BBIA_LEVEL_IS_EMPTY;
 
 	// x = x + y
@@ -112,7 +112,7 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 
 void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 
-	if (prevLvl != 1)
+	if (prevLvl != 0)
 		if (stuaa_outofbounders_min(self->at[prevLvl-1],1) == 1) {
 			bbia_dif_int_levelOut (self, integer, fromLvl, prevLvl-1);
 			return;
@@ -120,7 +120,7 @@ void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 		else
 			self->at[prevLvl-1]--;
 
-	for (int curLvl = (prevLvl != 1) ? prevLvl : 0; curLvl < fromLvl; curLvl++)
+	for (int curLvl = prevLvl; curLvl < fromLvl; curLvl++)
 		self->at[curLvl] = BBIA_LEVEL_IS_FULL;
 
 	// x = x - y
@@ -175,6 +175,63 @@ void bbia_dif_int (bbia * self, int integer) {
 		bbia_dif_int_level (self, integer, BBIA_LEVEL_TOP);
 	else if (self->sign == 1)
 		bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
+}
+
+// @MULT
+
+bbia * bbia_mult_int_new (bbia * self, int integer) {
+
+	if (self == NULL) {
+		throw ("null pointer in bbia_mult_int");
+		return NULL;
+	}
+
+	// Integer x BBIA
+	// 101 x 010
+	// 101 x 01(0) == 101 & 000 = 000
+	// 101 x 0(1)0 == 1010 & 1111 = 1010
+	// 101 x (0)10 == 10100 & 00000 = 00000
+	// 000 + 1010 + 00000 = 1010 (101 x 010)
+	// See calculation folder for more information
+
+	bbia * sumArray[BBIA_BITS_COUNT];
+	int curAddition = 0;
+	// bool curBitVal = false;
+	int curBitVal = 0;
+
+	for (
+		int curBit = 1, lvl = BBIA_LEVEL_TOP,
+		lvlBit = curBit % BBIA_INTEGER_SIZE;
+
+		curBit <= BBIA_BITS_COUNT;
+
+		curBit++, lvlBit = curBit % BBIA_INTEGER_SIZE
+	) {
+		if (lvlBit != 0)
+			curBitVal = (self->at[lvl] & stuaa_bitflag (lvlBit)) ? 1 : 0;
+
+		else
+			curBitVal = (self->at[--lvl] & stuaa_bitflag (BBIA_INTEGER_SIZE)) ? 1 : 0;
+
+
+		if (curBitVal != 0)
+			sumArray[curAddition++] =  bbia_bits_tillBit_isFull (curBit);
+	}
+
+	bbia * result = bbia_new();
+	for (; curAddition >= 0; curAddition--)
+		bbia_sum_bbia (result, sumArray[curAddition]);
+
+	return result;
+}
+
+void bbia_mult_int (bbia * self, int integer) {
+
+	bbia * res = bbia_mult_int_new (self, integer);
+
+	bbia_copy_bbia (self, res);
+
+	bbia_free (res);
 }
 
 // @BITFLAG
@@ -394,63 +451,6 @@ bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
 	bbia * to = bbia_new();
 	bbia_sum_bbia_to (to, first, second);
 	return to;
-}
-
-// @MULT
-
-bbia * bbia_mult_int_new (bbia * self, int integer) {
-
-	if (self == NULL) {
-		throw ("null pointer in bbia_mult_int");
-		return NULL;
-	}
-
-	// Integer x BBIA
-	// 101 x 010
-	// 101 x 01(0) == 101 & 000 = 000
-	// 101 x 0(1)0 == 1010 & 1111 = 1010
-	// 101 x (0)10 == 10100 & 00000 = 00000
-	// 000 + 1010 + 00000 = 1010 (101 x 010)
-	// See calculation folder for more information
-
-	bbia * sumArray[BBIA_BITS_COUNT];
-	int curAddition = 0;
-	// bool curBitVal = false;
-	int curBitVal = 0;
-
-	for (
-		int curBit = 1, lvl = BBIA_LEVEL_TOP,
-		lvlBit = curBit % BBIA_INTEGER_SIZE;
-
-		curBit <= BBIA_BITS_COUNT;
-
-		curBit++, lvlBit = curBit % BBIA_INTEGER_SIZE
-	) {
-		if (lvlBit != 0)
-			curBitVal = (self->at[lvl] & stuaa_bitflag (lvlBit)) ? 1 : 0;
-
-		else
-			curBitVal = (self->at[--lvl] & stuaa_bitflag (BBIA_INTEGER_SIZE)) ? 1 : 0;
-
-
-		if (curBitVal != 0)
-			sumArray[curAddition++] =  bbia_bits_tillBit_isFull (curBit);
-	}
-
-	bbia * result = bbia_new();
-	for (; curAddition >= 0; curAddition--)
-		bbia_sum_bbia (result, sumArray[curAddition]);
-
-	return result;
-}
-
-void bbia_mult_int (bbia * self, int integer) {
-
-	bbia * res = bbia_mult_int_new (self, integer);
-
-	bbia_copy_bbia (self, res);
-
-	bbia_free (res);
 }
 
 // @SET
