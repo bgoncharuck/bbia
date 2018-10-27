@@ -283,6 +283,10 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 		// integer = BBIA_LEVEL_IS_FULL - integer + 1;
 		// EMPTY + x - (FULL - y + 1)
 		self->at[fromLvl] = BBIA_LEVEL_IS_EMPTY + self->at[fromLvl] - (BBIA_LEVEL_IS_FULL - integer + 1);
+
+		// @TODO Check if needed
+		for (int curLvl = prevLvl+1; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			self->at[curLvl] = BBIA_LEVEL_IS_FULL - self->at[curLvl] + 1;
 	}
 	else {
 		if (prevLvl != 1)
@@ -293,7 +297,8 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 
 			self->at[fromLvl] = BBIA_LEVEL_IS_EMPTY + self->at[fromLvl] - (BBIA_LEVEL_IS_FULL - integer + 1);
 
-			for (int curLvl = fromLvl+1; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			// @TODO Check if needed
+			for (int curLvl = prevLvl+1; curLvl <= BBIA_LEVEL_TOP; curLvl++)
 				self->at[curLvl] = BBIA_LEVEL_IS_FULL - self->at[curLvl] + 1;
 		}
 	}
@@ -311,6 +316,10 @@ void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 		// EMPTY + y - 1
 		// integer = BBIA_LEVEL_IS_EMPTY + integer - 1;
 		self->at[fromLvl] = BBIA_LEVEL_IS_FULL - self->at[fromLvl] + (BBIA_LEVEL_IS_EMPTY + integer - 1);
+
+		// @TODO Check if needed
+		for (int curLvl = prevLvl+1; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			self->at[curLvl] = BBIA_LEVEL_IS_EMPTY + integer - 1;
 	}
 	else {
 		if (prevLvl != 1)
@@ -319,7 +328,13 @@ void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 			for (int curLvl = 0; curLvl < fromLvl; curLvl++)
 				self->at[curLvl] = BBIA_LEVEL_IS_FULL;
 
-			
+			self->at[fromLvl] = BBIA_LEVEL_IS_FULL - self->at[fromLvl] + (BBIA_LEVEL_IS_EMPTY + integer - 1);
+
+			bbia_sign_change (self);
+
+			// @TODO Check if needed
+			for (int curLvl = prevLvl+1; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+				self->at[curLvl] = BBIA_LEVEL_IS_EMPTY + integer - 1;
 		}
 	}
 }
