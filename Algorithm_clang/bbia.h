@@ -85,6 +85,10 @@ void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) ;
 
 bbia * bbia_sum_bbia_new (bbia * first, bbia * second) ;
 
+bbia * bbia_mult_int_new (bbia * self, int integer) ;
+
+void bbia_mult_int (bbia * self, int integer) ;
+
 void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
 
 void bbia_set_value_toLevel (bbia * self, int level, int value) ;
