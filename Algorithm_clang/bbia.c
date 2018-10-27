@@ -175,7 +175,7 @@ bbia * bbia_bits_or_new (bbia * first, bbia * second) {
 
 	if (first == NULL || second == NULL) {
 		throw ("null pointer in bbia_or_int_new");
-		return;
+		return NULL;
 	}
 
 	bbia * self = bbia_new();
@@ -201,7 +201,7 @@ bbia * bbia_bits_and_new (bbia * first, bbia * second) {
 
 	if (first == NULL || second == NULL) {
 		throw ("null pointer in bbia_and_int_new");
-		return;
+		return NULL;
 	}
 
 	bbia * self = bbia_new();
@@ -282,7 +282,7 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 		// FULL - y + 1
 		// integer = BBIA_LEVEL_IS_FULL - integer + 1;
 		// EMPTY + x - (FULL - y + 1)
-		self->at[fromLvl] = BBIA_LEVEL_IS_EMPTY + self->at[fromLvl] - BBIA_LEVEL_IS_FULL - integer + 1;
+		self->at[fromLvl] = BBIA_LEVEL_IS_EMPTY + self->at[fromLvl] - (BBIA_LEVEL_IS_FULL - integer + 1);
 	}
 	else {
 		if (prevLvl != 1)
@@ -304,7 +304,7 @@ void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 		// the number needed to overflow
 		// EMPTY + y - 1
 		// integer = BBIA_LEVEL_IS_EMPTY + integer - 1;
-		self->at[fromLvl] = BBIA_LEVEL_IS_FULL - self->at[fromLvl] + BBIA_LEVEL_IS_EMPTY + integer - 1;
+		self->at[fromLvl] = BBIA_LEVEL_IS_FULL - self->at[fromLvl] + (BBIA_LEVEL_IS_EMPTY + integer - 1);
 	}
 	else {
 		if (prevLvl != 1)

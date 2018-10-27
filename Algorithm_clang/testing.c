@@ -56,7 +56,7 @@ int main (int argc, char * argv[]) {
 	puts("After sum test :");
 	bbia_print_levelValue_dec (thirdTest);
 
-	bbia_sum_int_level (thirdTest, 1, BBIA_LEVEL_TOP - 1);
+	bbia_sum_int_level (thirdTest, 3, BBIA_LEVEL_TOP - 1);
 	puts("After sum test second :");
 	bbia_print_levelValue_dec (thirdTest);
 
