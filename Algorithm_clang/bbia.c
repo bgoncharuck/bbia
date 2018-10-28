@@ -179,12 +179,7 @@ void bbia_dif_int (bbia * self, int integer) {
 
 // @MULT
 
-bbia * bbia_mult_int_new (bbia * self, int integer) {
-
-	if (self == NULL) {
-		throw ("null pointer in bbia_mult_int");
-		return NULL;
-	}
+bbia * bbia_multiplicationByBitAnd_operation (bbia * self, bbia * temp) {
 
 	// Integer x BBIA
 	// 101 x 010
@@ -195,9 +190,6 @@ bbia * bbia_mult_int_new (bbia * self, int integer) {
 	// See calculation folder for more information
 
 	bbia * result = bbia_new();
-	bbia * integerValue = bbia_new();
-	integerValue->at[BBIA_LEVEL_TOP] = integer;
-
 	int curBitVal = 0;
 
 	for (
@@ -214,13 +206,27 @@ bbia * bbia_mult_int_new (bbia * self, int integer) {
 			curBitVal = (self->at[--lvl] & stuaa_bitflag (BBIA_INTEGER_SIZE)) ? 1 : 0;
 
 		if (curBitVal == 1)
-			bbia_sum_bbia (result, integerValue);
+			bbia_sum_bbia (result, temp);
 
-		bbia_bits_shift_left(integerValue, 1);
+		bbia_bits_shift_left(temp, 1);
 	}
 
-	bbia_free (integerValue);
+	bbia_free (temp);
 	return result;
+}
+
+bbia * bbia_mult_int_new (bbia * self, int integer) {
+
+	if (self == NULL) {
+		throw ("null pointer in bbia_mult_int_new");
+		return NULL;
+	}
+
+
+	bbia * integerValue = bbia_new();
+	integerValue->at[BBIA_LEVEL_TOP] = integer;
+
+	return bbia_multiplicationByBitAnd_operation (self, integerValue);
 }
 
 void bbia_mult_int (bbia * self, int integer) {
@@ -231,6 +237,31 @@ void bbia_mult_int (bbia * self, int integer) {
 
 	bbia_free (res);
 }
+
+// @BBIA_MULT_BBIA
+
+bbia * bbia_mult_bbia_new (bbia * first, bbia * second) {
+
+	if (first == NULL || second == NULL) {
+		throw ("null pointer in bbia_mult_bbia_new");
+		return NULL;
+	}
+
+	bbia * result = bbia_new();
+	bbia * temp = bbia_copy_bbia_new (second);
+
+	return bbia_multiplicationByBitAnd_operation (first, temp);
+}
+
+void bbia_mult_bbia (bbia * to, bbia * second) {
+
+	bbia * res = bbia_mult_bbia_new (to, second);
+
+	bbia_copy_bbia (to, res);
+
+	bbia_free (res);
+}
+
 
 // @BITFLAG
 
