@@ -179,7 +179,7 @@ void bbia_dif_int (bbia * self, int integer) {
 
 // @MULT
 
-bbia * bbia_multiplicationByBitAnd_operation (bbia * self, bbia * temp) {
+static inline bbia * bbia_multiplicationByBitAnd_operation (bbia * self, bbia * temp) {
 
 	// Integer x BBIA
 	// 101 x 010
@@ -211,7 +211,6 @@ bbia * bbia_multiplicationByBitAnd_operation (bbia * self, bbia * temp) {
 		bbia_bits_shift_left(temp, 1);
 	}
 
-	bbia_free (temp);
 	return result;
 }
 
@@ -222,11 +221,12 @@ bbia * bbia_mult_int_new (bbia * self, int integer) {
 		return NULL;
 	}
 
-
 	bbia * integerValue = bbia_new();
 	integerValue->at[BBIA_LEVEL_TOP] = integer;
 
-	return bbia_multiplicationByBitAnd_operation (self, integerValue);
+	bbia * result = bbia_multiplicationByBitAnd_operation (self, integerValue);
+	bbia_free (integerValue);
+	return result;
 }
 
 void bbia_mult_int (bbia * self, int integer) {
@@ -247,21 +247,20 @@ bbia * bbia_mult_bbia_new (bbia * first, bbia * second) {
 		return NULL;
 	}
 
-	bbia * result = bbia_new();
 	bbia * temp = bbia_copy_bbia_new (second);
-
-	return bbia_multiplicationByBitAnd_operation (first, temp);
+	bbia * result = bbia_multiplicationByBitAnd_operation (first, temp);
+	bbia_free (temp);
+	return result;
 }
 
 void bbia_mult_bbia (bbia * to, bbia * second) {
 
-	bbia * res = bbia_mult_bbia_new (to, second);
+	bbia * res = bbia_multiplicationByBitAnd_operation (second, to);
 
 	bbia_copy_bbia (to, res);
 
 	bbia_free (res);
 }
-
 
 // @BITFLAG
 
