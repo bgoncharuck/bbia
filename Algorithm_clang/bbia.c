@@ -250,16 +250,20 @@ bbia * bbia_mult_bbia_new (bbia * first, bbia * second) {
 	bbia * temp = bbia_copy_bbia_new (second);
 	bbia * result = bbia_multiplicationByBitAnd_operation (first, temp);
 	bbia_free (temp);
+	
+	if (first->sign != second->sign || first->sign == 1 && second->sign == 1) bbia_sign_change (result);
 	return result;
 }
 
 void bbia_mult_bbia (bbia * to, bbia * second) {
 
+	int toChangeSign = (to->sign != second->sign || to->sign == 1 && second->sign == 1) ? 1 : 0;
 	bbia * res = bbia_multiplicationByBitAnd_operation (second, to);
 
 	bbia_copy_bbia (to, res);
-
 	bbia_free (res);
+
+	if (toChangeSign == 1) bbia_sign_change (to);
 }
 
 // @BITFLAG
@@ -452,8 +456,12 @@ void bbia_sum_bbia (bbia * first, bbia * second) {
 		return;
 	}
 
-	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
-		bbia_sum_int_level (first, second->at[curLvl], curLvl);
+	if (first->sign == second->sign)
+		for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			bbia_sum_int_level (first, second->at[curLvl], curLvl);
+	else
+		for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			bbia_dif_int_level (first, second->at[curLvl], curLvl);
 }
 
 void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) {
@@ -465,8 +473,13 @@ void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) {
 
 	bbia_copy_bbia (to, first);
 
-	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
-		bbia_sum_int_level (to, second->at[curLvl], curLvl);
+
+	if (first->sign == second->sign)
+		for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			bbia_sum_int_level (to, second->at[curLvl], curLvl);
+	else
+		for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			bbia_dif_int_level (to, second->at[curLvl], curLvl);
 }
 
 bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
