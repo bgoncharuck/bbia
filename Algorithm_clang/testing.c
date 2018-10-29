@@ -85,12 +85,13 @@ int main (int argc, char * argv[]) {
 	bbia_mult_int (multTest, 3);
 	bbia_print_levelValue_dec (multTest);
 
-	puts("Before pow(2) test : ");
+	puts("Before pow(5) test : ");
 	bbia_at_set (multB3Test, BBIA_LEVEL_TOP, 2);
 	bbia_print_levelValue_dec (multB3Test);
 
-	puts("After pow(2) test : ");
+	puts("After pow(5) test : ");
 	// multB2Test = bbia_mult_bbia_new (multB3Test, multB3Test);
+	// bbia_mult_bbia (multB3Test, multB3Test);
 	bbia_pow (multB3Test, 5);
 	bbia_print_levelValue_dec (multB3Test);
 

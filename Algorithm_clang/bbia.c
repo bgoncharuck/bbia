@@ -245,10 +245,8 @@ bbia * bbia_mult_bbia_new (bbia * first, bbia * second) {
 	if (first == NULL || second == NULL) {
 		throw ("null pointer in bbia_mult_bbia_new");
 		return NULL;
-	} else if (first == second) {
-		throw ("use bbia_pow_new instead");
-		return NULL;
-	}
+	} else if (first == second)
+		return bbia_pow_new (first, 2);
 
 	bbia * temp = bbia_copy_new (second);
 	bbia * result = bbia_multiplicationByBitAnd_operation (first, temp);
@@ -261,7 +259,7 @@ bbia * bbia_mult_bbia_new (bbia * first, bbia * second) {
 void bbia_mult_bbia (bbia * to, bbia * second) {
 
 	if (to == second) {
-		throw ("use bbia_pow instead");
+		bbia_pow (to, 2);
 		return;
 	}
 
@@ -284,7 +282,6 @@ void bbia_div_int (bbia * self, int integer) {
 bbia * bbia_div_int_new (bbia * self, int integer) {
 
 	bbia * result = bbia_copy_new (self);
-
 	return result;
 }
 
@@ -517,7 +514,6 @@ void bbia_pow (bbia * self, int power) {
 		throw("null pointer in bbia_pow()");
 		return;
 	}
-
 	bbia * temp = bbia_copy_new (self);
 	bbia * saved = bbia_copy_new (self);
 
@@ -525,7 +521,6 @@ void bbia_pow (bbia * self, int power) {
 		bbia_mult_bbia (self, temp);
 		bbia_copy_bbia (temp, saved);
 	}
-
 	bbia_free (temp);
 	bbia_free (saved);
 }
@@ -698,20 +693,10 @@ int bbia_is_integer (bbia * self, int integer) {
 
 int bbia_is_zero (bbia * self) {
 
-	if (self == NULL) {
-		throw("null pointer in bbia_is_zero()");
-		return 0;
-	}
-
 	return bbia_is_integer (self, 0);
 }
 
 int bbia_is_one (bbia * self) {
-
-	if (self == NULL) {
-		throw("null pointer in bbia_is_one()");
-		return 0;
-	}
 
 	return bbia_is_integer (self, 1);
 }
