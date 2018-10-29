@@ -93,6 +93,10 @@ bbia * bbia_mult_bbia_new (bbia * first, bbia * second) ;
 
 void bbia_mult_bbia (bbia * to, bbia * second) ;
 
+void bbia_pow (bbia * self, int power) ;
+
+bbia * bbia_pow_new (bbia * self, int power) ;
+
 void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
 
 void bbia_set_value_toLevel (bbia * self, int level, int value) ;
@@ -115,7 +119,13 @@ void bbia_sign_set (bbia * self, int sign) ;
 
 void bbia_copy_bbia (bbia * to, bbia * from) ;
 
-bbia * bbia_copy_bbia_new (bbia * from) ;
+bbia * bbia_copy_new (bbia * from) ;
+
+int bbia_is_zero (bbia * self) ;
+
+int bbia_is_one (bbia * self) ;
+
+int bbia_is_integer (bbia * self, int integer) ;
 
 bbia * bbia_new (void) ;
 

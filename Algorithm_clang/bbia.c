@@ -245,17 +245,25 @@ bbia * bbia_mult_bbia_new (bbia * first, bbia * second) {
 	if (first == NULL || second == NULL) {
 		throw ("null pointer in bbia_mult_bbia_new");
 		return NULL;
+	} else if (first == second) {
+		throw ("use bbia_pow_new instead");
+		return NULL;
 	}
 
-	bbia * temp = bbia_copy_bbia_new (second);
+	bbia * temp = bbia_copy_new (second);
 	bbia * result = bbia_multiplicationByBitAnd_operation (first, temp);
 	bbia_free (temp);
-	
+
 	if (first->sign != second->sign || first->sign == 1 && second->sign == 1) bbia_sign_change (result);
 	return result;
 }
 
 void bbia_mult_bbia (bbia * to, bbia * second) {
+
+	if (to == second) {
+		throw ("use bbia_pow instead");
+		return;
+	}
 
 	int toChangeSign = (to->sign != second->sign || to->sign == 1 && second->sign == 1) ? 1 : 0;
 	bbia * res = bbia_multiplicationByBitAnd_operation (second, to);
@@ -264,6 +272,20 @@ void bbia_mult_bbia (bbia * to, bbia * second) {
 	bbia_free (res);
 
 	if (toChangeSign == 1) bbia_sign_change (to);
+}
+
+// @BBIA_DIV_INT
+
+void bbia_div_int (bbia * self, int integer) {
+
+
+}
+
+bbia * bbia_div_int_new (bbia * self, int integer) {
+
+	bbia * result = bbia_copy_new (self);
+
+	return result;
 }
 
 // @BITFLAG
@@ -484,14 +506,35 @@ void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) {
 
 bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
 
-	if (first == NULL || second == NULL) {
-		throw ("null pointer in bbia_sum_bbia");
-		return NULL;
-	}
-
 	bbia * to = bbia_new();
 	bbia_sum_bbia_to (to, first, second);
 	return to;
+}
+
+// @BBIA_POW
+void bbia_pow (bbia * self, int power) {
+	if (self == NULL) {
+		throw("null pointer in bbia_pow()");
+		return;
+	}
+
+	bbia * temp = bbia_copy_new (self);
+	bbia * saved = bbia_copy_new (self);
+
+	while (power-- != 1) {
+		bbia_mult_bbia (self, temp);
+		bbia_copy_bbia (temp, saved);
+	}
+
+	bbia_free (temp);
+	bbia_free (saved);
+}
+
+bbia * bbia_pow_new (bbia * self, int power) {
+
+	bbia * res = bbia_copy_new (self);
+	bbia_pow (res, power);
+	return res;
 }
 
 // @SET
@@ -625,16 +668,52 @@ void bbia_copy_bbia (bbia * to, bbia * from) {
 	to->sign = from->sign;
 }
 
-bbia * bbia_copy_bbia_new (bbia * from) {
+bbia * bbia_copy_new (bbia * from) {
 
 	if (from == NULL) {
-		throw("null pointer in bbia_copy_bbia_new()");
+		throw("null pointer in bbia_copy_new()");
 		return NULL;
 	}
 
 	bbia * to = bbia_new();
 	bbia_copy_bbia (to, from);
 	return to;
+}
+
+// @CHECK
+
+int bbia_is_integer (bbia * self, int integer) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_is_integer()");
+		return 0;
+	}
+
+	for (int curLvl = 0; curLvl < BBIA_LEVEL_TOP; curLvl++)
+		if (self->at[curLvl] != BBIA_LEVEL_IS_EMPTY)
+			return 0;
+
+	return (self->at[BBIA_LEVEL_TOP] == integer) ? 1 : 0;
+}
+
+int bbia_is_zero (bbia * self) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_is_zero()");
+		return 0;
+	}
+
+	return bbia_is_integer (self, 0);
+}
+
+int bbia_is_one (bbia * self) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_is_one()");
+		return 0;
+	}
+
+	return bbia_is_integer (self, 1);
 }
 
 // @CONSTRUCTOR
