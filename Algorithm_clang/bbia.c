@@ -90,13 +90,14 @@ void bbia_bits_shift_right (bbia * self, int value) {
 
 void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 
-	if (prevLvl != 0)
+	if (prevLvl != 0){
 		if (stuaa_outofbounders_max(self->at[prevLvl-1],1) == 1) {
 			bbia_sum_int_levelOut (self, integer, fromLvl, prevLvl-1);
 			return;
 		}
 		else
 			self->at[prevLvl-1]++;
+	}
 
 	for (int curLvl = prevLvl; curLvl < fromLvl; curLvl++)
 		self->at[curLvl] = BBIA_LEVEL_IS_EMPTY;
@@ -112,13 +113,14 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 
 void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 
-	if (prevLvl != 0)
+	if (prevLvl != 0) {
 		if (stuaa_outofbounders_min(self->at[prevLvl-1],1) == 1) {
 			bbia_dif_int_levelOut (self, integer, fromLvl, prevLvl-1);
 			return;
 		}
 		else
 			self->at[prevLvl-1]--;
+	}
 
 	for (int curLvl = prevLvl; curLvl < fromLvl; curLvl++)
 		self->at[curLvl] = BBIA_LEVEL_IS_FULL;
@@ -252,7 +254,7 @@ bbia * bbia_mult_bbia_new (bbia * first, bbia * second) {
 	bbia * result = bbia_multiplicationByBitAnd_operation (first, temp);
 	bbia_free (temp);
 
-	if (first->sign != second->sign || first->sign == 1 && second->sign == 1) bbia_sign_change (result);
+	if ((first->sign != second->sign) || (first->sign == 1 && second->sign == 1)) bbia_sign_change (result);
 	return result;
 }
 
@@ -263,7 +265,7 @@ void bbia_mult_bbia (bbia * to, bbia * second) {
 		return;
 	}
 
-	int toChangeSign = (to->sign != second->sign || to->sign == 1 && second->sign == 1) ? 1 : 0;
+	int toChangeSign = ((to->sign != second->sign) || (to->sign == 1 && second->sign == 1)) ? 1 : 0;
 	bbia * res = bbia_multiplicationByBitAnd_operation (second, to);
 
 	bbia_copy_bbia (to, res);
@@ -354,6 +356,8 @@ bbia * bbia_bits_flag (int num) {
 		self->at[lvl] |= stuaa_bitflag (num);
 	else
 		self->at[lvl+1] |= stuaa_bitflag (BBIA_INTEGER_SIZE);
+
+	return self;
 }
 
 // AND OR
@@ -705,7 +709,7 @@ int bbia_is_one (bbia * self) {
 
 bbia * bbia_new (void) {
 
-	bbia * self = malloc (sizeof(bbia));
+	bbia * self = calloc (sizeof(bbia), 1);
 	if (self == NULL) abort();
 
 	self->sign = BBIA_UNSIGNED;
