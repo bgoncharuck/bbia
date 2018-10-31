@@ -40,12 +40,12 @@ void bbia_bits_shift_left (bbia * self, int value) {
 	// for all levels lesser then top
 	// we set saved bits
 
-	for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; self->at[lvl] <<= value, lvl--)
-	if (lvl > 0) {
+	for (int lvl = BBIA_LEVEL_TOP; lvl > 0; self->at[lvl] <<= value, lvl--) {
 		bitMask[1] = self->at[lvl] & bitMask[0];
 		stuaa_shiftr (bitMask+1, BBIA_INTEGER_SIZE-value);
 		savedBits[lvl-1] = bitMask[1];
 	}
+	self->at[0] <<= value;
 
 	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
 		self->at[lvl] |= savedBits[lvl];
@@ -75,12 +75,12 @@ void bbia_bits_shift_right (bbia * self, int value) {
 	// for all levels bigger then 0
 	// we set saved bits
 
-	for (int lvl = 0; lvl <= BBIA_LEVEL_TOP; stuaa_shiftr (self->at+lvl,value), lvl++)
-	if (lvl < BBIA_LEVEL_TOP) {
+	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; stuaa_shiftr (self->at+lvl,value), lvl++) {
 		bitMask[1] = self->at[lvl] & bitMask[0];
 		bitMask[1] <<= BBIA_INTEGER_SIZE-value;
 		savedBits[lvl] = bitMask[1];
 	}
+	stuaa_shiftr (self->at+BBIA_LEVEL_TOP,value);
 
 	for (int lvl = 0; lvl < BBIA_LEVEL_TOP; lvl++)
 		self->at[lvl+1] |= savedBits[lvl];

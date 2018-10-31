@@ -31,27 +31,45 @@ int stuaa_bitflag (int num) {
 	if ( !(num >= 0 && num <= BBIA_INTEGER_SIZE) )
 		return 0;
 
-	// @TODO add support for 64 and more
-	const int bitDigit[] = { 0,
-		0x1, 0x2, 0x4, 0x8,
-		0x10, 0x20, 0x40, 0x80,
-		0x100, 0x200, 0x400, 0x800,
-		0x1000, 0x2000, 0x4000, 0x8000,
-		0x10000, 0x20000, 0x40000, 0x80000,
-		0x100000, 0x200000, 0x400000, 0x800000,
-		0x1000000, 0x2000000, 0x4000000, 0x8000000,
-		0x10000000, 0x20000000, 0x40000000, 0x80000000,
-		0,0,0,0,
-		0,0,0,0,
-		0,0,0,0,
-		0,0,0,0,
-		0,0,0,0,
-		0,0,0,0,
-		0,0,0,0,
-		0,0,0,0
-	};
+	switch (num) {
+		case 1 : return 0x1;
+		case 2 : return 0x2;
+		case 3 : return 0x4;
+		case 4 : return 0x8;
+		case 5 : return 0x10;
+		case 6 : return 0x20;
+		case 7 : return 0x40;
+		case 8 : return 0x80;
+		case 9 : return 0x100;
+		case 10 : return 0x200;
+		case 11 : return 0x400;
+		case 12 : return 0x800;
+		case 13 : return 0x1000;
+		case 14 : return 0x2000;
+		case 15 : return 0x4000;
+		case 16 : return 0x8000;
+		case 17 : return 0x10000;
+		case 18 : return 0x20000;
+		case 19 : return 0x40000;
+		case 20 : return 0x80000;
+		case 21 : return 0x100000;
+		case 22 : return 0x200000;
+		case 23 : return 0x400000;
+		case 24 : return 0x800000;
+		case 25 : return 0x1000000;
+		case 26 : return 0x2000000;
+		case 27 : return 0x4000000;
+		case 28 : return 0x8000000;
+		case 29 : return 0x10000000;
+		case 30 : return 0x20000000;
+		case 31 : return 0x40000000;
+		case 32 : return 0x80000000;
 
-	return bitDigit[num];
+		case 0 :
+		default : return 0;
+	}
+
+	return 0;
 }
 
 void stuaa_shiftr (int * self, int value) {
