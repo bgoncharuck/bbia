@@ -205,7 +205,7 @@ static inline bbia * bbia_multiplicationByBitAnd_operation (bbia * self, bbia * 
 		if (lvlBit != 0)
 			curBitVal = (self->at[lvl] & stuaa_bitflag (lvlBit)) ? 1 : 0;
 		else
-			curBitVal = (self->at[--lvl] & stuaa_bitflag (BBIA_INTEGER_SIZE)) ? 1 : 0;
+			curBitVal = (self->at[lvl--] & stuaa_bitflag (BBIA_INTEGER_SIZE)) ? 1 : 0;
 
 		if (curBitVal == 1)
 			bbia_sum_bbia (result, temp);
