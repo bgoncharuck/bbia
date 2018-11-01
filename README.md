@@ -19,7 +19,7 @@ First release will be in 24 january of 2019
 
 ## Syntax
 Algorithm will be written in C language syntax.
-<p>Some languages don't have unsigned integer type, so was created
+Some languages don't have unsigned integer type, so was created
 [Signed To Unsigned and Arithmetic Algorithm for BBIA](https://github.com/bgoncharuck/stuaa)
 
 ## Languages
@@ -27,8 +27,8 @@ Algorithm will be written in C language syntax.
 If you try to use other realizations (languages) that will not work.
 
 <p>It will support any statically typed language.
-<p>I will add simple port to C (unsigned ver), Java, C# and JavaScript(TypeScript) for every release.
-<p>Will be added Rust version. You are free to add other languages.
+I will add simple port to C (unsigned ver), Java, C# and JavaScript(TypeScript) for every release.
+Will be added Rust version. You are free to add other languages.
 
 ## What works for now?
 * STUAA (bitflag, shiftr, outofbounders)
