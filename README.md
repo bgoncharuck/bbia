@@ -2,6 +2,13 @@
 
 BBIA is a try to create fast and language independent algorithm which can save Nbit integer.
 
+Also BBIA can be considered as canonical and shifted numeric system of integer values with additional sign save
+[pure, positional, with direct presentation of forms and natural weight order]
+
+Decimal Binary Code == "8,4,2,1"
+min == 0000..0 [Nbit] max == 1111..1 [Nbit] => min == 0 max == -1
+(for any signed integer datatype used as level)
+
 ## Releases
 First release will be in 24 january of 2019
 
