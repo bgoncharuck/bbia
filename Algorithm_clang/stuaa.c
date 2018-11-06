@@ -10,7 +10,8 @@
 #define throw(MSG) fprintf(stderr, "%s\n", MSG)
 
 static const char * numerics =
-"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/,"; //base64
+// "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$&()*+,;./:;<=>?@[]^-_'{|}~";
 
 static inline double log_base(double base, double num) {
 	return log2(num) / log2(base);
@@ -157,6 +158,28 @@ char * stuaa_toBase (int sinteger, int base) {
 			currentBit++
 		);
 
+		return result;
+	}
+
+	int powerOfTwo = __isPowerOfTwo (base);
+	if (powerOfTwo != -2) {
+
+		int start = ceil ( log_base (base, (unsigned)sinteger) ) - 1;
+
+		char * result = calloc (sizeof(char), start + 2);
+		if (result == NULL) abort();
+
+		int tempValue = 0;
+		for (int curBit = 0; curBit < BBIA_INTEGER_SIZE; curBit += powerOfTwo) {
+			for (int curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
+				tempValue |=
+				(stuaa_bitflag(curBit + curBitInTwo) & sinteger)
+				? stuaa_bitflag (curBitInTwo) : 0;
+			}
+
+			result[start--] = numerics[tempValue];
+			tempValue = 0;
+		}
 
 		return result;
 	}
@@ -189,8 +212,28 @@ int stuaa_fromBase (char * integer, int base) {
 		return result;
 	}
 
+	int powerOfTwo = __isPowerOfTwo (base);
+	if (powerOfTwo != -2) {
+
+		int result = 0;
+		int size = strlen(integer);
+		int tempValue = 0;
+
+		for (int curChar = size-1, curMult = 0; curChar >= 0; curChar--, curMult++) {
+			tempValue = findDigitInNumerics (numerics, integer[curChar]);
+
+			for (int curBit = 1; curBit <= powerOfTwo; curBit++) {
+				result |= (tempValue & stuaa_bitflag(curBit)) ?
+				stuaa_bitflag (curBit + powerOfTwo * curMult) : 0;
+			}
+		}
+
+		return result;
+	}
+
 	return stuaa_fromBase_Clang (integer, base);
 }
+
 char * stuaa_toBase_Clang (unsigned integer, int base) {
 
 	if ( !(base < 65 && base > 1) ) {
