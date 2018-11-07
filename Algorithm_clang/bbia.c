@@ -117,8 +117,11 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 	// the value to set is x = EMPTY + x - z
 	self->at[fromLvl] = BBIA_LEVEL_IS_EMPTY + self->at[fromLvl] - (BBIA_LEVEL_IS_FULL - integer + 1);
 
+	// @TODO CHECK
 	for (int curLvl = fromLvl+1; curLvl <= BBIA_LEVEL_TOP; curLvl++)
 		self->at[curLvl] = BBIA_LEVEL_IS_FULL - self->at[curLvl] + 1;
+
+	// if (prevLvl == 1) bbia_sign_change (self);
 }
 
 void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
@@ -140,6 +143,7 @@ void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 	// the value to set x = FULL - x + z
 	self->at[fromLvl] = BBIA_LEVEL_IS_FULL - self->at[fromLvl] + (BBIA_LEVEL_IS_EMPTY + integer - 1);
 
+	// @TODO CHECK
 	for (int curLvl = prevLvl+1; curLvl <= BBIA_LEVEL_TOP; curLvl++)
 		self->at[curLvl] = BBIA_LEVEL_IS_EMPTY + integer - 1;
 

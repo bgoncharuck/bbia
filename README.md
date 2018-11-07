@@ -3,15 +3,16 @@
 BBIA is a try to create fast and language independent algorithm which can save Nbit integer.
 
 # Mathematical Interpretation
-The max value that can be saved with this algorithm is two in power of two in power of number of bit of integer, decreased by one, decreased by one.  (2^(2 ^ N - 1 ) ) -1
-<p>For 32bit integer max value is (2^(2^31))-1 and need 8 GigaByte of RAM (2^31 * 4 byte)
-<p>For 64bit integer max value is (2^(2^63))-1 and need 64 ExaByte of RAM (2^63 * 8 byte)
+The max value that can be saved with this algorithm is two, in power of two in power of max integer value, decreased by one (2^(2^N-1))-1
+
+<p>For 32bit integer max value is (2^(2^32-1))-1 and need 15.(9) GigaByte of RAM (2^32-1 * 4 byte)
+<p>For 64bit integer max value is (2^(2^64-1))-1 and need 127.(9) ExaByte of RAM (2^64-1 * 8 byte)
 <p>Don't forget to count additional integer for sign save.
 
 Also BBIA can be considered as canonical and shifted numeric system of integer values with additional sign save
 [pure, positional, with direct presentation of forms and natural weight order]
 
-Decimal Binary Code == "8,4,2,1"
+Decimal Binary Code == "8,4,2,1" (direct)
 <p>min == 0000..0 [Nbit] max == 1111..1 [Nbit] => min == 0 max == -1
 (for any signed integer datatype used as level)
 
