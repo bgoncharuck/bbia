@@ -136,6 +136,15 @@ int stuaa_outofbounders_min (int to, int test) {
 	return outofbounders_min_bitDecay (to, test, BBIA_INTEGER_SIZE);
 }
 
+int stuaa_isPowerOfTwo (int value) {
+
+	for (int curBit = 3; curBit <= BBIA_INTEGER_SIZE; curBit++)
+		if (value == stuaa_bitflag (curBit))
+			return curBit - 1;
+
+	return -2;
+}
+
 char * stuaa_toBase (int sinteger, int base) {
 
 	if ( !(base < 65 && base > 1) ) {
@@ -161,7 +170,7 @@ char * stuaa_toBase (int sinteger, int base) {
 		return result;
 	}
 
-	int powerOfTwo = __isPowerOfTwo (base);
+	int powerOfTwo = stuaa_isPowerOfTwo (base);
 	if (powerOfTwo != -2) {
 
 		int start = ceil ( log_base (base, (unsigned)sinteger) ) - 1;
@@ -212,7 +221,7 @@ int stuaa_fromBase (char * integer, int base) {
 		return result;
 	}
 
-	int powerOfTwo = __isPowerOfTwo (base);
+	int powerOfTwo = stuaa_isPowerOfTwo (base);
 	if (powerOfTwo != -2) {
 
 		int result = 0;

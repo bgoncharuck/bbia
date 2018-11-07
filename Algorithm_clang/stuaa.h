@@ -10,6 +10,8 @@ int stuaa_outofbounders_max (int to, int test) ;
 
 int stuaa_outofbounders_min (int to, int test) ;
 
+int stuaa_isPowerOfTwo (int value) ;
+
 char * stuaa_toBase_Clang (unsigned integer, int base) ;
 
 int stuaa_fromBase_Clang (char * integer, int base) ;

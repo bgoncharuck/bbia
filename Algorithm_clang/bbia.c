@@ -3,9 +3,19 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 // #include <string.h>
 
 #define throw(MSG) fprintf(stderr, "%s\n",MSG)
+
+static const char * numerics =
+"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/,"; //base64
+
+static inline int log_formMax () {
+	// log2(2^BBIA_INTEGER_SIZE * BBIA_LEVEL_COUNT) / log2(2) ;
+	// equal to BBIA_INTEGER_SIZE * BBIA_LEVEL_COUNT
+	return BBIA_INTEGER_SIZE * BBIA_LEVEL_COUNT;
+}
 
 struct __bbia {
 
@@ -19,7 +29,7 @@ struct __bbia {
 void bbia_bits_shift_left (bbia * self, int value) {
 
 	if (self == NULL) {
-		throw("null pointer in bbia_bitshift_left()");
+		throw("null pointer in bbia_bits_shift_left()");
 		return;
 	}
 
@@ -54,7 +64,7 @@ void bbia_bits_shift_left (bbia * self, int value) {
 void bbia_bits_shift_right (bbia * self, int value) {
 
 	if (self == NULL) {
-		throw("null pointer in bbia_bitshift_right()");
+		throw("null pointer in bbia_bits_shift_right()");
 		return;
 	}
 
@@ -90,7 +100,7 @@ void bbia_bits_shift_right (bbia * self, int value) {
 
 void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 
-	if (prevLvl != 0){
+	if (prevLvl != 0) {
 		if (stuaa_outofbounders_max(self->at[prevLvl-1],1) == 1) {
 			bbia_sum_int_levelOut (self, integer, fromLvl, prevLvl-1);
 			return;
@@ -618,6 +628,102 @@ void bbia_print_levelValue_dec (bbia * self) {
 		printf ("%u_", self->at[curLvl]);
 
 	puts("");
+}
+
+char * bbia_toBase (bbia * self, int base) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_toBase()");
+		return NULL;
+	}
+
+	if ( !(base < 65 && base > 1) ) {
+		throw ("The base must be from 2 to 64");
+		return NULL;
+	}
+
+	if (base == 2) {
+
+		char * result = calloc (sizeof(char), BBIA_BITS_COUNT + 1);
+		if (result == NULL) abort();
+
+		bbia * curBitFlag = NULL;
+		bbia * curBitAndFlag = NULL;
+		for (int currentBit = 1; currentBit <= BBIA_BITS_COUNT; currentBit++) {
+
+			curBitFlag = bbia_bits_flag (currentBit);
+			curBitAndFlag = bbia_and_bbia_new(self, curBitFlag);
+
+			result[BBIA_BITS_COUNT-currentBit] =
+			bbia_is_zero (curBitAndFlag) ? '0' : '1';
+
+			bbia_free (curBitAndFlag);
+			bbia_free (curBitFlag);
+		}
+
+		return result;
+	}
+
+	int powerOfTwo = stuaa_isPowerOfTwo (base);
+	else if (powerOfTwo != -2) {
+
+		int start = log_formMax();
+
+		char * result = calloc (sizeof(char), start + 1);
+		if (result == NULL) abort();
+
+		int tempValue = 0;
+		bbia * curBitFlag = NULL;
+		bbia * curBitAndFlag = NULL;
+		for (int curBit = 0; curBit < BBIA_BITS_COUNT; curBit += powerOfTwo) {
+			for (int curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
+				curBitFlag = bbia_bits_flag (curBit + curBitInTwo);
+				curBitAndFlag = bbia_and_bbia_new(self, curBitFlag);
+
+				tempValue |=
+				bbia_is_zero (curBitAndFlag) ? '0' : stuaa_bitflag (curBitInTwo);
+
+				bbia_free (curBitAndFlag);
+				bbia_free (curBitFlag);
+			}
+
+			result[start--] = numerics[tempValue];
+			tempValue = 0;
+		}
+
+		// shift for needed position
+		// @TODO
+
+		return result;
+
+	}
+
+	return NULL;
+}
+
+bbia * bbia_fromBase (char * self, int base) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_fromBase()");
+		return NULL;
+	}
+
+	if ( !(base < 65 && base > 1) ) {
+		throw ("The base must be from 2 to 64");
+		return NULL;
+	}
+
+	if (base == 2) {
+
+	}
+
+	int powerOfTwo = stuaa_isPowerOfTwo (base);
+	else if (powerOfTwo != -2) {
+
+
+	}
+
+	return NULL;
 }
 
 // @SIGN
