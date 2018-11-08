@@ -290,6 +290,13 @@ void bbia_mult_bbia (bbia * to, bbia * second) {
 
 // @BBIA_DIV_INT
 
+static inline bbia * bbia_divisionBy_operation (bbia * self, bbia * temp) {
+
+	bbia * result = bbia_new();
+
+	return result;
+}
+
 void bbia_div_int (bbia * self, int integer) {
 
 
