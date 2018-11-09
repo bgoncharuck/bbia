@@ -136,6 +136,18 @@ int stuaa_outofbounders_min (int to, int test) {
 	return outofbounders_min_bitDecay (to, test, BBIA_INTEGER_SIZE);
 }
 
+int stuaa_compare (int a, int b) {
+	if (a > b) {
+		if (stuaa_bitflag(31) && b) return -1;
+		else return 1;
+	}
+	else if (a < b) {
+		if (stuaa_bitflag(31) && a) return 1;
+		else return -1;
+	}
+	return 0;
+}
+
 int stuaa_isPowerOfTwo (int value) {
 
 	for (int curBit = 3; curBit <= BBIA_INTEGER_SIZE; curBit++)

@@ -137,6 +137,10 @@ int bbia_is_one (bbia * self) ;
 
 int bbia_is_integer (bbia * self, int integer) ;
 
+int bbia_compare_bbia (bbia * a, bbia * b) ;
+
+int bbia_compare_int (bbia * self, int toCompare) ;
+
 bbia * bbia_new (void) ;
 
 void bbia_free (bbia * self) ;

@@ -119,7 +119,7 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 
 	// @TODO CHECK
 	for (int curLvl = fromLvl+1; curLvl <= BBIA_LEVEL_TOP; curLvl++)
-		self->at[curLvl] = BBIA_LEVEL_IS_FULL - self->at[curLvl] + 1;
+		self->at[curLvl] = BBIA_LEVEL_IS_EMPTY + self->at[curLvl] - 1;
 
 	// if (prevLvl == 1) bbia_sign_change (self);
 }
@@ -135,8 +135,10 @@ void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 			self->at[prevLvl-1]--;
 	}
 
+	if (prevLvl == 1) bbia_sign_change (self);
+
 	for (int curLvl = prevLvl; curLvl < fromLvl; curLvl++)
-		self->at[curLvl] = BBIA_LEVEL_IS_FULL;
+		self->at[curLvl] = BBIA_LEVEL_IS_EMPTY;
 
 	// x = x - y
 	// the number needed to overflow is z = EMPTY + y - 1
@@ -145,9 +147,7 @@ void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 
 	// @TODO CHECK
 	for (int curLvl = prevLvl+1; curLvl <= BBIA_LEVEL_TOP; curLvl++)
-		self->at[curLvl] = BBIA_LEVEL_IS_EMPTY + integer - 1;
-
-	if (prevLvl == 1) bbia_sign_change (self);
+		self->at[curLvl] = BBIA_LEVEL_IS_FULL - self->at[curLvl] + 1;
 }
 
 
@@ -820,6 +820,53 @@ int bbia_is_zero (bbia * self) {
 int bbia_is_one (bbia * self) {
 
 	return bbia_is_integer (self, 1);
+}
+
+// @COMPARE
+
+static inline int bbia_compare_bbia_op (bbia * a, bbia * b) {
+
+	int curCompare = 0;
+
+	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++) {
+		curCompare = stuaa_compare(a->at[curLvl], b->at[curLvl])
+
+		if (curCompare != 0)
+			return curCompare;
+	}
+	return 0;
+}
+
+int bbia_compare_bbia (bbia * a, bbia * b) {
+
+	int res = bbia_compare_bbia_op (a,b);
+	if (a->sign == 0 && b->sign == 0) return res;
+
+	if (a->sign == b->sign) return (res == -1) ? 1 : -1;
+
+	if (a->sign > b->sign) return (res == 1) ? 1 : -1;
+}
+
+static inline int bbia_compare_int_op (bbia * self, int toCompare) {
+
+	curCompare = stuaa_compare(self->at[BBIA_LEVEL_TOP], toCompare);
+	if (curCompare == 1) return 1;
+
+	else {
+		for (int curLvl = BBIA_LEVEL_TOP; curLvl >= 0; curLvl--)
+			if (self->at[curLvl] != 0) return 1;
+	}
+	return curCompare;
+}
+
+int bbia_compare_int (bbia * self, int toCompare, int isSigned) {
+
+	int res = bbia_compare_int_op (self, toCompare);
+	if (isSigned == 0 && self->sign = 0) return res;
+
+	if (self->sign == isSigned) return (res == -1) ? 1 : -1;
+
+	if (self->sign > isSigned) return (res == 1) ? 1 : -1;
 }
 
 // @CONSTRUCTOR
