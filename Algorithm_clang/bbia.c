@@ -4,9 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-// #include <string.h>
 
 #define throw(MSG) fprintf(stderr, "%s\n",MSG)
+
+typedef enum __DIVISION {
+	DIVISION = 42;
+	MOD = 43;
+} DIVISION;
 
 static const char * numerics =
 "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/,"; //base64
@@ -116,12 +120,6 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 	// the number needed to overflow is z = FULL - y + 1
 	// the value to set is x = EMPTY + x - z
 	self->at[fromLvl] = BBIA_LEVEL_IS_EMPTY + self->at[fromLvl] - (BBIA_LEVEL_IS_FULL - integer + 1);
-
-	// @TODO CHECK
-	for (int curLvl = fromLvl+1; curLvl <= BBIA_LEVEL_TOP; curLvl++)
-		self->at[curLvl] = BBIA_LEVEL_IS_EMPTY + self->at[curLvl] - 1;
-
-	// if (prevLvl == 1) bbia_sign_change (self);
 }
 
 void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
@@ -288,24 +286,83 @@ void bbia_mult_bbia (bbia * to, bbia * second) {
 	if (toChangeSign == 1) bbia_sign_change (to);
 }
 
-// @BBIA_DIV_INT
+// @BBIA_DIV
 
-static inline bbia * bbia_divisionBy_operation (bbia * self, bbia * temp) {
+void bbia_divisionBy_operation_curDiv (bbia * divided, bbia * division, bbia * mod) {
 
-	bbia * result = bbia_new();
 
-	return result;
 }
+
+void bbia_divisionBy_operation (bbia * self, bbia * division, DIVISION flag) {
+
+	bbia * mod = bbia_copy_new(self);
+
+	bbia_divisionBy_operation_curDiv (self, division, mod);
+
+	if (flag == DIVISION) bbia_free (mod);
+	else if (flag == MOD) {
+		bbia_free (self);
+		self = mod;
+	}
+}
+
+void bbia_div_bbia (bbia * divided, bbia * division) {
+
+	bbia_divisionBy_operation (divided, division, DIVISION);
+}
+
+void bbia_mod_bbia (bbia * divided, bbia * division) {
+
+	bbia_divisionBy_operation (divided, division, MOD);
+}
+
+bbia * bbia_div_bbia_new (bbia * divided, bbia * division) {
+
+	bbia * res = bbia_copy_new (divided);
+	bbia_divisionBy_operation (res, division, DIVISION);
+	return res;
+}
+
+bbia * bbia_mod_bbia (bbia * divided, bbia * division) {
+
+	bbia * res = bbia_copy_new (divided);
+	bbia_divisionBy_operation (res, division, MOD);
+	return res;
+}
+
+// @BBIA_DIV_INT
 
 void bbia_div_int (bbia * self, int integer) {
 
+	bbia * division = bbia_new();
+	division->at[BBIA_LEVEL_TOP] = integer;
 
+	bbia_divisionBy_operation (self, division, DIVISION);
+	bbia_free (division);
 }
 
 bbia * bbia_div_int_new (bbia * self, int integer) {
 
-	bbia * result = bbia_copy_new (self);
-	return result;
+	bbia * res = bbia_copy_new (self);
+	bbia_div_int (res, integer);
+	return res;
+}
+
+void bbia_mod_int (bbia * self, int integer) {
+
+
+	bbia * division = bbia_new();
+	division->at[BBIA_LEVEL_TOP] = integer;
+
+	bbia_divisionBy_operation (self, division, MOD);
+	bbia_free (division);
+}
+
+bbia * bbia_mod_int_new (bbia * self, int integer) {
+
+	bbia * res = bbia_copy_new (self);
+	bbia_mod_int (res, integer);
+	return res;
 }
 
 // @BITFLAG
