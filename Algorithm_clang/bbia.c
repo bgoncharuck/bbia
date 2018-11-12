@@ -288,34 +288,41 @@ void bbia_mult_bbia (bbia * to, bbia * second) {
 
 // @BBIA_DIV
 
-void bbia_divisionBy_operation_curDiv (bbia * result, bbia * division, bbia * mod) {
-
-	bbia_set_value (result, 0);
-	bbia * curMult = result;
-	curMult->at[BBIA_LEVEL_TOP] = 2;
-
-	bbia * temp = bbia_copy_new (division);
-
-	for (; bbia_compare_bbia (mod, temp) == 1; bbia_sum_int (curMult, 1)) {
-		bbia_copy_bbia (temp, division);
-		bbia_mult_bbia (temp, curMult);
-	}
-	bbia_dif_int (curMult, 1);
-	bbia_copy_bbia (temp, division);
-	bbia_mult_bbia (temp, curMult);
-
-	bbia_dif_bbia (mod, temp);
-	bbia_free(temp);
-}
-
 void bbia_divisionBy_operation (bbia * self, bbia * division, DIVISION flag) {
 
 	bbia * mod = bbia_copy_new(self);
 
-	bbia_divisionBy_operation_curDiv (self, division, mod);
+	// set result to zero and work with it like with current multiplication of division
+	bbia_set_value (self, 0);
+	bbia * currentMultiplierOfDivision = self; // sugar
+	currentMultiplierOfDivision->at[BBIA_LEVEL_TOP] = 2;
 
-	if (flag == DIVISION) bbia_free (mod);
+	// create temporary to store what must be subtrahended from mod
+	bbia * currentDifference = bbia_copy_new (division);
+
+	for (; bbia_compare_bbia (mod, currentDifference) == 1;
+	       bbia_sum_int (currentMultiplierOfDivision, 1) /*analog for i++)*/)
+	{
+
+		bbia_copy_bbia (currentDifference, division);
+		bbia_mult_bbia (currentDifference, currentMultiplierOfDivision);
+	}
+
+	// division result
+	bbia_dif_int (currentMultiplierOfDivision, 1); // analog for i--
+	if (flag == DIVISION) {
+		bbia_free(currentDifference);
+		bbia_free (mod);
+		return;
+	}
+
+	// mod result
 	else if (flag == MOD) {
+		bbia_copy_bbia (currentDifference, division);
+		bbia_mult_bbia (currentDifference, currentMultiplierOfDivision);
+		bbia_dif_bbia (mod, currentDifference);
+		bbia_free(currentDifference);
+
 		bbia_free (self);
 		self = mod;
 	}
@@ -338,7 +345,7 @@ bbia * bbia_div_bbia_new (bbia * divided, bbia * division) {
 	return res;
 }
 
-bbia * bbia_mod_bbia (bbia * divided, bbia * division) {
+bbia * bbia_mod_bbia_new (bbia * divided, bbia * division) {
 
 	bbia * res = bbia_copy_new (divided);
 	bbia_divisionBy_operation (res, division, MOD);
