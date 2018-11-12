@@ -288,9 +288,24 @@ void bbia_mult_bbia (bbia * to, bbia * second) {
 
 // @BBIA_DIV
 
-void bbia_divisionBy_operation_curDiv (bbia * divided, bbia * division, bbia * mod) {
+void bbia_divisionBy_operation_curDiv (bbia * result, bbia * division, bbia * mod) {
 
+	bbia_set_value (result, 0);
+	bbia * curMult = result;
+	curMult->at[BBIA_LEVEL_TOP] = 2;
 
+	bbia * temp = bbia_copy_new (division);
+
+	for (; bbia_compare_bbia (mod, temp) == 1; bbia_sum_int (curMult, 1)) {
+		bbia_copy_bbia (temp, division);
+		bbia_mult_bbia (temp, curMult);
+	}
+	bbia_dif_int (curMult, 1);
+	bbia_copy_bbia (temp, division);
+	bbia_mult_bbia (temp, curMult);
+
+	bbia_dif_bbia (mod, temp);
+	bbia_free(temp);
 }
 
 void bbia_divisionBy_operation (bbia * self, bbia * division, DIVISION flag) {
@@ -587,6 +602,46 @@ bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
 
 	bbia * to = bbia_new();
 	bbia_sum_bbia_to (to, first, second);
+	return to;
+}
+
+void bbia_dif_bbia (bbia * first, bbia * second) {
+
+	if (first == NULL || second == NULL) {
+		throw ("null pointer in bbia_sum_bbia");
+		return;
+	}
+
+	if (first->sign == second->sign)
+		for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			bbia_dif_int_level (first, second->at[curLvl], curLvl);
+	else
+		for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			bbia_sum_int_level (first, second->at[curLvl], curLvl);
+}
+
+void bbia_dif_bbia_to (bbia * to, bbia * first, bbia * second) {
+
+	if (to == NULL || first == NULL || second == NULL) {
+		throw ("null pointer in bbia_sum_bbia");
+		return;
+	}
+
+	bbia_copy_bbia (to, first);
+
+
+	if (first->sign == second->sign)
+		for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			bbia_dif_int_level (to, second->at[curLvl], curLvl);
+	else
+		for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+			bbia_sum_int_level (to, second->at[curLvl], curLvl);
+}
+
+bbia * bbia_dif_bbia_new (bbia * first, bbia * second) {
+
+	bbia * to = bbia_new();
+	bbia_dif_bbia_to (to, first, second);
 	return to;
 }
 

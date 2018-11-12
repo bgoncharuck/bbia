@@ -95,6 +95,12 @@ void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) ;
 
 bbia * bbia_sum_bbia_new (bbia * first, bbia * second) ;
 
+void bbia_dif_bbia (bbia * first, bbia * second) ;
+
+void bbia_dif_bbia_to (bbia * to, bbia * first, bbia * second) ;
+
+bbia * bbia_dif_bbia_new (bbia * first, bbia * second) ;
+
 bbia * bbia_mult_int_new (bbia * self, int integer) ;
 
 void bbia_mult_int (bbia * self, int integer) ;
