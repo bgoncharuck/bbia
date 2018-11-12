@@ -109,6 +109,22 @@ bbia * bbia_mult_bbia_new (bbia * first, bbia * second) ;
 
 void bbia_mult_bbia (bbia * to, bbia * second) ;
 
+void bbia_div_bbia (bbia * divided, bbia * division) ;
+
+void bbia_mod_bbia (bbia * divided, bbia * division) ;
+
+bbia * bbia_div_bbia_new (bbia * divided, bbia * division) ;
+
+bbia * bbia_mod_bbia_new (bbia * divided, bbia * division) ;
+
+void bbia_div_int (bbia * self, int integer) ;
+
+bbia * bbia_div_int_new (bbia * self, int integer) ;
+
+void bbia_mod_int (bbia * self, int integer) ;
+
+bbia * bbia_mod_int_new (bbia * self, int integer) ;
+
 void bbia_pow (bbia * self, int power) ;
 
 bbia * bbia_pow_new (bbia * self, int power) ;

@@ -16,6 +16,8 @@ int main (int argc, char * argv[]) {
 	// bbia * multB2Test = bbia_new();
 	bbia * multB2Test = NULL;
 	bbia * multB3Test = bbia_new();
+	bbia * divisionTest1 = bbia_new();
+
 
 	puts ("BBIA Bitflag tests : \n");
 	puts ("Before bitflag :");
@@ -95,6 +97,13 @@ int main (int argc, char * argv[]) {
 	bbia_pow (multB3Test, 5);
 	bbia_print_levelValue_dec (multB3Test);
 
+	puts("\nDivsion tests\n");
+	puts("Before division test : ");
+	bbia_at_set (multTest, BBIA_LEVEL_TOP, 56);
+	bbia_print_levelValue_dec (divisionTest1);
+
+
+
 	/*
 	int shiftTest = 0x40000000;
 	// int shiftTest1 = -1;
@@ -104,6 +113,7 @@ int main (int argc, char * argv[]) {
 	puts(stuaa_toBase(shiftTest,2));
 	*/
 
+	bbia_free (divisionTest1);
 	bbia_free (multB1Test);
 	// bbia_free (multB2Test);
 	bbia_free (multB3Test);
