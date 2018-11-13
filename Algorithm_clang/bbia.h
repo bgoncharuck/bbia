@@ -161,7 +161,7 @@ int bbia_is_integer (bbia * self, int integer) ;
 
 int bbia_compare_bbia (bbia * a, bbia * b) ;
 
-int bbia_compare_int (bbia * self, int toCompare) ;
+int bbia_compare_int (bbia * self, int toCompare, int isSigned) ;
 
 bbia * bbia_new (void) ;
 

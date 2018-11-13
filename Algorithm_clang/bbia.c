@@ -7,10 +7,10 @@
 
 #define throw(MSG) fprintf(stderr, "%s\n",MSG)
 
-typedef enum __DIVISION {
-	DIVISION = 42;
-	MOD = 43;
-} DIVISION;
+typedef enum __DIVISION_MOD {
+	DIVISION = 42,
+	MOD = 43
+} DIVISION_MOD;
 
 static const char * numerics =
 "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/,"; //base64
@@ -153,16 +153,20 @@ void bbia_sum_int_level (bbia * self, int integer, int level) {
 
 	if (stuaa_outofbounders_max (self->at[level], integer) == 0)
 		self->at[level] += integer;
-	else
+	else {
+		printf ("kek");
 		bbia_sum_int_levelOut (self, integer, level, level);
+	}
 }
 
 void bbia_dif_int_level (bbia * self, int integer, int level) {
 
 	if (stuaa_outofbounders_min (self->at[level], integer) == 0)
 		self->at[level] -= integer;
-	else
+	else {
+		printf ("kek");
 		bbia_dif_int_levelOut (self, integer, level, level);
+	}
 }
 
 void bbia_sum_int (bbia * self, int integer) {
@@ -288,7 +292,7 @@ void bbia_mult_bbia (bbia * to, bbia * second) {
 
 // @BBIA_DIV
 
-void bbia_divisionBy_operation (bbia * self, bbia * division, DIVISION flag) {
+void bbia_divisionBy_operation (bbia * self, bbia * division, DIVISION_MOD flag) {
 
 	bbia * mod = bbia_copy_new(self);
 
@@ -300,16 +304,16 @@ void bbia_divisionBy_operation (bbia * self, bbia * division, DIVISION flag) {
 	// create temporary to store what must be subtrahended from mod
 	bbia * currentDifference = bbia_copy_new (division);
 
-	for (; bbia_compare_bbia (mod, currentDifference) == 1;
+	for (; bbia_compare_bbia (mod, currentDifference) != 1;
 	       bbia_sum_int (currentMultiplierOfDivision, 1) /*analog for i++)*/)
 	{
-
 		bbia_copy_bbia (currentDifference, division);
 		bbia_mult_bbia (currentDifference, currentMultiplierOfDivision);
+		bbia_print_levelValue_dec (currentMultiplierOfDivision);
 	}
 
+	bbia_dif_int (currentMultiplierOfDivision, 2); // analog for i--
 	// division result
-	bbia_dif_int (currentMultiplierOfDivision, 1); // analog for i--
 	if (flag == DIVISION) {
 		bbia_free(currentDifference);
 		bbia_free (mod);
@@ -772,6 +776,7 @@ char * bbia_toBase (bbia * self, int base) {
 		return NULL;
 	}
 
+	int powerOfTwo = stuaa_isPowerOfTwo (base);
 	if (base == 2) {
 
 		char * result = calloc (sizeof(char), BBIA_BITS_COUNT + 1);
@@ -782,7 +787,7 @@ char * bbia_toBase (bbia * self, int base) {
 		for (int currentBit = 1; currentBit <= BBIA_BITS_COUNT; currentBit++) {
 
 			curBitFlag = bbia_bits_flag (currentBit);
-			curBitAndFlag = bbia_and_bbia_new(self, curBitFlag);
+			curBitAndFlag = bbia_bits_and_new(self, curBitFlag);
 
 			result[BBIA_BITS_COUNT-currentBit] =
 			bbia_is_zero (curBitAndFlag) ? '0' : '1';
@@ -794,7 +799,6 @@ char * bbia_toBase (bbia * self, int base) {
 		return result;
 	}
 
-	int powerOfTwo = stuaa_isPowerOfTwo (base);
 	else if (powerOfTwo != -2) {
 
 		int start = log_formMax();
@@ -808,7 +812,7 @@ char * bbia_toBase (bbia * self, int base) {
 		for (int curBit = 0; curBit < BBIA_BITS_COUNT; curBit += powerOfTwo) {
 			for (int curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
 				curBitFlag = bbia_bits_flag (curBit + curBitInTwo);
-				curBitAndFlag = bbia_and_bbia_new(self, curBitFlag);
+				curBitAndFlag = bbia_bits_and_new(self, curBitFlag);
 
 				tempValue |=
 				bbia_is_zero (curBitAndFlag) ? '0' : stuaa_bitflag (curBitInTwo);
@@ -843,11 +847,11 @@ bbia * bbia_fromBase (char * self, int base) {
 		return NULL;
 	}
 
+	int powerOfTwo = stuaa_isPowerOfTwo (base);
 	if (base == 2) {
 
 	}
 
-	int powerOfTwo = stuaa_isPowerOfTwo (base);
 	else if (powerOfTwo != -2) {
 
 
@@ -948,7 +952,7 @@ static inline int bbia_compare_bbia_op (bbia * a, bbia * b) {
 	int curCompare = 0;
 
 	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++) {
-		curCompare = stuaa_compare(a->at[curLvl], b->at[curLvl])
+		curCompare = stuaa_compare(a->at[curLvl], b->at[curLvl]);
 
 		if (curCompare != 0)
 			return curCompare;
@@ -964,11 +968,13 @@ int bbia_compare_bbia (bbia * a, bbia * b) {
 	if (a->sign == b->sign) return (res == -1) ? 1 : -1;
 
 	if (a->sign > b->sign) return (res == 1) ? 1 : -1;
+
+	return 0;
 }
 
 static inline int bbia_compare_int_op (bbia * self, int toCompare) {
 
-	curCompare = stuaa_compare(self->at[BBIA_LEVEL_TOP], toCompare);
+	int curCompare = stuaa_compare(self->at[BBIA_LEVEL_TOP], toCompare);
 	if (curCompare == 1) return 1;
 
 	else {
@@ -981,11 +987,13 @@ static inline int bbia_compare_int_op (bbia * self, int toCompare) {
 int bbia_compare_int (bbia * self, int toCompare, int isSigned) {
 
 	int res = bbia_compare_int_op (self, toCompare);
-	if (isSigned == 0 && self->sign = 0) return res;
+	if (isSigned == 0 && self->sign == 0) return res;
 
 	if (self->sign == isSigned) return (res == -1) ? 1 : -1;
 
 	if (self->sign > isSigned) return (res == 1) ? 1 : -1;
+
+	return 0;
 }
 
 // @CONSTRUCTOR

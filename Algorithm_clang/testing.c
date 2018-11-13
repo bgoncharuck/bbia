@@ -99,9 +99,11 @@ int main (int argc, char * argv[]) {
 
 	puts("\nDivsion tests\n");
 	puts("Before division test : ");
-	bbia_at_set (multTest, BBIA_LEVEL_TOP, 56);
+	bbia_at_set (divisionTest1, BBIA_LEVEL_TOP, 56);
 	bbia_print_levelValue_dec (divisionTest1);
-
+	puts("After division test : ");
+	bbia_div_int (divisionTest1, 8);
+	bbia_print_levelValue_dec (divisionTest1);
 
 
 	/*
