@@ -159,10 +159,8 @@ void bbia_sum_int_level (bbia * self, int integer, int level) {
 
 void bbia_dif_int_level (bbia * self, int integer, int level) {
 
-	if (stuaa_outofbounders_min (self->at[level], integer) == 0) {
-		printf("%d - %d\n", self->at[level], integer);
+	if (stuaa_outofbounders_min (self->at[level], integer) == 0)
 		self->at[level] -= integer;
-	}
 	else
 		bbia_dif_int_levelOut (self, integer, level, level);
 }
@@ -321,21 +319,30 @@ void bbia_divisionBy_operation (bbia * self, bbia * division, DIVISION_MOD flag)
 	else if (flag == MOD) {
 		bbia_copy_bbia (currentDifference, division);
 		bbia_mult_bbia (currentDifference, currentMultiplierOfDivision);
-	 	bbia_print_levelValue_dec (currentDifference);
 		bbia_dif_bbia (mod, currentDifference);
 		bbia_free(currentDifference);
 
-		bbia_free (self);
-		self = mod;
+		bbia_copy_bbia (self, mod);
+		bbia_free (mod);
 	}
 }
 
 void bbia_div_bbia (bbia * divided, bbia * division) {
 
+	if (divided == NULL || division == NULL) {
+		throw("null pointer in bbia_div_bbia()");
+		return;
+	}
+
 	bbia_divisionBy_operation (divided, division, DIVISION);
 }
 
 void bbia_mod_bbia (bbia * divided, bbia * division) {
+
+	if (divided == NULL || division == NULL) {
+		throw("null pointer in bbia_mod_bbia()");
+		return;
+	}
 
 	bbia_divisionBy_operation (divided, division, MOD);
 }
@@ -358,6 +365,16 @@ bbia * bbia_mod_bbia_new (bbia * divided, bbia * division) {
 
 void bbia_div_int (bbia * self, int integer) {
 
+	if (divided == NULL) {
+		throw("null pointer in bbia_div_int()");
+		return;
+	}
+
+	if (integer == BBIA_LEVEL_IS_EMPTY) {
+		throw("division by zero");
+		return;
+	}
+
 	bbia * division = bbia_new();
 	division->at[BBIA_LEVEL_TOP] = integer;
 
@@ -373,6 +390,11 @@ bbia * bbia_div_int_new (bbia * self, int integer) {
 }
 
 void bbia_mod_int (bbia * self, int integer) {
+
+	if (divided == NULL) {
+		throw("null pointer in bbia_mod_int()");
+		return;
+	}
 
 	bbia * division = bbia_new();
 	division->at[BBIA_LEVEL_TOP] = integer;
@@ -942,6 +964,22 @@ int bbia_is_one (bbia * self) {
 	return bbia_is_integer (self, 1);
 }
 
+
+int bbia_is_SystemInteger (bbia * self, int level) {
+
+	if (self == NULL) {
+		throw("null pointer in bbia_is_SystemInteger()");
+		return 0;
+	}
+
+	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+	if (curLvl != level)
+		if (self->at[curLvl] != BBIA_LEVEL_IS_EMPTY)
+			return 0;
+
+	return 1;
+}
+
 // @COMPARE
 
 static inline int bbia_compare_bbia_op (bbia * a, bbia * b) {
@@ -958,6 +996,11 @@ static inline int bbia_compare_bbia_op (bbia * a, bbia * b) {
 }
 
 int bbia_compare_bbia (bbia * a, bbia * b) {
+
+	if (a == NULL || b == NULL) {
+		throw("null pointer in bbia_compare_bbia()");
+		return 0;
+	}
 
 	int res = bbia_compare_bbia_op (a,b);
 	if (a->sign == 0 && b->sign == 0) return res;
@@ -983,6 +1026,11 @@ static inline int bbia_compare_int_op (bbia * self, int toCompare) {
 
 int bbia_compare_int (bbia * self, int toCompare, int isSigned) {
 
+	if (self == NULL) {
+		throw("null pointer in bbia_compare_int()");
+		return 0;
+	}
+
 	int res = bbia_compare_int_op (self, toCompare);
 	if (isSigned == 0 && self->sign == 0) return res;
 
@@ -992,6 +1040,7 @@ int bbia_compare_int (bbia * self, int toCompare, int isSigned) {
 
 	return 0;
 }
+
 
 // @CONSTRUCTOR
 
