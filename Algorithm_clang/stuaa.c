@@ -124,11 +124,9 @@ static int outofbounders_min_bitDecay (int to, int test, int bitDec) {
 
 	if (bitDec < 1) return 0;
 
-	if ((to & stuaa_bitflag (bitDec)) == 0 && (test & stuaa_bitflag (bitDec))) return 1;
+	if ((to & stuaa_bitflag (bitDec)) == 0 && (test & stuaa_bitflag (bitDec)) == 1) return 1;
 
-	/*TODO*/
-
-	return 0;
+	return outofbounders_min_bitDecay (to,test,bitDec-1);
 }
 
 int stuaa_outofbounders_min (int to, int test) {

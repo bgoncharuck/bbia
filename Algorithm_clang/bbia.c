@@ -153,20 +153,18 @@ void bbia_sum_int_level (bbia * self, int integer, int level) {
 
 	if (stuaa_outofbounders_max (self->at[level], integer) == 0)
 		self->at[level] += integer;
-	else {
-		printf ("kek");
+	else
 		bbia_sum_int_levelOut (self, integer, level, level);
-	}
 }
 
 void bbia_dif_int_level (bbia * self, int integer, int level) {
 
-	if (stuaa_outofbounders_min (self->at[level], integer) == 0)
+	if (stuaa_outofbounders_min (self->at[level], integer) == 0) {
+		printf("%d - %d\n", self->at[level], integer);
 		self->at[level] -= integer;
-	else {
-		printf ("kek");
-		bbia_dif_int_levelOut (self, integer, level, level);
 	}
+	else
+		bbia_dif_int_levelOut (self, integer, level, level);
 }
 
 void bbia_sum_int (bbia * self, int integer) {
@@ -309,7 +307,6 @@ void bbia_divisionBy_operation (bbia * self, bbia * division, DIVISION_MOD flag)
 	{
 		bbia_copy_bbia (currentDifference, division);
 		bbia_mult_bbia (currentDifference, currentMultiplierOfDivision);
-		bbia_print_levelValue_dec (currentMultiplierOfDivision);
 	}
 
 	bbia_dif_int (currentMultiplierOfDivision, 2); // analog for i--
@@ -324,6 +321,7 @@ void bbia_divisionBy_operation (bbia * self, bbia * division, DIVISION_MOD flag)
 	else if (flag == MOD) {
 		bbia_copy_bbia (currentDifference, division);
 		bbia_mult_bbia (currentDifference, currentMultiplierOfDivision);
+	 	bbia_print_levelValue_dec (currentDifference);
 		bbia_dif_bbia (mod, currentDifference);
 		bbia_free(currentDifference);
 
@@ -375,7 +373,6 @@ bbia * bbia_div_int_new (bbia * self, int integer) {
 }
 
 void bbia_mod_int (bbia * self, int integer) {
-
 
 	bbia * division = bbia_new();
 	division->at[BBIA_LEVEL_TOP] = integer;
