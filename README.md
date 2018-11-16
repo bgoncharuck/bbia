@@ -7,7 +7,7 @@ The max value that can be saved with this algorithm is two, in power of two in p
 
 <p>For 32bit integer max value is (2^(2^32-1))-1 and need 15.(9) == 16 GigaByte of RAM (2^32-1 * 4 byte) to save it
 <p>For 64bit integer max value is (2^(2^64-1))-1 and need 127.(9) == 128 ExaByte of RAM (2^64-1 * 8 byte) to save it
-<p>Don't forget to count additional integer for sign save. Also need extra memory for multiplication, division, from and to base. The bigger count of levels the more memory you need for this operations.
+<p>Don't forget to count additional integer for sign and used level save. Also need extra memory for operations. The bigger count of levels the more memory you need for this operations.
 
 Also BBIA can be considered as canonical and shifted numeric system of integer values with additional sign save
 [pure, positional, with direct presentation of forms and natural weight order]
@@ -48,23 +48,10 @@ Will be added Rust version. You are free to add other languages.
 <p> 2^(2^30)-1 is max value
 <p> needs 4 GigaByte of RAM to store
 <p> computer with 8 GigaBytes of RAM can easily store it
-<p> computer with 16 GigaBytes of RAM is comfortable to use arithmetic operations with it
+<p> computer with 32 GigaBytes of RAM is comfortable to use arithmetic operations with it
 <p>
 <p> 2^29 bits and 4byte integer
 <p> 2^(2^29)-1 is max value
 <p> needs 2 GigaByte of RAM to store
 <p> computer with 4 GigaBytes of RAM can easily store it
-<p> computer with 8 GigaBytes of RAM is comfortable to use arithmetic operations with it
-
-## Current tested bit sizes for 64bit integer size
-<p> 2^30 bits and 8byte integer
-<p> 2^(2^30)-1 is max value
-<p> needs 8 GigaByte of RAM to store
-<p> computer with 16 GigaBytes of RAM can easily store it
-<p> computer with 32 GigaBytes of RAM is comfortable to use arithmetic operations with it
-<p>
-<p> 2^29 bits and 8byte integer
-<p> 2^(2^29)-1 is max value
-<p> needs 4 GigaByte of RAM to store
-<p> computer with 8 GigaBytes of RAM can easily store it
 <p> computer with 16 GigaBytes of RAM is comfortable to use arithmetic operations with it
