@@ -7,24 +7,22 @@
 
 #define throw(MSG) fprintf(stderr, "%s\n",MSG)
 
-#define nullPointer_funcVoid_1 (p, functionName) \
-do { \
+#define nullPointer_funcVoid_1(p, functionName) do { \
 	if (p == NULL) { \
 		fprintf (stderr, "null pointer in %s\n", functionName); \
 		return; \
 	} \
 } while(0)
-#define nullPointer_funcVoid_2 (p1, p2, functionName)do{if(p1 == NULL || p2 == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return;}}while(0)
-#define nullPointer_funcPointer_1 (p, functionName)do{if(p == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return NULL;}} while(0)
-#define nullPointer_funcPointer_2 (p1, p2, functionName)do{if (p1 == NULL || p2 == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return NULL;}}while(0)
-#define nullPointer_funcInt_1 (p, functionName)do{if(p == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return -42;}}while(0)
-#define nullPointer_funcInt_2 (p1, p2, functionName)do{if(p1 == NULL || p2 == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return -42;}}while(0)
+#define nullPointer_funcVoid_2(p1, p2, functionName) do{if(p1 == NULL || p2 == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return;}}while(0)
+#define nullPointer_funcPointer_1(p, functionName)do{if(p == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return NULL;}} while(0)
+#define nullPointer_funcPointer_2(p1, p2, functionName)do{if (p1 == NULL || p2 == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return NULL;}}while(0)
+#define nullPointer_funcInt_1(p, functionName)do{if(p == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return -42;}}while(0)
+#define nullPointer_funcInt_2(p1, p2, functionName)do{if(p1 == NULL || p2 == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return -42;}}while(0)
 
 
 typedef enum __DIVISION_OR_MOD { DIVISION = 2, MOD = 4 } DIVISION_OR_MOD;
 
 struct __bbia {
-
 	// some languages don`t have unsigned int
 	signed int at[BBIA_LEVEL_COUNT];
 	signed int sign;
@@ -46,9 +44,43 @@ bbia * bbia_new (void) {
 }
 
 void bbia_free (bbia * self) {
-
 	nullPointer_funcVoid_1 (self, "bbia_free");
 	free(self);
+}
+
+
+// @SETERS
+
+void bbia_set_value_fromLevel (bbia * self, int level, int value) {
+	nullPointer_funcVoid_1 (self, "bbia_set_value_fromLevel");
+
+	for (int curLvl = level; curLvl >= 0; curLvl--)
+		self->at[curLvl] = value;
+	self->usedLevelPos = 0; if (value == 0) bbia_check_usedLevelPosition (self);
+}
+
+void bbia_set_value_toLevel (bbia * self, int level, int value) {
+	nullPointer_funcVoid_1 (self, "bbia_set_value_toLevel");
+
+	for (int curLvl = level; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+		self->at[curLvl] = value;
+	self->usedLevelPos = level; if (value == 0) bbia_check_usedLevelPosition (self);
+}
+
+void bbia_set_value (bbia * self, int value) {
+	bbia_set_value_fromLevel (self, BBIA_LEVEL_TOP, value);
+}
+
+int bbia_at_get (bbia * self, int index) {
+	nullPointer_funcInt_1 (self, "bbia_at_get");
+	return self->at[index];
+}
+
+void bbia_at_set (bbia * self, int index, int value) {
+	nullPointer_funcVoid_1 (self, "bbia_at_set");
+	self->at[index] = value;
+
+	if (self->usedLevelPos > index) self->usedLevelPos = index;
 }
 
 // @CHECK and datastruct operations
@@ -57,7 +89,7 @@ void bbia_check_usedLevelPosition (bbia * self) {
 	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
 		if (self->at[curLvl] != 0) {
 			self->usedLevelPos = curLvl;
-			return
+			return;
 		}
 }
 
@@ -84,18 +116,17 @@ void bbia_bits_shift_left (bbia * self, int value) {
 	// for all levels lesser then top
 	// we set saved bits
 
-	int temporaryValue =  (self->usedLevelPos == 0) ? 0 : self->usedLevelPos -1;
-	for (int lvl = BBIA_LEVEL_TOP; lvl > temporaryValue; self->at[lvl] <<= value, lvl--) {
+	self->usedLevelPos = (self->usedLevelPos == 0) ? 0 : self->usedLevelPos - 1;
+	for (int lvl = BBIA_LEVEL_TOP; lvl > self->usedLevelPos; self->at[lvl] <<= value, lvl--) {
 		bitMask[1] = self->at[lvl] & bitMask[0];
 		stuaa_shiftr (bitMask+1, BBIA_INTEGER_SIZE-value);
 		savedBits[lvl-1] = bitMask[1];
 	}
-	self->at[temporaryValue] <<= value;
+	self->at[self->usedLevelPos] <<= value;
 
-	for (int lvl = temporaryValue; lvl < BBIA_LEVEL_TOP; lvl++)
+	for (int lvl = self->usedLevelPos; lvl < BBIA_LEVEL_TOP; lvl++)
 		self->at[lvl] |= savedBits[lvl];
 
-	bbia_check_usedLevelPosition (self);
 }
 
 void bbia_bits_shift_right (bbia * self, int value) {
@@ -119,18 +150,17 @@ void bbia_bits_shift_right (bbia * self, int value) {
 	// for all levels bigger then 0
 	// we set saved bits
 
-	int temporaryValue =  (self->usedLevelPos == 0) ? 0 : self->usedLevelPos -1;
-	for (int lvl = temporaryValue; lvl < BBIA_LEVEL_TOP; stuaa_shiftr (self->at+lvl,value), lvl++) {
+	for (int lvl = self->usedLevelPos; lvl < BBIA_LEVEL_TOP; stuaa_shiftr (self->at+lvl,value), lvl++) {
 		bitMask[1] = self->at[lvl] & bitMask[0];
 		bitMask[1] <<= BBIA_INTEGER_SIZE-value;
 		savedBits[lvl] = bitMask[1];
 	}
-	stuaa_shiftr (temporaryValue,value);
+	stuaa_shiftr (self->at+BBIA_LEVEL_TOP,value);
 
-	for (int lvl = temporaryValue; lvl < BBIA_LEVEL_TOP; lvl++)
+	for (int lvl = self->usedLevelPos; lvl < BBIA_LEVEL_TOP; lvl++)
 		self->at[lvl+1] |= savedBits[lvl];
 
-	bbia_check_usedLevelPosition (self);
+	if (self->at[self->usedLevelPos] == 0) self->usedLevelPos++;
 }
 
 void bbia_bits_or (bbia * first, bbia * second) {
@@ -274,4 +304,28 @@ bbia * bbia_bits_tillBit_isEmpty (int num) {
 		self->at[lvl] &= ~(stuaa_bitflag (curBit));
 	bbia_check_usedLevelPosition (self);
 	return self;
+}
+
+// @PRINT
+
+void bbia_print_levelValue (bbia * self) {
+	nullPointer_funcVoid_1 (self, "bbia_print_levelValue");
+
+	char * tempMemory = NULL;
+	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++) {
+
+		tempMemory = stuaa_toBase (self->at[curLvl], 2);
+		printf ("%s_", tempMemory);
+
+		if (tempMemory != NULL) free (tempMemory);
+	}
+	puts("");
+}
+
+void bbia_print_levelValue_dec (bbia * self) {
+	nullPointer_funcVoid_1 (self, "bbia_print_levelValue_dec");
+
+	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+		printf ("%u_", self->at[curLvl]);
+	puts("");
 }

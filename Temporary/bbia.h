@@ -53,6 +53,13 @@ typedef struct __bbia bbia;
 // @CONSTRUCTOR
 bbia * bbia_new (void) ;
 void bbia_free (bbia * self) ;
+// @SETTERS
+void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
+void bbia_set_value_toLevel (bbia * self, int level, int value) ;
+void bbia_set_value (bbia * self, int value) ;
+int bbia_at_get (bbia * self, int index) ;
+void bbia_at_set (bbia * self, int index, int value) ;
+// @CHECK
 void bbia_check_usedLevelPosition (bbia * self) ;
 // @BIT_OPERATIONS
 void bbia_bits_shift_left (bbia * self, int value) ;
@@ -70,3 +77,6 @@ bbia * bbia_bits_isFull () ;
 bbia * bbia_bits_isEmpty () ;
 bbia * bbia_bits_tillBit_isFull (int num) ;
 bbia * bbia_bits_tillBit_isEmpty (int num) ;
+// @PRINT
+void bbia_print_levelValue (bbia * self) ;
+void bbia_print_levelValue_dec (bbia * self) ;
