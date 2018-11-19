@@ -43,13 +43,28 @@ bbia * bbia_new (void) {
 	return self;
 }
 
+bbia * bbia_new_fromSystemInteger (int integer) {
+	bbia * self = bbia_new();
+	bbia->at[BBIA_LEVEL_TOP] = integer;
+	return result;
+}
+
 void bbia_free (bbia * self) {
 	nullPointer_funcVoid_1 (self, "bbia_free");
 	free(self);
 }
 
-
 // @SETERS
+
+void bbia_set_sign_change (bbia * self) {
+	nullPointer_funcVoid_1 (self, "bbia_set_sign_change");
+	self->sign = (self->sign) ? 0 : 1;
+}
+
+void bbia_set_sign (bbia * self, int sign) {
+	nullPointer_funcVoid_1 (self, "bbia_set_sign");
+	self->sign = sign;
+}
 
 void bbia_set_value_fromLevel (bbia * self, int level, int value) {
 	nullPointer_funcVoid_1 (self, "bbia_set_value_fromLevel");
@@ -83,14 +98,99 @@ void bbia_at_set (bbia * self, int index, int value) {
 	if (self->usedLevelPos > index) self->usedLevelPos = index;
 }
 
-// @CHECK and datastruct operations
+// @CHECK
 
 void bbia_check_usedLevelPosition (bbia * self) {
+	nullPointer_funcVoid_1 (self, "bbia_check_usedLevelPosition");
 	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
 		if (self->at[curLvl] != 0) {
 			self->usedLevelPos = curLvl;
 			return;
 		}
+}
+
+int bbia_check_sign (bbia * self) {
+	nullPointer_funcInt_1 (self, "bbia_check_sign");
+	return self->sign;
+}
+
+int bbia_check_is_integer (bbia * self, int integer) {
+
+	nullPointer_funcInt_1 (self, "bbia_check_is_integer")
+	if (self->usedLevelPos < BBIA_LEVEL_TOP) return 0;
+
+	return (self->at[BBIA_LEVEL_TOP] == integer) ? 1 : 0;
+}
+
+int bbia_check_is_zero (bbia * self) {
+	return bbia_check_is_integer (self, 0);
+}
+
+int bbia_check_is_one (bbia * self) {
+	return bbia_check_is_integer (self, 1);
+}
+
+int bbia_check_is_systemInteger (bbia * self, int level) {
+	nullPointer_funcInt_1 (self, "bbia_check_is_systemInteger");
+	return (self->usedLevelPos == BBIA_LEVEL_TOP) ? 1 : 0;
+}
+
+// @COMPARE
+
+static inline int bbia_compare_bbia_op (bbia * a, bbia * b) {
+	int curCompare = 0;
+	int curLvl = (a->usedLevelPos >= b->usedLevelPos) ? a->usedLevelPos : b->usedLevelPos;
+	for (; curLvl <= BBIA_LEVEL_TOP; curLvl++) {
+		curCompare = stuaa_compare(a->at[curLvl], b->at[curLvl]);
+		if (curCompare != 0)
+			return curCompare;
+	}
+	return 0;
+}
+
+int bbia_compare_bbia (bbia * a, bbia * b) {
+
+	nullPointer_funcInt_2 (a, b, "bbia_compare_bbia");
+	int res = bbia_compare_bbia_op (a,b);
+
+	if (a->sign == 0 && b->sign == 0) return res;
+	else if (a->sign == b->sign) return (res == -1) ? 1 : -1;
+	else if (a->sign > b->sign) return (res == 1) ? 1 : -1;
+	return 0;
+}
+
+static inline int bbia_compare_int_op (bbia * self, int toCompare) {
+	if (self->usedLevelPos < BBIA_LEVEL_TOP) return 1;
+	int curCompare = stuaa_compare(self->at[BBIA_LEVEL_TOP], toCompare);
+	return curCompare;
+}
+
+int bbia_compare_int (bbia * self, int toCompare, int isSigned) {
+
+	nullPointer_funcInt_1 (self, "bbia_compare_int");
+	int res = bbia_compare_int_op (self, toCompare);
+
+	if (isSigned == 0 && self->sign == 0) return res;
+	else if (self->sign == isSigned) return (res == -1) ? 1 : -1;
+	else if (self->sign > isSigned) return (res == 1) ? 1 : -1;
+	return 0;
+}
+
+// @COPY
+
+void bbia_copy_bbia (bbia * to, bbia * from) {
+	nullPointer_funcVoid_2 (to, from, "bbia_copy_bbia");
+	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+		to->at[curLvl] = from->at[curLvl];
+	to->sign = from->sign;
+	to->usedLevelPos = from->usedLevelPos;
+}
+
+bbia * bbia_copy_new (bbia * from) {
+	nullPointer_funcPointer_1 (from, "bbia_copy_new");
+	bbia * to = bbia_new();
+	bbia_copy_bbia (to, from);
+	return to;
 }
 
 // @BIT_OPERATIONS
