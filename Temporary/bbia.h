@@ -24,10 +24,15 @@
 #define BBIA_BITS_33554432 33554432/BBIA_INTEGER_SIZE // 2^25
 #define BBIA_BITS_67108864 67108864/BBIA_INTEGER_SIZE // 2^26
 #define BBIA_BITS_134217728 134217728/BBIA_INTEGER_SIZE // 2^27
+// WARNING : Be carefull with it. Needs a big amount of RAM.
 #define BBIA_BITS_268435456 268435456/BBIA_INTEGER_SIZE // 2^28
 #define BBIA_BITS_536870912 536870912/BBIA_INTEGER_SIZE // 2^29
 #define BBIA_BITS_1073741824 1073741824/BBIA_INTEGER_SIZE // 2^30
-
+#define BBIA_BITS_2147483648 2147483648/BBIA_INTEGER_SIZE // 2^31
+// WARNING : Be carefull with max value of 32bit bbia.
+// It can`t be tested on current computer.
+// 4294967296 but used 4294967295 to avoid overflow in some systems
+#define BBIA_BITS_4294967296 4294967295/BBIA_INTEGER_SIZE // 2^32
 
 /*LEVEL*/
 /*@CHOOSE size here*/
@@ -52,15 +57,29 @@ typedef struct __bbia bbia;
 
 // @CONSTRUCTOR
 bbia * bbia_new (void) ;
+bbia * bbia_new_fromSystemInteger (int integer) ;
 void bbia_free (bbia * self) ;
-// @SETTERS
+// @SETERS
+void bbia_set_sign_change (bbia * self) ;
+void bbia_set_sign (bbia * self, int sign) ;
 void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
 void bbia_set_value_toLevel (bbia * self, int level, int value) ;
 void bbia_set_value (bbia * self, int value) ;
 int bbia_at_get (bbia * self, int index) ;
 void bbia_at_set (bbia * self, int index, int value) ;
 // @CHECK
-void bbia_check_usedLevelPosition (bbia * self) ;
+void bbia_check_lvlButton (bbia * self) ;
+int bbia_check_sign (bbia * self) ;
+int bbia_check_is_integer (bbia * self, int integer) ;
+int bbia_check_is_zero (bbia * self) ;
+int bbia_check_is_one (bbia * self) ;
+int bbia_check_is_systemInteger (bbia * self) ;
+// @COMPARE
+int bbia_compare_bbia (bbia * a, bbia * b) ;
+int bbia_compare_int (bbia * self, int toCompare, int isSigned) ;
+// @COPY
+void bbia_copy_bbia (bbia * to, bbia * from) ;
+bbia * bbia_copy_new (bbia * from) ;
 // @BIT_OPERATIONS
 void bbia_bits_shift_left (bbia * self, int value) ;
 void bbia_bits_shift_right (bbia * self, int value) ;
@@ -77,6 +96,18 @@ bbia * bbia_bits_isFull () ;
 bbia * bbia_bits_isEmpty () ;
 bbia * bbia_bits_tillBit_isFull (int num) ;
 bbia * bbia_bits_tillBit_isEmpty (int num) ;
+// @SUM
+void bbia_sum_int_level (bbia * self, int integer, int level) ;
+void bbia_sum_int (bbia * self, int integer) ;
+void bbia_sum_bbia (bbia * first, bbia * second) ;
+void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) ;
+bbia * bbia_sum_bbia_new (bbia * first, bbia * second) ;
+// @DIF
+void bbia_dif_int_level (bbia * self, int integer, int level) ;
+void bbia_dif_int (bbia * self, int integer) ;
+void bbia_dif_bbia (bbia * first, bbia * second) ;
+void bbia_dif_bbia_to (bbia * to, bbia * first, bbia * second) ;
+bbia * bbia_dif_bbia_new (bbia * first, bbia * second) ;
 // @PRINT
 void bbia_print_levelValue (bbia * self) ;
 void bbia_print_levelValue_dec (bbia * self) ;

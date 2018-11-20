@@ -45,5 +45,39 @@ int main (int argc, char * argv[]) {
 	puts ("After right shift by 3 :");
 	bbia_print_levelValue (a);
 
+	printf ("Compare and check tests : \n");
+	bbia_set_value (a, 0);
+	bbia_at_set (a, 3, 42);
+	b = bbia_new_fromSystemInteger(42);
+	// bbia_at_set (b, 3, 42);
+	puts ("a: ");
+	bbia_print_levelValue (a);
+	puts ("b: ");
+	bbia_print_levelValue (b);
+
+	printf("a is %s then b\n", (bbia_compare_bbia(a,b) == 1) ? "bigger" : "lesser");
+
+	c = bbia_new_fromSystemInteger (481);
+	printf ("Bbia sum bbia tests : \n");
+	puts ("b: ");
+	bbia_print_levelValue_dec (b);
+	puts ("c: ");
+	bbia_print_levelValue_dec (c);
+	bbia_sum_bbia (b,c);
+	printf("b + c = \n");
+	bbia_print_levelValue_dec (b);
+
+	printf ("Bbia dif bbia tests : \n");
+	puts ("b: ");
+	bbia_print_levelValue_dec (b);
+	puts ("c: ");
+	bbia_print_levelValue_dec (c);
+	bbia_dif_bbia (b,c);
+	printf("b - c = \n");
+	bbia_print_levelValue_dec (b);
+
+	if (a != NULL) bbia_free (a);
+	if (b != NULL) bbia_free (b);
+	if (c != NULL) bbia_free (c);
 	return EXIT_SUCCESS;
 }
