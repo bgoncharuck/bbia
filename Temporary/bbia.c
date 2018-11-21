@@ -424,12 +424,14 @@ static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
 		bbia_dif_int_level (from, subtrahend->at[BBIA_LEVEL_TOP], BBIA_LEVEL_TOP);
 		return;
 	}
-	/*
+
 	int level = (from->lvlButton <= subtrahend->lvlButton) ? to->lvlButton : subtrahend->lvlButton;
 	register int outBit = 0;
 	register int curBit = 0;
-	*/
-	// @TODO
+
+	for (; level <= BBIA_LEVEL_TOP; level++) {
+		for (int bitPos = BBIA_INTEGER_SIZE;)
+	}
 }
 
 void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
