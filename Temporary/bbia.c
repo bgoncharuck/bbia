@@ -427,26 +427,22 @@ static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
 	from->lvlButton = (from->lvlButton <= subtrahend->lvlButton) ? from->lvlButton : subtrahend->lvlButton;
 	int level = BBIA_LEVEL_TOP;
 	register int outBit = 0;
-	register int curBit = 0;
+	// register int curBit = 0;
 
 	// standart addition algorithm for binary N-bit integer
 	for (; level >= from->lvlButton; level--)
 		for (int bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
 
-			if (outBit == 0) {
-				if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
-					if ( !(from->at[level] & stuaa_bitflag (bitPos)) ) outBit = 1;
+			if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
+				if ( (from->at[level] & stuaa_bitflag (bitPos)) || outBit == 1) {
 					from->at[level] &= ~(stuaa_bitflag (bitPos));
+					outBit = 1;
 				}
-				else from->at[level] |= stuaa_bitflag (bitPos);
-			} else {
-				if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
-					if ( !(from->at[level] & stuaa_bitflag (bitPos)) ) outBit = 1;
-					from->at[level] |= stuaa_bitflag (bitPos);
-				}
-				else from->at[level] &= ~(stuaa_bitflag (bitPos));
+			} else if (outBit == 0) from->at[level] |= stuaa_bitflag (bitPos);
+			else {
+				from->at[level] &= ~(stuaa_bitflag (bitPos));
+				outBit = 0;
 			}
-
 		}
 }
 

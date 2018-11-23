@@ -69,12 +69,12 @@ int main (int argc, char * argv[]) {
 
 	printf ("Bbia dif bbia tests : \n");
 	puts ("b: ");
-	bbia_print_levelValue_dec (b);
+	bbia_print_levelValue (b);
 	puts ("c: ");
-	bbia_print_levelValue_dec (c);
+	bbia_print_levelValue (c);
 	bbia_dif_bbia (b,c);
 	printf("b - c = \n");
-	bbia_print_levelValue_dec (b);
+	bbia_print_levelValue (b);
 
 	if (a != NULL) bbia_free (a);
 	if (b != NULL) bbia_free (b);
