@@ -430,9 +430,9 @@ static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
 	register int curBit = 0;
 
 	// standart addition algorithm for binary N-bit integer
-	for (; level >= from->lvlButton || outBit != 0 && level > 0; level--)
+	for (; level >= from->lvlButton; level--)
 		for (int bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
-			// if nBit of to is enabled
+
 			curBit = (from->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
 			if (outBit == 1) {
 				if (curBit == 1) {
@@ -444,7 +444,7 @@ static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
 			// if nBit of from is enabled
 			if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
 				if (curBit == 1) curBit = 0;
-				else if (outBit == 1) ;
+				else outBit = 1;
 			}
 
 			// enable ot disable bit in to
