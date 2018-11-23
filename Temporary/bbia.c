@@ -419,29 +419,32 @@ static inline void bbia_sum_bbia_op (bbia * to, bbia * from) {
 
 static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
 	// if subtrahend is system integer and out of bounders not possible then try simple language difference
-	if (bbia_check_is_systemInteger (subtrahend) /*&& bbia_check_is_systemInteger (from) == 0*/) {
+	if (bbia_check_is_systemInteger (subtrahend) && bbia_check_is_systemInteger (from) == 0) {
 		bbia_dif_int_level (from, subtrahend->at[BBIA_LEVEL_TOP], BBIA_LEVEL_TOP);
 		return;
 	}
 
-	int level = (from->lvlButton <= subtrahend->lvlButton) ? to->lvlButton : subtrahend->lvlButton;
+	from->lvlButton = (from->lvlButton <= subtrahend->lvlButton) ? from->lvlButton : subtrahend->lvlButton;
+	int level = BBIA_LEVEL_TOP;
 	register int outBit = 0;
 	register int curBit = 0;
-	int out = 0;
 
-	for (; level <= BBIA_LEVEL_TOP; level++)
-		for (int bitPos = BBIA_INTEGER_SIZE; bitPos > 0; bitPos--) {
-
+	// standart addition algorithm for binary N-bit integer
+	for (; level >= from->lvlButton || outBit != 0 && level > 0; level--)
+		for (int bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
+			// if nBit of to is enabled
 			curBit = (from->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
-
+			// if nBit of from is enabled
 			if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
-				if (curBit == 1) curBit--;
-				else if (outBit != 0) outBit--;
-				else out++;
+				if (curBit == 1) curBit = 0;
+				else outBit++;
 			}
-			else outBit++;
 
+			if (curBit == 1 && outBit != 0) { outBit--; curBit = 0; }
 
+			// enable ot disable bit in to
+			if (curBit == 1) from->at[level] |= stuaa_bitflag (bitPos);
+			else from->at[level] &= ~(stuaa_bitflag (bitPos));
 		}
 }
 
