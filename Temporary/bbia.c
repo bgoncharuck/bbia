@@ -435,13 +435,13 @@ static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
 
 			if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
 				if ( !(from->at[level] & stuaa_bitflag (bitPos)) )
-				 	outBit++;
+				 	outBit = 1;
 				from->at[level] &= ~(stuaa_bitflag (bitPos));
 			}
 
-			if (outBit > 0) {
+			if (outBit == 1) {
 				if (outBit == 2)
-					outBit -= 2;
+					outBit--;
 				else
 					from->at[level] &= ~(stuaa_bitflag (bitPos));
 			}
