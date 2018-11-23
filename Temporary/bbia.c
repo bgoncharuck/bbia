@@ -434,14 +434,14 @@ static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
 		for (int bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
 
 			if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
-				if ( (from->at[level] & stuaa_bitflag (bitPos)) || outBit == 1) {
+				if ( (from->at[level] & stuaa_bitflag (bitPos)) || outBit == 2) {
 					from->at[level] &= ~(stuaa_bitflag (bitPos));
-					outBit = 1;
+					outBit++;
 				}
 			} else if (outBit == 0) from->at[level] |= stuaa_bitflag (bitPos);
 			else {
 				from->at[level] &= ~(stuaa_bitflag (bitPos));
-				outBit = 0;
+				outBit--;
 			}
 		}
 }
