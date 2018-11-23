@@ -433,23 +433,20 @@ static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
 	for (; level >= from->lvlButton; level--)
 		for (int bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
 
-			curBit = (from->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
-			if (outBit == 1) {
-				if (curBit == 1) {
-					curBit = 0;
-					outBit = 0;
+			if (outBit == 0) {
+				if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
+					if ( !(from->at[level] & stuaa_bitflag (bitPos)) ) outBit = 1;
+					from->at[level] &= ~(stuaa_bitflag (bitPos));
 				}
-				else curBit = 1;
-			}
-			// if nBit of from is enabled
-			if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
-				if (curBit == 1) curBit = 0;
-				else outBit = 1;
+				else from->at[level] |= stuaa_bitflag (bitPos);
+			} else {
+				if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
+					if ( !(from->at[level] & stuaa_bitflag (bitPos)) ) outBit = 1;
+					from->at[level] |= stuaa_bitflag (bitPos);
+				}
+				else from->at[level] &= ~(stuaa_bitflag (bitPos));
 			}
 
-			// enable ot disable bit in to
-			if (curBit == 1) from->at[level] |= stuaa_bitflag (bitPos);
-			else from->at[level] &= ~(stuaa_bitflag (bitPos));
 		}
 }
 
