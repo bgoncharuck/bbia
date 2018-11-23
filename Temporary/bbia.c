@@ -391,7 +391,7 @@ static inline void bbia_sum_bbia_op (bbia * to, bbia * from) {
 	register int curBit = 0;
 
 	// standart addition algorithm for binary N-bit integer
-	for (; level >= to->lvlButton || outBit != 0 && level > 0; level--) {
+	for (; level >= to->lvlButton || outBit != 0 && level > 0; level--)
 		for (int bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
 			// if nBit of to is enabled
 			curBit = (to->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
@@ -405,7 +405,6 @@ static inline void bbia_sum_bbia_op (bbia * to, bbia * from) {
 			if (curBit == 1) to->at[level] |= stuaa_bitflag (bitPos);
 			else to->at[level] &= ~(stuaa_bitflag (bitPos));
 		}
-	}
 	// OUT OF BOUNDERS
 	if (level == 0 && outBit != 0) {
 		bbia_set_value (to, BBIA_LEVEL_IS_EMPTY);
@@ -428,10 +427,22 @@ static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
 	int level = (from->lvlButton <= subtrahend->lvlButton) ? to->lvlButton : subtrahend->lvlButton;
 	register int outBit = 0;
 	register int curBit = 0;
+	int out = 0;
 
-	for (; level <= BBIA_LEVEL_TOP; level++) {
-		for (int bitPos = BBIA_INTEGER_SIZE;)
-	}
+	for (; level <= BBIA_LEVEL_TOP; level++)
+		for (int bitPos = BBIA_INTEGER_SIZE; bitPos > 0; bitPos--) {
+
+			curBit = (from->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
+
+			if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
+				if (curBit == 1) curBit--;
+				else if (outBit != 0) outBit--;
+				else out++;
+			}
+			else outBit++;
+
+
+		}
 }
 
 void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
