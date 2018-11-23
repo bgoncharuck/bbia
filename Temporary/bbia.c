@@ -434,13 +434,18 @@ static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
 		for (int bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
 			// if nBit of to is enabled
 			curBit = (from->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
+			if (outBit == 1) {
+				if (curBit == 1) {
+					curBit = 0;
+					outBit = 0;
+				}
+				else curBit = 1;
+			}
 			// if nBit of from is enabled
 			if (subtrahend->at[level] & stuaa_bitflag (bitPos)) {
 				if (curBit == 1) curBit = 0;
-				else outBit++;
+				else if (outBit == 1) ;
 			}
-
-			if (curBit == 1 && outBit != 0) { outBit--; curBit = 0; }
 
 			// enable ot disable bit in to
 			if (curBit == 1) from->at[level] |= stuaa_bitflag (bitPos);
