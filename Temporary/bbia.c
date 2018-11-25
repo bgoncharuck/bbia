@@ -136,7 +136,7 @@ int bbia_check_is_systemInteger (bbia * self) {
 
 // @COMPARE
 
-static inline int bbia_compare_bbia_op (bbia * a, bbia * b) {
+int bbia_compare_bbia_unsigned (bbia * a, bbia * b) {
 	int curCompare = 0;
 	int curLvl = (a->lvlButton <= b->lvlButton) ? a->lvlButton : b->lvlButton;
 	for (; curLvl <= BBIA_LEVEL_TOP; curLvl++) {
@@ -149,7 +149,7 @@ static inline int bbia_compare_bbia_op (bbia * a, bbia * b) {
 
 int bbia_compare_bbia (bbia * a, bbia * b) {
 	nullPointer_funcInt_2 (a, b, "bbia_compare_bbia");
-	int res = bbia_compare_bbia_op (a,b);
+	int res = bbia_compare_bbia_unsigned (a,b);
 
 	if (a->sign == 0 && b->sign == 0) return res;
 	else if (a->sign == b->sign) return (res == -1) ? 1 : -1;
@@ -157,7 +157,7 @@ int bbia_compare_bbia (bbia * a, bbia * b) {
 	return 0;
 }
 
-static inline int bbia_compare_int_op (bbia * self, int toCompare) {
+int bbia_compare_int_unsigned (bbia * self, int toCompare) {
 	if (self->lvlButton < BBIA_LEVEL_TOP) return 1;
 	int curCompare = stuaa_compare(self->at[BBIA_LEVEL_TOP], toCompare);
 	return curCompare;
@@ -165,7 +165,7 @@ static inline int bbia_compare_int_op (bbia * self, int toCompare) {
 
 int bbia_compare_int (bbia * self, int toCompare, int isSigned) {
 	nullPointer_funcInt_1 (self, "bbia_compare_int");
-	int res = bbia_compare_int_op (self, toCompare);
+	int res = bbia_compare_int_unsigned (self, toCompare);
 
 	if (isSigned == 0 && self->sign == 0) return res;
 	else if (self->sign == isSigned) return (res == -1) ? 1 : -1;
@@ -379,7 +379,7 @@ bbia * bbia_bits_tillBit_isEmpty (int num) {
 
 // bbia and bbia SUM/SUB opertations
 
-static inline void bbia_sum_bbia_op (bbia * to, bbia * from) {
+void bbia_sum_bbia_op (bbia * to, bbia * from) {
 	// if from is system integer and out of bounders not possible then try simple language addition
 	if (bbia_check_is_systemInteger (from) && to->at[0] < BBIA_LEVEL_IS_FULL) {
 		bbia_sum_int_level (to, from->at[BBIA_LEVEL_TOP], BBIA_LEVEL_TOP);
@@ -391,7 +391,7 @@ static inline void bbia_sum_bbia_op (bbia * to, bbia * from) {
 	register int curBit = 0;
 
 	// standart addition algorithm for binary N-bit integer
-	for (; level >= to->lvlButton || outBit != 0 && level > 0; level--)
+	for (; (level >= to->lvlButton) || (outBit != 0 && level > 0); level--)
 	for (int bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
 		// if nBit of to is enabled
 		curBit = (to->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
@@ -417,67 +417,54 @@ static inline void bbia_sum_bbia_op (bbia * to, bbia * from) {
 	else if (to->at[level] != 0) to->lvlButton = level;
 }
 
-static inline int bbia_sub_bbia_op_isOutInLvl (bbia * from, bbia * subtrahend, int level, int pos) {
-	if (pos == BBIA_INTEGER_SIZE) return 0;
-	for (; pos <= BBIA_INTEGER_SIZE; pos--)
-		if (from->at[level] & stuaa_bitflag (pos) == 0 && subtrahend->at[level] & stuaa_bitflag (pos) == 1) return 1;
-	return 0;
-}
-
-static inline void bbia_sub_bbia_op (bbia * from, bbia * subtrahend) {
+void bbia_sub_bbia_op (bbia * from, bbia * subtrahend) {
 	// if subtrahend is system integer and out of bounders not possible then try simple language difference
 	// @TODO
 	if (bbia_check_is_systemInteger (subtrahend) && bbia_check_is_systemInteger (from) == 0) {
 		bbia_sub_int_level (from, subtrahend->at[BBIA_LEVEL_TOP], BBIA_LEVEL_TOP);
 		return;
 	}
+	// OUT OF BOUNDERS
+	else if (bbia_compare_bbia_unsigned (subtrahend, from) == 1) {
+		bbia * temp = bbia_copy_new (subtrahend);
+		bbia_sub_bbia_op (temp, from);
+		bbia_copy_bbia (from, temp);
+		bbia_set_sign_change (from);
+		bbia_free (temp);
+		return;
+	}
+	else {
+		int bitPos = 1;
+		int level = BBIA_LEVEL_TOP;
+		register int outBit = 0;
+		register int curBitSecond = 0;
+		register int curBitFirst = 0;
 
-	int bitPos = 1;
-	int level = BBIA_LEVEL_TOP;
-	register int outBit = 0;
-	register int curBitSecond = 0;
-	register int curBitFirst = 0;
+		for (; level >= from->lvlButton; level--)
+		for (bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
+			curBitFirst = (from->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
+			curBitSecond = (subtrahend->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
 
-	for (; level >= from->lvlButton; level--)
-	for (bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
-		curBitFirst = (from->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
-		curBitSecond = (subtrahend->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
-
-		if (curBitFirst == curBitSecond) {
-			if (outBit == 0) from->at[level] &= ~(stuaa_bitflag (bitPos));
-			else {
-				from->at[level] |= stuaa_bitflag (bitPos);
+			if (curBitFirst == curBitSecond) {
+				if (outBit == 0) from->at[level] &= ~(stuaa_bitflag (bitPos));
+				else {
+					from->at[level] |= stuaa_bitflag (bitPos);
+					outBit = 0;
+				}
+			}
+			else if (curBitSecond == 1) {
+				if (outBit == 1) from->at[level] &= ~(stuaa_bitflag (bitPos));
+				else {
+					from->at[level] |= stuaa_bitflag (bitPos);
+					outBit = curBitSecond;
+				}
+			}
+			else if (outBit != 0) {
+				from->at[level] &= ~(stuaa_bitflag (bitPos));
 				outBit = 0;
 			}
 		}
-		else if (curBitSecond == 1) {
-			if (outBit == 1) from->at[level] &= ~(stuaa_bitflag (bitPos));
-			else {
-				from->at[level] |= stuaa_bitflag (bitPos);
-				outBit = curBitSecond;
-			}
-		}
-		else if (outBit != 0) {
-			from->at[level] &= ~(stuaa_bitflag (bitPos));
-			outBit = 0;
-		}
-	}
-	// OUT OF BOUNDERS
-	if
-	(subtrahend->lvlButton < level ||
-	bbia_sub_bbia_op_isOutInLvl (from, subtrahend, level, bitPos)) {
-		bbia_set_value (from, 0);
-		int levelOld = level;
-		int bitPosNew = 1;
-		from->lvlButton = level - subtrahend->lvlButton;
-
-		for (level = BBIA_LEVEL_TOP; level >= from->lvlButton; level--, levelOld--)
-		for (; bitPos <= BBIA_INTEGER_SIZE; bitPos++, bitPosNew++) {
-			if (bitPosNew == BBIA_INTEGER_SIZE + 1) bitPosNew = 1;
-			if (subtrahend->at[levelOld] & stuaa_bitflag (bitPos))
-			from->at[level] |= stuaa_bitflag (bitPosNew);
-		}
-		bbia_check_sign (from);
+		bbia_check_lvlButton (from);
 	}
 }
 

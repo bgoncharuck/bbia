@@ -136,11 +136,11 @@ int stuaa_outofbounders_min (int to, int test) {
 
 int stuaa_compare (int a, int b) {
 	if (a > b) {
-		if (stuaa_bitflag(31) && b) return -1;
+		if (stuaa_bitflag(32) & b) return -1;
 		else return 1;
 	}
 	else if (a < b) {
-		if (stuaa_bitflag(31) && a) return 1;
+		if (stuaa_bitflag(32) & a) return 1;
 		else return -1;
 	}
 	return 0;

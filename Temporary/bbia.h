@@ -69,14 +69,18 @@ int bbia_at_get (bbia * self, int index) ;
 void bbia_at_set (bbia * self, int index, int value) ;
 // @CHECK
 void bbia_check_lvlButton (bbia * self) ;
+// returns bool true/false or 1/0
 int bbia_check_sign (bbia * self) ;
 int bbia_check_is_integer (bbia * self, int integer) ;
 int bbia_check_is_zero (bbia * self) ;
 int bbia_check_is_one (bbia * self) ;
 int bbia_check_is_systemInteger (bbia * self) ;
 // @COMPARE
+// returns 1 if a > b, -1 if b > a and 0 when equal
+int bbia_compare_bbia_unsigned (bbia * a, bbia * b) ;
 int bbia_compare_bbia (bbia * a, bbia * b) ;
-int bbia_compare_int (bbia * self, int toCompare, int isSigned) ;
+int bbia_compare_int_unsigned (bbia * a, int b) ;
+int bbia_compare_int (bbia * a, int b, int isSigned) ;
 // @COPY
 void bbia_copy_bbia (bbia * to, bbia * from) ;
 bbia * bbia_copy_new (bbia * from) ;
