@@ -102,12 +102,12 @@ void bbia_sum_int (bbia * self, int integer) ;
 void bbia_sum_bbia (bbia * first, bbia * second) ;
 void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) ;
 bbia * bbia_sum_bbia_new (bbia * first, bbia * second) ;
-// @DIF
-void bbia_dif_int_level (bbia * self, int integer, int level) ;
-void bbia_dif_int (bbia * self, int integer) ;
-void bbia_dif_bbia (bbia * first, bbia * second) ;
-void bbia_dif_bbia_to (bbia * to, bbia * first, bbia * second) ;
-bbia * bbia_dif_bbia_new (bbia * first, bbia * second) ;
+// @ІГИ
+void bbia_sub_int_level (bbia * self, int integer, int level) ;
+void bbia_sub_int (bbia * self, int integer) ;
+void bbia_sub_bbia (bbia * first, bbia * second) ;
+void bbia_sub_bbia_to (bbia * to, bbia * first, bbia * second) ;
+bbia * bbia_sub_bbia_new (bbia * first, bbia * second) ;
 // @PRINT
 void bbia_print_levelValue (bbia * self) ;
 void bbia_print_levelValue_dec (bbia * self) ;

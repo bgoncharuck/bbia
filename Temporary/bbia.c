@@ -377,7 +377,7 @@ bbia * bbia_bits_tillBit_isEmpty (int num) {
 	return self;
 }
 
-// @SUM
+// bbia and bbia SUM/SUB opertations
 
 static inline void bbia_sum_bbia_op (bbia * to, bbia * from) {
 	// if from is system integer and out of bounders not possible then try simple language addition
@@ -417,22 +417,29 @@ static inline void bbia_sum_bbia_op (bbia * to, bbia * from) {
 	else if (to->at[level] != 0) to->lvlButton = level;
 }
 
-static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
+static inline int bbia_sub_bbia_op_isOutInLvl (bbia * from, bbia * subtrahend, int level, int pos) {
+	if (pos == BBIA_INTEGER_SIZE) return 0;
+	for (; pos <= BBIA_INTEGER_SIZE; pos--)
+		if (from->at[level] & stuaa_bitflag (pos) == 0 && subtrahend->at[level] & stuaa_bitflag (pos) == 1) return 1;
+	return 0;
+}
+
+static inline void bbia_sub_bbia_op (bbia * from, bbia * subtrahend) {
 	// if subtrahend is system integer and out of bounders not possible then try simple language difference
 	// @TODO
 	if (bbia_check_is_systemInteger (subtrahend) && bbia_check_is_systemInteger (from) == 0) {
-		bbia_dif_int_level (from, subtrahend->at[BBIA_LEVEL_TOP], BBIA_LEVEL_TOP);
+		bbia_sub_int_level (from, subtrahend->at[BBIA_LEVEL_TOP], BBIA_LEVEL_TOP);
 		return;
 	}
 
-	from->lvlButton = (from->lvlButton <= subtrahend->lvlButton) ? from->lvlButton : subtrahend->lvlButton;
+	int bitPos = 1;
 	int level = BBIA_LEVEL_TOP;
 	register int outBit = 0;
 	register int curBitSecond = 0;
 	register int curBitFirst = 0;
 
 	for (; level >= from->lvlButton; level--)
-	for (int bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
+	for (bitPos = 1; bitPos <= BBIA_INTEGER_SIZE; bitPos++) {
 		curBitFirst = (from->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
 		curBitSecond = (subtrahend->at[level] & stuaa_bitflag (bitPos)) ? 1 : 0;
 
@@ -456,10 +463,25 @@ static inline void bbia_dif_bbia_op (bbia * from, bbia * subtrahend) {
 		}
 	}
 	// OUT OF BOUNDERS
-	// if (outBit != 0) {
+	if
+	(subtrahend->lvlButton < level ||
+	bbia_sub_bbia_op_isOutInLvl (from, subtrahend, level, bitPos)) {
+		bbia_set_value (from, 0);
+		int levelOld = level;
+		int bitPosNew = 1;
+		from->lvlButton = level - subtrahend->lvlButton;
 
-	// }
+		for (level = BBIA_LEVEL_TOP; level >= from->lvlButton; level--, levelOld--)
+		for (; bitPos <= BBIA_INTEGER_SIZE; bitPos++, bitPosNew++) {
+			if (bitPosNew == BBIA_INTEGER_SIZE + 1) bitPosNew = 1;
+			if (subtrahend->at[levelOld] & stuaa_bitflag (bitPos))
+			from->at[level] |= stuaa_bitflag (bitPosNew);
+		}
+		bbia_check_sign (from);
+	}
 }
+
+// @SUM
 
 void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 	if (prevLvl != 0) {
@@ -487,10 +509,54 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 	self->at[fromLvl] = BBIA_LEVEL_IS_EMPTY + self->at[fromLvl] - (BBIA_LEVEL_IS_FULL - integer + 1);
 }
 
-void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
+void bbia_sum_int_level (bbia * self, int integer, int level) {
+	if (stuaa_outofbounders_max (self->at[level], integer) == 0)
+		self->at[level] += integer;
+	else
+		bbia_sum_int_levelOut (self, integer, level, level);
+}
+
+void bbia_sum_int (bbia * self, int integer) {
+	nullPointer_funcVoid_1 (self, "bbia_sum_int");
+	if (self->sign == 0)
+		bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
+	else if (self->sign == 1)
+		bbia_sub_int_level (self, integer, BBIA_LEVEL_TOP);
+}
+
+void bbia_sum_bbia (bbia * first, bbia * second) {
+	nullPointer_funcVoid_2 (first, second, "bbia_sum_bbia");
+	if (first->sign == second->sign)
+		bbia_sum_bbia_op (first, second);
+	else
+		bbia_sub_bbia_op (first, second);
+}
+
+void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) {
+	nullPointer_funcVoid_3 (to, first, second, "bbia_sum_bbia_to");
+	bbia_copy_bbia (to, first);
+	if (first->sign == second->sign)
+		bbia_sum_bbia_op (to, second);
+	else
+		bbia_sub_bbia_op (to, second);
+}
+
+bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
+	nullPointer_funcPointer_2 (first, second, "bbia_sum_bbia_new");
+	bbia * self = bbia_copy_new(first);
+	if (first->sign == second->sign)
+		bbia_sum_bbia_op (self, second);
+	else
+		bbia_sub_bbia_op (self, second);
+	return self;
+}
+
+// SUBTRAHEND
+
+void bbia_sub_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 	if (prevLvl != 0) {
 		if (stuaa_outofbounders_min(self->at[prevLvl-1],1) == 1) {
-			bbia_dif_int_levelOut (self, integer, fromLvl, prevLvl-1);
+			bbia_sub_int_levelOut (self, integer, fromLvl, prevLvl-1);
 			return;
 		}
 		else
@@ -500,7 +566,7 @@ void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 		bbia * temp = bbia_new();
 		temp->at[fromLvl] = integer;
 		temp->lvlButton = fromLvl;
-		bbia_dif_bbia_op (self, temp);
+		bbia_sub_bbia_op (self, temp);
 		bbia_free (temp);
 		return;
 	}
@@ -516,85 +582,43 @@ void bbia_dif_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 		self->at[curLvl] = BBIA_LEVEL_IS_FULL - self->at[curLvl] + 1;
 }
 
-void bbia_sum_int_level (bbia * self, int integer, int level) {
-	if (stuaa_outofbounders_max (self->at[level], integer) == 0)
-		self->at[level] += integer;
-	else
-		bbia_sum_int_levelOut (self, integer, level, level);
-}
-
-void bbia_dif_int_level (bbia * self, int integer, int level) {
+void bbia_sub_int_level (bbia * self, int integer, int level) {
 	if (stuaa_outofbounders_min (self->at[level], integer) == 0)
 		self->at[level] -= integer;
 	else
-		bbia_dif_int_levelOut (self, integer, level, level);
+		bbia_sub_int_levelOut (self, integer, level, level);
 }
 
-void bbia_sum_int (bbia * self, int integer) {
-	nullPointer_funcVoid_1 (self, "bbia_sum_int");
+void bbia_sub_int (bbia * self, int integer) {
+	nullPointer_funcVoid_1 (self, "bbia_sub_int");
 	if (self->sign == 0)
-		bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
-	else if (self->sign == 1)
-		bbia_dif_int_level (self, integer, BBIA_LEVEL_TOP);
-}
-
-void bbia_dif_int (bbia * self, int integer) {
-	nullPointer_funcVoid_1 (self, "bbia_dif_int");
-	if (self->sign == 0)
-		bbia_dif_int_level (self, integer, BBIA_LEVEL_TOP);
+		bbia_sub_int_level (self, integer, BBIA_LEVEL_TOP);
 	else if (self->sign == 1)
 		bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
 }
 
-void bbia_sum_bbia (bbia * first, bbia * second) {
-	nullPointer_funcVoid_2 (first, second, "bbia_sum_bbia");
+void bbia_sub_bbia (bbia * first, bbia * second) {
+	nullPointer_funcVoid_2 (first, second, "bbia_sub_bbia");
 	if (first->sign == second->sign)
-		bbia_sum_bbia_op (first, second);
-	else
-		bbia_dif_bbia_op (first, second);
-}
-
-void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) {
-	nullPointer_funcVoid_3 (to, first, second, "bbia_sum_bbia_to");
-	bbia_copy_bbia (to, first);
-	if (first->sign == second->sign)
-		bbia_sum_bbia_op (to, second);
-	else
-		bbia_dif_bbia_op (to, second);
-}
-
-bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
-	nullPointer_funcPointer_2 (first, second, "bbia_sum_bbia_new");
-	bbia * self = bbia_copy_new(first);
-	if (first->sign == second->sign)
-		bbia_sum_bbia_op (self, second);
-	else
-		bbia_dif_bbia_op (self, second);
-	return self;
-}
-
-void bbia_dif_bbia (bbia * first, bbia * second) {
-	nullPointer_funcVoid_2 (first, second, "bbia_dif_bbia");
-	if (first->sign == second->sign)
-		bbia_dif_bbia_op (first, second);
+		bbia_sub_bbia_op (first, second);
 	else
 		bbia_sum_bbia_op (first, second);
 }
 
-void bbia_dif_bbia_to (bbia * to, bbia * first, bbia * second) {
-	nullPointer_funcVoid_3 (to, first, second, "bbia_dif_bbia_to");
+void bbia_sub_bbia_to (bbia * to, bbia * first, bbia * second) {
+	nullPointer_funcVoid_3 (to, first, second, "bbia_sub_bbia_to");
 	bbia_copy_bbia (to, first);
 	if (first->sign == second->sign)
-		bbia_dif_bbia_op (to, second);
+		bbia_sub_bbia_op (to, second);
 	else
 		bbia_sum_bbia_op (to, second);
 }
 
-bbia * bbia_dif_bbia_new (bbia * first, bbia * second) {
-	nullPointer_funcPointer_2 (first, second, "bbia_dif_bbia_new");
+bbia * bbia_sub_bbia_new (bbia * first, bbia * second) {
+	nullPointer_funcPointer_2 (first, second, "bbia_sub_bbia_new");
 	bbia * self = bbia_copy_new(first);
 	if (first->sign == second->sign)
-		bbia_dif_bbia_op (self, second);
+		bbia_sub_bbia_op (self, second);
 	else
 		bbia_sum_bbia_op (self, second);
 	return self;
