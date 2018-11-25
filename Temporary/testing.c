@@ -80,6 +80,11 @@ int main (int argc, char * argv[]) {
 	printf("b - 44 = \n");
 	bbia_sub_bbia (b,c);
 	bbia_print_levelValue_dec (b);
+	bbia_set_value (c, 0);
+	bbia_at_set (c, BBIA_LEVEL_TOP, 5);
+	printf("b + 5 = \n");
+	bbia_sum_bbia (b,c);
+	bbia_print_levelValue_dec (b);
 
 	if (a != NULL) bbia_free (a);
 	if (b != NULL) bbia_free (b);

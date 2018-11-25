@@ -59,9 +59,11 @@ typedef struct __bbia bbia;
 bbia * bbia_new (void) ;
 bbia * bbia_new_fromSystemInteger (int integer) ;
 void bbia_free (bbia * self) ;
+// @SIGN
+void bbia_sign_change (bbia * self) ;
+void bbia_sign_set (bbia * self, int sign) ;
+int bbia_sign_check (bbia * self) ;
 // @SETERS
-void bbia_set_sign_change (bbia * self) ;
-void bbia_set_sign (bbia * self, int sign) ;
 void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
 void bbia_set_value_toLevel (bbia * self, int level, int value) ;
 void bbia_set_value (bbia * self, int value) ;
@@ -70,7 +72,6 @@ void bbia_at_set (bbia * self, int index, int value) ;
 // @CHECK
 void bbia_check_lvlButton (bbia * self) ;
 // returns bool true/false or 1/0
-int bbia_check_sign (bbia * self) ;
 int bbia_check_is_integer (bbia * self, int integer) ;
 int bbia_check_is_zero (bbia * self) ;
 int bbia_check_is_one (bbia * self) ;
