@@ -59,18 +59,25 @@ typedef struct __bbia bbia;
 bbia * bbia_new (void) ;
 bbia * bbia_new_fromSystemInteger (int integer) ;
 void bbia_free (bbia * self) ;
-// @SIGN
+// @FIELDS
 void bbia_sign_change (bbia * self) ;
 void bbia_sign_set (bbia * self, int sign) ;
 int bbia_sign_check (bbia * self) ;
+void bbia_conf_lvlButton (bbia * self) ;
 // @SETERS
-void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
-void bbia_set_value_toLevel (bbia * self, int level, int value) ;
+void bbia_set_zero (bbia * self) ;
+void bbia_set_min (bbia * self) ;
+void bbia_set_max (bbia * self) ;
 void bbia_set_value (bbia * self, int value) ;
+void bbia_set_value_signed (bbia * self, int value) ;
+// set value from level to zero level
+void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
+// set value from zero to level
+void bbia_set_value_toLevel (bbia * self, int level, int value) ;
+// set/get value by index of level
 int bbia_at_get (bbia * self, int index) ;
 void bbia_at_set (bbia * self, int index, int value) ;
 // @CHECK
-void bbia_check_lvlButton (bbia * self) ;
 // returns bool true/false or 1/0
 int bbia_check_is_integer (bbia * self, int integer) ;
 int bbia_check_is_zero (bbia * self) ;
@@ -107,7 +114,7 @@ void bbia_sum_int (bbia * self, int integer) ;
 void bbia_sum_bbia (bbia * first, bbia * second) ;
 void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) ;
 bbia * bbia_sum_bbia_new (bbia * first, bbia * second) ;
-// @ІГИ
+// @SUB
 void bbia_sub_int_level (bbia * self, int integer, int level) ;
 void bbia_sub_int (bbia * self, int integer) ;
 void bbia_sub_bbia (bbia * first, bbia * second) ;

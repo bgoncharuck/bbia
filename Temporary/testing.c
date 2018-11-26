@@ -24,7 +24,7 @@ int main (int argc, char * argv[]) {
 	bbia_print_levelValue (a);
 
 	printf ("Bitshift tests : \n");
-	bbia_set_value (a, 0);
+	bbia_set_zero (a);
 	for (int lvl = BBIA_LEVEL_TOP; lvl >= 2; lvl--)
 		bbia_at_set (a, lvl, (stuaa_bitflag(32) | stuaa_bitflag(31) ));
 	printf ("Before left shift test by 2 : \n");
@@ -34,7 +34,7 @@ int main (int argc, char * argv[]) {
 	puts ("After left shift by 2 :");
 	bbia_print_levelValue (a);
 
-	bbia_set_value (a, 0);
+	bbia_set_zero (a);
 	puts ("Before right shift by 3 :");
 	for (int lvl = BBIA_LEVEL_TOP; lvl >= 1; lvl--)
 		bbia_at_set (a, lvl, (stuaa_bitflag(1) | stuaa_bitflag(2)
@@ -46,7 +46,7 @@ int main (int argc, char * argv[]) {
 	bbia_print_levelValue (a);
 
 	printf ("Compare and check tests : \n");
-	bbia_set_value (a, 0);
+	bbia_set_zero (a);
 	bbia_at_set (a, 3, 42);
 	b = bbia_new_fromSystemInteger(42);
 	// bbia_at_set (b, 3, 42);
@@ -75,12 +75,12 @@ int main (int argc, char * argv[]) {
 	bbia_sub_bbia (b,c);
 	printf("b - c = \n");
 	bbia_print_levelValue_dec (b);
-	bbia_set_value (c, 0);
+	bbia_set_zero (c);
 	bbia_at_set (c, BBIA_LEVEL_TOP, 44);
 	printf("b - 44 = \n");
 	bbia_sub_bbia (b,c);
 	bbia_print_levelValue_dec (b);
-	bbia_set_value (c, 0);
+	bbia_set_zero (c);
 	bbia_at_set (c, BBIA_LEVEL_TOP, 5);
 	printf("b + 5 = \n");
 	bbia_sum_bbia (b,c);
