@@ -120,18 +120,19 @@ int stuaa_outofbounders_max (int to, int test) {
 	return outofbounders_max_bitDecay (to,test, BBIA_INTEGER_SIZE);
 }
 
-static int outofbounders_min_bitDecay (int to, int test, int bitDec) {
-
-	if (bitDec < 1) return 0;
-
-	if ((to & stuaa_bitflag (bitDec)) == 0 && (test & stuaa_bitflag (bitDec)) == 1) return 1;
-
-	return outofbounders_min_bitDecay (to,test,bitDec-1);
-}
-
 int stuaa_outofbounders_min (int to, int test) {
+	int curToBit = 0, curTestBit = 0;
 
-	return outofbounders_min_bitDecay (to, test, BBIA_INTEGER_SIZE);
+	for (int curBit = BBIA_INTEGER_SIZE; curBit > 0; curBit--) {
+		curToBit = to & stuaa_bitflag (curBit);
+		curTestBit = test & stuaa_bitflag (curBit);
+
+		if ( curToBit != curTestBit ) {
+			if (curTestBit != 0) return 1;
+			return 0;
+		}
+	}
+	return 0;
 }
 
 int stuaa_compare (int a, int b) {

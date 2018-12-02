@@ -434,17 +434,13 @@ void bbia_sum_bbia_op (bbia * to, bbia * from) {
 
 void bbia_sub_bbia_op (bbia * from, bbia * subtrahend) {
 	// if subtrahend is system integer and out of bounders not possible then try simple language difference
-	// @TODO
-	/*
 	if (bbia_check_is_systemInteger (subtrahend) == 1 && bbia_check_is_systemInteger (from) == 1
-	&& stuaa_outofbounders_min (from->at[BBIA_LEVEL_TOP], subtrahend->at[BBIA_LEVEL_TOP])) {
+	&& stuaa_outofbounders_min (from->at[BBIA_LEVEL_TOP], subtrahend->at[BBIA_LEVEL_TOP]) != 1) {
 		bbia_sub_int_level (from, subtrahend->at[BBIA_LEVEL_TOP], BBIA_LEVEL_TOP);
 		return;
 	}
-	*/
 	// OUT OF BOUNDERS
-	// else if (bbia_compare_bbia_unsigned (subtrahend, from) == 1) {
-	if (bbia_compare_bbia_unsigned (subtrahend, from) == 1) {
+	else if (bbia_compare_bbia_unsigned (subtrahend, from) == 1) {
 		bbia * temp = bbia_copy_new (subtrahend);
 		bbia_sub_bbia_op (temp, from);
 		bbia_sign_set (temp, (from->sign == 0) ? 1 : 0);
