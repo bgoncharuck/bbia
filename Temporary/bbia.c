@@ -21,7 +21,6 @@
 #define nullPointer_funcInt_1(p, functionName)do{if(p == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return -42;}}while(0)
 #define nullPointer_funcInt_2(p1, p2, functionName)do{if(p1 == NULL || p2 == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return -42;}}while(0)
 
-
 typedef enum __DIVISION_OR_MOD { DIVISION = 2, MOD = 4 } DIVISION_OR_MOD;
 
 struct __bbia {
@@ -389,12 +388,12 @@ bbia * bbia_bits_tillBit_isEmpty (int num) {
 	return self;
 }
 
-// bbia and bbia SUM/SUB private module operations
+// bbia and bbia ADD/SUB private module operations
 
-void bbia_sum_bbia_op (bbia * to, bbia * from) {
+void bbia_add_bbia_op (bbia * to, bbia * from) {
 	// if from is system integer and out of bounders not possible then try simple language addition
 	if (bbia_check_is_systemInteger (from) && to->at[0] < BBIA_LEVEL_IS_FULL) {
-		bbia_sum_int_level (to, from->at[BBIA_LEVEL_TOP], BBIA_LEVEL_TOP);
+		bbia_add_int_level (to, from->at[BBIA_LEVEL_TOP], BBIA_LEVEL_TOP);
 		return;
 	}
 	else {
@@ -483,12 +482,12 @@ void bbia_sub_bbia_op (bbia * from, bbia * subtrahend) {
 	}
 }
 
-// @SUM
+// @ADD
 
-void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
+void bbia_add_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
 	if (prevLvl != 0) {
 		if (stuaa_outofbounders_max(self->at[prevLvl-1],1) == 1) {
-			bbia_sum_int_levelOut (self, integer, fromLvl, prevLvl-1);
+			bbia_add_int_levelOut (self, integer, fromLvl, prevLvl-1);
 			return;
 		}
 		else
@@ -498,7 +497,7 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 		bbia * temp = bbia_new();
 		temp->at[fromLvl] = integer;
 		temp->lvlButton = fromLvl;
-		bbia_sum_bbia_op (self, temp);
+		bbia_add_bbia_op (self, temp);
 		bbia_free (temp);
 		return;
 	}
@@ -511,43 +510,43 @@ void bbia_sum_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) 
 	self->at[fromLvl] = BBIA_LEVEL_IS_EMPTY + self->at[fromLvl] - (BBIA_LEVEL_IS_FULL - integer + 1);
 }
 
-void bbia_sum_int_level (bbia * self, int integer, int level) {
+void bbia_add_int_level (bbia * self, int integer, int level) {
 	if (stuaa_outofbounders_max (self->at[level], integer) == 0)
 		self->at[level] += integer;
 	else
-		bbia_sum_int_levelOut (self, integer, level, level);
+		bbia_add_int_levelOut (self, integer, level, level);
 }
 
-void bbia_sum_int (bbia * self, int integer) {
-	nullPointer_funcVoid_1 (self, "bbia_sum_int");
+void bbia_add_int (bbia * self, int integer) {
+	nullPointer_funcVoid_1 (self, "bbia_add_int");
 	if (self->sign == 0)
-		bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
+		bbia_add_int_level (self, integer, BBIA_LEVEL_TOP);
 	else if (self->sign == 1)
 		bbia_sub_int_level (self, integer, BBIA_LEVEL_TOP);
 }
 
-void bbia_sum_bbia (bbia * first, bbia * second) {
-	nullPointer_funcVoid_2 (first, second, "bbia_sum_bbia");
+void bbia_add_bbia (bbia * first, bbia * second) {
+	nullPointer_funcVoid_2 (first, second, "bbia_add_bbia");
 	if (first->sign == second->sign)
-		bbia_sum_bbia_op (first, second);
+		bbia_add_bbia_op (first, second);
 	else
 		bbia_sub_bbia_op (first, second);
 }
 
-void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) {
-	nullPointer_funcVoid_3 (to, first, second, "bbia_sum_bbia_to");
+void bbia_add_bbia_to (bbia * to, bbia * first, bbia * second) {
+	nullPointer_funcVoid_3 (to, first, second, "bbia_add_bbia_to");
 	bbia_copy_bbia (to, first);
 	if (first->sign == second->sign)
-		bbia_sum_bbia_op (to, second);
+		bbia_add_bbia_op (to, second);
 	else
 		bbia_sub_bbia_op (to, second);
 }
 
-bbia * bbia_sum_bbia_new (bbia * first, bbia * second) {
-	nullPointer_funcPointer_2 (first, second, "bbia_sum_bbia_new");
+bbia * bbia_add_bbia_new (bbia * first, bbia * second) {
+	nullPointer_funcPointer_2 (first, second, "bbia_add_bbia_new");
 	bbia * self = bbia_copy_new(first);
 	if (first->sign == second->sign)
-		bbia_sum_bbia_op (self, second);
+		bbia_add_bbia_op (self, second);
 	else
 		bbia_sub_bbia_op (self, second);
 	return self;
@@ -596,7 +595,7 @@ void bbia_sub_int (bbia * self, int integer) {
 	if (self->sign == 0)
 		bbia_sub_int_level (self, integer, BBIA_LEVEL_TOP);
 	else if (self->sign == 1)
-		bbia_sum_int_level (self, integer, BBIA_LEVEL_TOP);
+		bbia_add_int_level (self, integer, BBIA_LEVEL_TOP);
 }
 
 void bbia_sub_bbia (bbia * first, bbia * second) {
@@ -604,7 +603,7 @@ void bbia_sub_bbia (bbia * first, bbia * second) {
 	if (first->sign == second->sign)
 		bbia_sub_bbia_op (first, second);
 	else
-		bbia_sum_bbia_op (first, second);
+		bbia_add_bbia_op (first, second);
 }
 
 void bbia_sub_bbia_to (bbia * to, bbia * first, bbia * second) {
@@ -613,7 +612,7 @@ void bbia_sub_bbia_to (bbia * to, bbia * first, bbia * second) {
 	if (first->sign == second->sign)
 		bbia_sub_bbia_op (to, second);
 	else
-		bbia_sum_bbia_op (to, second);
+		bbia_add_bbia_op (to, second);
 }
 
 bbia * bbia_sub_bbia_new (bbia * first, bbia * second) {
@@ -622,8 +621,207 @@ bbia * bbia_sub_bbia_new (bbia * first, bbia * second) {
 	if (first->sign == second->sign)
 		bbia_sub_bbia_op (self, second);
 	else
-		bbia_sum_bbia_op (self, second);
+		bbia_add_bbia_op (self, second);
 	return self;
+}
+
+// @MULTIPLICATION
+
+bbia * bbia_multiplicationByBitAnd_operation (bbia * self, bbia * temp) {
+
+	// Integer x BBIA
+	// 101 x 010
+	// 101 x 01(0) == 101 & 000 = 000
+	// 101 x 0(1)0 == 1010 & 1111 = 1010
+	// 101 x (0)10 == 10100 & 00000 = 00000
+	// 000 + 1010 + 00000 = 1010 (101 x 010)
+	// See calculation folder for more information
+
+	bbia * result = bbia_new();
+	int curBitVal = 0;
+
+	for (
+		int curBit = 1, lvl = BBIA_LEVEL_TOP,
+		lvlBit = curBit % BBIA_INTEGER_SIZE;
+
+		curBit <= BBIA_BITS_COUNT;
+
+		curBit++, lvlBit = curBit % BBIA_INTEGER_SIZE
+	) {
+		if (lvlBit != 0)
+			curBitVal = (self->at[lvl] & stuaa_bitflag (lvlBit)) ? 1 : 0;
+		else
+			curBitVal = (self->at[lvl--] & stuaa_bitflag (BBIA_INTEGER_SIZE)) ? 1 : 0;
+
+		if (curBitVal == 1)
+			bbia_add_bbia (result, temp);
+
+		bbia_bits_shift_left(temp, 1);
+	}
+
+	return result;
+}
+
+bbia * bbia_mult_int_new (bbia * self, int integer) {
+	nullPointer_funcPointer_1 (self, "bbia_mult_int_new");
+	bbia * integerValue = bbia_new();
+	integerValue->at[BBIA_LEVEL_TOP] = integer;
+
+	bbia * result = bbia_multiplicationByBitAnd_operation (self, integerValue);
+	bbia_free (integerValue);
+	return result;
+}
+
+void bbia_mult_int (bbia * self, int integer) {
+	bbia * res = bbia_mult_int_new (self, integer);
+	bbia_copy_bbia (self, res);
+	bbia_free (res);
+}
+
+bbia * bbia_mult_bbia_new (bbia * first, bbia * second) {
+	nullPointer_funcPointer_2 (first, second, "bbia_mult_bbia_new");
+	if (first == second)
+		return bbia_pow_new (first, 2);
+
+	bbia * temp = bbia_copy_new (second);
+	bbia * result = bbia_multiplicationByBitAnd_operation (first, temp);
+	bbia_free (temp);
+
+	if ((first->sign != second->sign) || (first->sign == 1 && second->sign == 1)) bbia_sign_change (result);
+	return result;
+}
+
+void bbia_mult_bbia (bbia * to, bbia * second) {
+	if (to == second) {
+		bbia_pow (to, 2);
+		return;
+	}
+	int toChangeSign = ((to->sign != second->sign) || (to->sign == 1 && second->sign == 1)) ? 1 : 0;
+	bbia * res = bbia_multiplicationByBitAnd_operation (second, to);
+
+	bbia_copy_bbia (to, res);
+	bbia_free (res);
+	if (toChangeSign == 1) bbia_sign_change (to);
+}
+
+// @POWER
+
+void bbia_pow (bbia * self, int power) {
+	nullPointer_funcVoid_1 (self, "bbia_pow");
+	bbia * temp = bbia_copy_new (self);
+	bbia * saved = bbia_copy_new (self);
+
+	while (power-- != 1) {
+		bbia_mult_bbia (self, temp);
+		bbia_copy_bbia (temp, saved);
+	}
+	bbia_free (temp);
+	bbia_free (saved);
+}
+
+bbia * bbia_pow_new (bbia * self, int power) {
+	bbia * res = bbia_copy_new (self);
+	bbia_pow (res, power);
+	return res;
+}
+
+// @DIVISION
+
+void bbia_divisionBy_operation (bbia * self, bbia * division, DIVISION_OR_MOD flag) {
+
+	bbia * mod = bbia_copy_new(self);
+
+	// set result to zero and work with it like with current multiplication of division
+	bbia_set_value (self, 0);
+	bbia * currentMultiplierOfDivision = self; // sugar
+	currentMultiplierOfDivision->at[BBIA_LEVEL_TOP] = 2;
+
+	// create temporary to store what must be subtrahended from mod
+	bbia * currentDifference = bbia_copy_new (division);
+
+	for (; bbia_compare_bbia (mod, currentDifference) != 1;
+	       bbia_add_int (currentMultiplierOfDivision, 1) /*analog for i++)*/)
+	{
+		bbia_copy_bbia (currentDifference, division);
+		bbia_mult_bbia (currentDifference, currentMultiplierOfDivision);
+	}
+
+	bbia_sub_int (currentMultiplierOfDivision, 2); // analog for i--
+	// division result
+	if (flag == DIVISION) {
+		bbia_free(currentDifference);
+		bbia_free (mod);
+		return;
+	}
+
+	// mod result
+	else if (flag == MOD) {
+		bbia_copy_bbia (currentDifference, division);
+		bbia_mult_bbia (currentDifference, currentMultiplierOfDivision);
+		bbia_sub_bbia (mod, currentDifference);
+		bbia_free(currentDifference);
+
+		bbia_copy_bbia (self, mod);
+		bbia_free (mod);
+	}
+}
+
+void bbia_div_bbia (bbia * divided, bbia * division) {
+	nullPointer_funcVoid_2 (divided, division, "bbia_div_bbia");
+	bbia_divisionBy_operation (divided, division, DIVISION);
+}
+
+bbia * bbia_div_bbia_new (bbia * divided, bbia * division) {
+	bbia * res = bbia_copy_new (divided);
+	bbia_divisionBy_operation (res, division, DIVISION);
+	return res;
+}
+
+void bbia_div_int (bbia * self, int integer) {
+	nullPointer_funcVoid_1 (self, "bbia_div_int");
+	if (integer == BBIA_LEVEL_IS_EMPTY) {
+		throw("division by zero");
+		return;
+	}
+	bbia * division = bbia_new();
+	division->at[BBIA_LEVEL_TOP] = integer;
+
+	bbia_divisionBy_operation (self, division, DIVISION);
+	bbia_free (division);
+}
+
+bbia * bbia_div_int_new (bbia * self, int integer) {
+	bbia * res = bbia_copy_new (self);
+	bbia_div_int (res, integer);
+	return res;
+}
+
+// @MOD
+
+void bbia_mod_bbia (bbia * divided, bbia * division) {
+	nullPointer_funcVoid_2 (divided, division, "bbia_mod_bbia");
+	bbia_divisionBy_operation (divided, division, MOD);
+}
+
+bbia * bbia_mod_bbia_new (bbia * divided, bbia * division) {
+	bbia * res = bbia_copy_new (divided);
+	bbia_divisionBy_operation (res, division, MOD);
+	return res;
+}
+
+void bbia_mod_int (bbia * self, int integer) {
+	nullPointer_funcVoid_1 (self, "bbia_mod_int");
+	bbia * division = bbia_new();
+	division->at[BBIA_LEVEL_TOP] = integer;
+
+	bbia_divisionBy_operation (self, division, MOD);
+	bbia_free (division);
+}
+
+bbia * bbia_mod_int_new (bbia * self, int integer) {
+	bbia * res = bbia_copy_new (self);
+	bbia_mod_int (res, integer);
+	return res;
 }
 
 // @PRINT

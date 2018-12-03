@@ -58,12 +58,12 @@ int main (int argc, char * argv[]) {
 	printf("a is %s then b\n", (bbia_compare_bbia(a,b) == 1) ? "bigger" : "lesser");
 
 	c = bbia_new_fromSystemInteger (481);
-	printf ("Bbia sum bbia tests : \n");
+	printf ("Bbia add bbia tests : \n");
 	puts ("b: ");
 	bbia_print_levelValue_dec (b);
 	puts ("c: ");
 	bbia_print_levelValue_dec (c);
-	bbia_sum_bbia (b,c);
+	bbia_add_bbia (b,c);
 	printf("b + c = \n");
 	bbia_print_levelValue_dec (b);
 
@@ -83,7 +83,7 @@ int main (int argc, char * argv[]) {
 	bbia_set_zero (c);
 	bbia_at_set (c, BBIA_LEVEL_TOP, 5);
 	printf("b + 5 = \n");
-	bbia_sum_bbia (b,c);
+	bbia_add_bbia (b,c);
 	bbia_print_levelValue_dec (b);
 
 	if (a != NULL) bbia_free (a);

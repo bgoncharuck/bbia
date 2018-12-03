@@ -108,18 +108,36 @@ bbia * bbia_bits_isFull () ;
 bbia * bbia_bits_isEmpty () ;
 bbia * bbia_bits_tillBit_isFull (int num) ;
 bbia * bbia_bits_tillBit_isEmpty (int num) ;
-// @SUM
-void bbia_sum_int_level (bbia * self, int integer, int level) ;
-void bbia_sum_int (bbia * self, int integer) ;
-void bbia_sum_bbia (bbia * first, bbia * second) ;
-void bbia_sum_bbia_to (bbia * to, bbia * first, bbia * second) ;
-bbia * bbia_sum_bbia_new (bbia * first, bbia * second) ;
+// @ADD
+void bbia_add_int_level (bbia * self, int integer, int level) ;
+void bbia_add_int (bbia * self, int integer) ;
+void bbia_add_bbia (bbia * first, bbia * second) ;
+void bbia_add_bbia_to (bbia * to, bbia * first, bbia * second) ;
+bbia * bbia_add_bbia_new (bbia * first, bbia * second) ;
 // @SUB
 void bbia_sub_int_level (bbia * self, int integer, int level) ;
 void bbia_sub_int (bbia * self, int integer) ;
 void bbia_sub_bbia (bbia * first, bbia * second) ;
 void bbia_sub_bbia_to (bbia * to, bbia * first, bbia * second) ;
 bbia * bbia_sub_bbia_new (bbia * first, bbia * second) ;
+// @MULT
+bbia * bbia_mult_int_new (bbia * self, int integer) ;
+void bbia_mult_int (bbia * self, int integer) ;
+bbia * bbia_mult_bbia_new (bbia * first, bbia * second) ;
+void bbia_mult_bbia (bbia * to, bbia * second) ;
+// @POWER
+void bbia_pow (bbia * self, int power) ;
+bbia * bbia_pow_new (bbia * self, int power) ;
+// @DIV
+void bbia_div_bbia (bbia * divided, bbia * division) ;
+bbia * bbia_div_bbia_new (bbia * divided, bbia * division) ;
+void bbia_div_int (bbia * self, int integer) ;
+bbia * bbia_div_int_new (bbia * self, int integer) ;
+// @MOD
+void bbia_mod_bbia (bbia * divided, bbia * division) ;
+bbia * bbia_mod_bbia_new (bbia * divided, bbia * division) ;
+void bbia_mod_int (bbia * self, int integer) ;
+bbia * bbia_mod_int_new (bbia * self, int integer) ;
 // @PRINT
 void bbia_print_levelValue (bbia * self) ;
 void bbia_print_levelValue_dec (bbia * self) ;
