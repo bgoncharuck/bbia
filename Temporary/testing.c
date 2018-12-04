@@ -85,6 +85,18 @@ int main (int argc, char * argv[]) {
 	printf("b + 5 = \n");
 	bbia_add_bbia (b,c);
 	bbia_print_levelValue_dec (b);
+	bbia_set_zero (c);
+	printf ("Bbia mult and div tests : \n");
+	bbia_at_set (c, BBIA_LEVEL_TOP, 111);
+	puts ("c: ");
+	bbia_print_levelValue_dec (c);
+	bbia_mult_bbia (c,b);
+	puts ("c * 3: ");
+	bbia_print_levelValue_dec (c);
+	puts ("c / 111: ");
+	bbia_div_int (c, 111);
+	bbia_print_levelValue_dec (c);
+
 
 	if (a != NULL) bbia_free (a);
 	if (b != NULL) bbia_free (b);

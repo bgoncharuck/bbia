@@ -141,3 +141,6 @@ bbia * bbia_mod_int_new (bbia * self, int integer) ;
 // @PRINT
 void bbia_print_levelValue (bbia * self) ;
 void bbia_print_levelValue_dec (bbia * self) ;
+// @INBASE
+char * bbia_base_to (bbia * self, int base) ;
+bbia * bbia_base_from (char * str, int base) ;

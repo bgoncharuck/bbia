@@ -734,19 +734,20 @@ void bbia_divisionBy_operation (bbia * self, bbia * division, DIVISION_OR_MOD fl
 	// set result to zero and work with it like with current multiplication of division
 	bbia_set_value (self, 0);
 	bbia * currentMultiplierOfDivision = self; // sugar
+	bbia_set_zero (currentMultiplierOfDivision);
 	currentMultiplierOfDivision->at[BBIA_LEVEL_TOP] = 2;
 
 	// create temporary to store what must be subtrahended from mod
 	bbia * currentDifference = bbia_copy_new (division);
 
-	for (; bbia_compare_bbia (mod, currentDifference) != 1;
+	for (; bbia_compare_bbia (mod, currentDifference) == 1;
 	       bbia_add_int (currentMultiplierOfDivision, 1) /*analog for i++)*/)
 	{
 		bbia_copy_bbia (currentDifference, division);
 		bbia_mult_bbia (currentDifference, currentMultiplierOfDivision);
 	}
 
-	bbia_sub_int (currentMultiplierOfDivision, 2); // analog for i--
+	bbia_sub_int (currentMultiplierOfDivision, 1); // analog for i--
 	// division result
 	if (flag == DIVISION) {
 		bbia_free(currentDifference);
@@ -844,4 +845,31 @@ void bbia_print_levelValue_dec (bbia * self) {
 	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
 		printf ("%u_", self->at[curLvl]);
 	puts("");
+}
+
+// @INBASE
+
+char * bbia_base_to (bbia * self, int base) {
+	nullPointer_funcPointer_1 (self, "bbia_base_to");
+	char * result = NULL;
+
+	if (base == 2) {
+		result = calloc (sizeof(char), BBIA_LEVEL_COUNT * BBIA_INTEGER_SIZE + 1);
+
+	}
+
+	return result;
+}
+
+bbia * bbia_base_from (char * str, int base) {
+	nullPointer_funcPointer_1 (self, "bbia_base_from");
+	bbia * result = NULL;
+
+
+	if (base == 2) {
+		result = bbia_new();
+
+	}
+
+	return result;
 }
