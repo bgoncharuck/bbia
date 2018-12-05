@@ -849,6 +849,8 @@ void bbia_print_levelValue_dec (bbia * self) {
 
 // @INBASE
 
+static const char * numerics = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/,"; //base64
+
 char * bbia_base_to (bbia * self, int base) {
 	nullPointer_funcPointer_1 (self, "bbia_base_to");
 	char * result = NULL;
@@ -856,6 +858,7 @@ char * bbia_base_to (bbia * self, int base) {
 	if (base == 2) {
 		result = calloc (sizeof(char), BBIA_LEVEL_COUNT * BBIA_INTEGER_SIZE + 1);
 
+		int start = ceil ( log2(self->lvlButton)/log2(BBIA_LEVEL_COUNT) ) * BBIA_INTEGER_SIZE - 1;
 	}
 
 	return result;
