@@ -1,4 +1,4 @@
-# Bit Big Integer Algorithm v. 0.0.7
+# Bit Big Integer Algorithm v. 0.1.0
 
 BBIA is superstructure on system integer and a try to create fast and language independent algorithm which can save Nbit integer.
 

@@ -6,123 +6,100 @@
 #include <limits.h>
 
 int main (int argc, char * argv[]) {
-
-	bbia * bitShiftTest = bbia_new();
-	bbia * bitFlagTest = bbia_new();
-	bbia * sumTest = bbia_new();
-	bbia * multTest = bbia_new();
-	bbia * multB1Test = bbia_new();
-	bbia_at_set (multB1Test,BBIA_LEVEL_TOP, 2);
-	// bbia * multB2Test = bbia_new();
-	bbia * multB2Test = NULL;
-	bbia * multB3Test = bbia_new();
-	bbia * divisionTest1 = bbia_new();
-
+	bbia * a = NULL;
+	bbia * b = NULL;
+	bbia * c = NULL;
 
 	puts ("BBIA Bitflag tests : \n");
 	puts ("Before bitflag :");
-	bbia_print_levelValue (bitFlagTest);
+	a = bbia_new ();
+	bbia_print_levelValue (a);
 
 	puts ("After bitflag set :");
-	bbia_bits_flag_set (bitFlagTest, 127);
-	bbia_print_levelValue (bitFlagTest);
+	bbia_bits_flag_set (a, 127);
+	bbia_print_levelValue (a);
 
 	puts ("After bitflag unset :");
-	bbia_bits_flag_unset (bitFlagTest, 127);
-	bbia_print_levelValue (bitFlagTest);
+	bbia_bits_flag_unset (a, 127);
+	bbia_print_levelValue (a);
 
-	puts ("\nShift tests :\n");
-	// bbia_at_set (bitShiftTest, BBIA_LEVEL_TOP, BBIA_LEVEL_IS_FULL);
-	// bbia_set_value (bitShiftTest, -1);
-	for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; lvl--)
-		bbia_at_set (bitShiftTest, lvl, (stuaa_bitflag(32) | stuaa_bitflag(31) ));
-		// bbia_at_set (bitShiftTest, lvl, (stuaa_bitflag(31) ));
+	printf ("Bitshift tests : \n");
+	bbia_set_zero (a);
+	for (int lvl = BBIA_LEVEL_TOP; lvl >= 2; lvl--)
+		bbia_at_set (a, lvl, (stuaa_bitflag(32) | stuaa_bitflag(31) ));
+	printf ("Before left shift test by 2 : \n");
+	bbia_print_levelValue (a);
 
-	puts ("Before left shift by 2 :");
-	bbia_print_levelValue (bitShiftTest);
-
-	bbia_bits_shift_left (bitShiftTest, 2);
+	bbia_bits_shift_left (a, 2);
 	puts ("After left shift by 2 :");
-	bbia_print_levelValue (bitShiftTest);
+	bbia_print_levelValue (a);
 
-	for (int lvl = BBIA_LEVEL_TOP; lvl >= 0; lvl--)
-		bbia_at_set (bitShiftTest, lvl, (stuaa_bitflag(1) | stuaa_bitflag(2)
-	| stuaa_bitflag(3) | stuaa_bitflag(4) ));
+	bbia_set_zero (a);
 	puts ("Before right shift by 3 :");
-	bbia_print_levelValue (bitShiftTest);
+	for (int lvl = BBIA_LEVEL_TOP; lvl >= 1; lvl--)
+		bbia_at_set (a, lvl, (stuaa_bitflag(1) | stuaa_bitflag(2)
+	| stuaa_bitflag(3) | stuaa_bitflag(4) ));
+	bbia_print_levelValue (a);
 
-	bbia_bits_shift_right (bitShiftTest, 3);
+	bbia_bits_shift_right (a, 3);
 	puts ("After right shift by 3 :");
-	bbia_print_levelValue (bitShiftTest);
+	bbia_print_levelValue (a);
 
-	puts("\nSum && sub tests\n");
-	puts("Before sum test :");
-	bbia_print_levelValue_dec (sumTest);
-	// bbia_sum_int (sumTest, 100);
-	// bbia_sum_int_level (sumTest, INT_MAX, BBIA_LEVEL_TOP - 1);
-	// bbia_sum_int_level (sumTest, BBIA_LEVEL_IS_FULL, BBIA_LEVEL_TOP - 1);
-	puts("After sum test :");
+	printf ("Compare and check tests : \n");
+	bbia_set_zero (a);
+	bbia_at_set (a, 3, 42);
+	b = bbia_new_fromSystemInteger(42);
+	// bbia_at_set (b, 3, 42);
+	puts ("a: ");
+	bbia_print_levelValue (a);
+	puts ("b: ");
+	bbia_print_levelValue (b);
 
-	for (int i = 1; i < BBIA_LEVEL_TOP - 2; i++)
-		bbia_sum_int_level (sumTest, BBIA_LEVEL_IS_FULL, i);
+	printf("a is %s then b\n", (bbia_compare_bbia(a,b) == 1) ? "bigger" : "lesser");
 
-	bbia_sum_int_level (sumTest, BBIA_LEVEL_IS_PFULL, BBIA_LEVEL_TOP);
-	bbia_sum_int_level (sumTest, 450, BBIA_LEVEL_TOP-1);
-	bbia_sum_int_level (sumTest, BBIA_LEVEL_IS_FULL, BBIA_LEVEL_TOP-2);
+	c = bbia_new_fromSystemInteger (481);
+	printf ("Bbia add bbia tests : \n");
+	puts ("b: ");
+	bbia_print_levelValue_dec (b);
+	puts ("c: ");
+	bbia_print_levelValue_dec (c);
+	bbia_add_bbia (b,c);
+	printf("b + c = \n");
+	bbia_print_levelValue_dec (b);
 
-	bbia_print_levelValue_dec (sumTest);
-
-	puts("After sum test second :");
-
-	bbia_sum_int_level (sumTest, 7, BBIA_LEVEL_TOP-2);
-	bbia_print_levelValue_dec (sumTest);
-
-	puts("\nMult tests\n");
-	puts("Before mult test : ");
-	bbia_at_set (multTest, BBIA_LEVEL_TOP, 14884245);
-	bbia_print_levelValue_dec (multTest);
-
-	puts("After mult test (x 3): ");
-
-	bbia_mult_int (multTest, 3);
-	bbia_print_levelValue_dec (multTest);
-
-	puts("Before pow(5) test : ");
-	bbia_at_set (multB3Test, BBIA_LEVEL_TOP, 2);
-	bbia_print_levelValue_dec (multB3Test);
-
-	puts("After pow(5) test : ");
-	// multB2Test = bbia_mult_bbia_new (multB3Test, multB3Test);
-	// bbia_mult_bbia (multB3Test, multB3Test);
-	bbia_pow (multB3Test, 5);
-	bbia_print_levelValue_dec (multB3Test);
-
-	puts("\nDivsion tests\n");
-	puts("Before division test : ");
-	bbia_at_set (divisionTest1, BBIA_LEVEL_TOP, 58);
-	bbia_print_levelValue_dec (divisionTest1);
-	puts("After division test : ");
-	bbia_mod_int (divisionTest1, 8);
-	bbia_print_levelValue_dec (divisionTest1);
+	printf ("Bbia dif bbia tests : \n");
+	puts ("b: ");
+	bbia_print_levelValue_dec (b);
+	puts ("c: ");
+	bbia_print_levelValue_dec (c);
+	bbia_sub_bbia (b,c);
+	printf("b - c = \n");
+	bbia_print_levelValue_dec (b);
+	bbia_set_zero (c);
+	bbia_at_set (c, BBIA_LEVEL_TOP, 44);
+	printf("b - 44 = \n");
+	bbia_sub_bbia (b,c);
+	bbia_print_levelValue_dec (b);
+	bbia_set_zero (c);
+	bbia_at_set (c, BBIA_LEVEL_TOP, 5);
+	printf("b + 5 = \n");
+	bbia_add_bbia (b,c);
+	bbia_print_levelValue_dec (b);
+	bbia_set_zero (c);
+	printf ("Bbia mult and div tests : \n");
+	bbia_at_set (c, BBIA_LEVEL_TOP, 111);
+	puts ("c: ");
+	bbia_print_levelValue_dec (c);
+	bbia_mult_bbia (c,b);
+	puts ("c * 3: ");
+	bbia_print_levelValue_dec (c);
+	puts ("c / 111: ");
+	bbia_div_int (c, 111);
+	bbia_print_levelValue_dec (c);
 
 
-	/*
-	int shiftTest = 0x40000000;
-	// int shiftTest1 = -1;
-	// unsigned int shiftTest = shiftTest1;
-	shiftTest >>= 3;
-	printf("\n%d\n", shiftTest);
-	puts(stuaa_toBase(shiftTest,2));
-	*/
-
-	bbia_free (divisionTest1);
-	bbia_free (multB1Test);
-	// bbia_free (multB2Test);
-	bbia_free (multB3Test);
-	bbia_free (multTest);
-	bbia_free (sumTest);
-	bbia_free (bitFlagTest);
-	bbia_free (bitShiftTest);
-
+	if (a != NULL) bbia_free (a);
+	if (b != NULL) bbia_free (b);
+	if (c != NULL) bbia_free (c);
 	return EXIT_SUCCESS;
 }
