@@ -872,19 +872,25 @@ static const char * numerics = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkl
 
 char * bbia_base_to (bbia * self, int base) {
 	nullPointer_funcPointer_1 (self, "bbia_base_to");
-	char * result = NULL;
-
 	if (base == 2) {
-		result = calloc (sizeof(char), BBIA_LEVEL_COUNT * BBIA_INTEGER_SIZE + 1);
+		int start = ceil (log2(self->at[self->lvlButton])/log2(base)) + BBIA_INTEGER_SIZE * (BBIA_LEVEL_TOP-self->lvlButton);
+		char * result = calloc (sizeof(char *), start);
+		start--;
 
-		int start = ceil ( log2(self->lvlButton)/log2(BBIA_LEVEL_COUNT) ) * BBIA_INTEGER_SIZE - 1;
+		for (int curLvl = BBIA_LEVEL_TOP; curLvl >= self->lvlButton; curLvl--)
+		for (int curBit = 1; curBit <= BBIA_INTEGER_SIZE && start >= 0; curBit++) {
+			if (stuaa_bitflag(curBit) & self->at[curLvl])
+				result[start--] = '1';
+			else
+				result[start--] = '0';
+		}
+		return result;
 	}
-
-	return result;
+	return NULL;
 }
 
 bbia * bbia_base_from (char * str, int base) {
-	nullPointer_funcPointer_1 (self, "bbia_base_from");
+	nullPointer_funcPointer_1 (str, "bbia_base_from");
 	bbia * result = NULL;
 
 

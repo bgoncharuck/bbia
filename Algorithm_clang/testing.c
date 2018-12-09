@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <string.h>
 
 int main (int argc, char * argv[]) {
 	bbia * a = NULL;
@@ -97,6 +98,9 @@ int main (int argc, char * argv[]) {
 	bbia_div_int (c, 111);
 	bbia_print_levelValue_dec (c);
 
+	char * someStr = bbia_base_to (c, 2);
+	printf("%d == %s\n", strlen(someStr), someStr);
+	free(someStr);
 
 	if (a != NULL) bbia_free (a);
 	if (b != NULL) bbia_free (b);
