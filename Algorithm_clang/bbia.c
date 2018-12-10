@@ -894,7 +894,7 @@ char * bbia_base_to (bbia * self, int base) {
 			position--
 		)
 		{
-			for (curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBit++, curBitInTwo++) {
+			for (curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
 
 				if (curBit == BBIA_INTEGER_SIZE) {
 					curBit = 0;
@@ -902,7 +902,7 @@ char * bbia_base_to (bbia * self, int base) {
 				}
 
 				curDigit |=
-				  (stuaa_bitflag (curBit + 1) & self->at[curLvl])
+				  (stuaa_bitflag (++curBit) & self->at[curLvl])
 				? stuaa_bitflag (curBitInTwo) : 0;
 			}
 
