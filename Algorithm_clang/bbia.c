@@ -868,28 +868,53 @@ void bbia_print_levelValue_dec (bbia * self) {
 
 // @INBASE
 
-static const char * numerics = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/,"; //base64
+static const char * numerics = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/,"; //base64
 
 char * bbia_base_to (bbia * self, int base) {
 	nullPointer_funcPointer_1 (self, "bbia_base_to");
 
 	int powerOfTwo = stuaa_isPowerOfTwo (base);
 	if (powerOfTwo != -2) {
-		int start = (log2(self->at[self->lvlButton])/log2(base)) + ceil(BBIA_INTEGER_SIZE/powerOfTwo) * (BBIA_LEVEL_TOP-self->lvlButton);
-		char * result = calloc (sizeof(char *), start);
 
-		int curDigit = 0;
-		for (int curLvl = BBIA_LEVEL_TOP; curLvl >= self->lvlButton; curLvl--)
-		for (int curBit = 0; curBit < BBIA_INTEGER_SIZE && start >= 0; curBit += powerOfTwo) {
+		const int size =
+		  log2 (self->at[self->lvlButton]) / log2 (base)
+		+ ceil(BBIA_INTEGER_SIZE/powerOfTwo) * (BBIA_LEVEL_TOP-self->lvlButton);
 
-			for (int curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++)
+		char * reverse = calloc (sizeof(char *), size + 1);
+
+		for (
+			int position = 0,
+			curLvl = BBIA_LEVEL_TOP,
+			curBit = 0,
+			curBitInTwo = 0,
+			curDigit = 0;
+
+			position <= size;
+
+			position++
+		)
+		{
+			for (curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBit++, curBitInTwo++) {
+
+				if (curBit == BBIA_INTEGER_SIZE) {
+					curBit = 0;
+					curLvl--;
+				}
+
 				curDigit |=
-				(stuaa_bitflag (curBit + curBitInTwo) & self->at[curLvl])
+				  (stuaa_bitflag (curBit + 1) & self->at[curLvl])
 				? stuaa_bitflag (curBitInTwo) : 0;
-			
-			result[start--] = numerics[curDigit];
+			}
+
+			reverse[position] = numerics[curDigit];
 			curDigit = 0;
 		}
+
+		char * result = calloc(sizeof(char *), size + 1);
+		for (int i = 0; i <= size; i++)
+			result[i] = reverse[size-i];
+		free (reverse);
+
 		return result;
 	}
 
@@ -898,13 +923,11 @@ char * bbia_base_to (bbia * self, int base) {
 
 bbia * bbia_base_from (char * str, int base) {
 	nullPointer_funcPointer_1 (str, "bbia_base_from");
-	bbia * result = NULL;
 
-
-	if (base == 2) {
-		result = bbia_new();
+	int powerOfTwo = stuaa_isPowerOfTwo (base);
+	if (powerOfTwo != -2) {
 
 	}
 
-	return result;
+	return NULL;
 }
