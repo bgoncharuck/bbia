@@ -877,7 +877,8 @@ char * bbia_base_to (bbia * self, int base) {
 	if (powerOfTwo != -2) {
 
 		const int size =
-		  log2 (self->at[self->lvlButton]) / log2 (base)
+		1
+		+ log2 (self->at[self->lvlButton]) / log2 (base)
 		+ ceil(BBIA_INTEGER_SIZE/powerOfTwo) * (BBIA_LEVEL_TOP-self->lvlButton);
 
 		char * reverse = calloc (sizeof(char *), size + 1);
@@ -889,7 +890,7 @@ char * bbia_base_to (bbia * self, int base) {
 			curBitInTwo = 0,
 			curDigit = 0;
 
-			position >= 0;
+			position > 0;
 
 			position--
 		)
@@ -910,6 +911,7 @@ char * bbia_base_to (bbia * self, int base) {
 			curDigit = 0;
 		}
 
+		reverse[0] = (self->sign == 0) ? '+' : '-';
 		return reverse;
 	}
 
