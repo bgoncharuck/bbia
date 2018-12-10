@@ -883,15 +883,15 @@ char * bbia_base_to (bbia * self, int base) {
 		char * reverse = calloc (sizeof(char *), size + 1);
 
 		for (
-			int position = 0,
+			int position = size,
 			curLvl = BBIA_LEVEL_TOP,
 			curBit = 0,
 			curBitInTwo = 0,
 			curDigit = 0;
 
-			position <= size;
+			position >= 0;
 
-			position++
+			position--
 		)
 		{
 			for (curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBit++, curBitInTwo++) {
@@ -910,12 +910,7 @@ char * bbia_base_to (bbia * self, int base) {
 			curDigit = 0;
 		}
 
-		char * result = calloc(sizeof(char *), size + 1);
-		for (int i = 0; i <= size; i++)
-			result[i] = reverse[size-i];
-		free (reverse);
-
-		return result;
+		return reverse;
 	}
 
 	return NULL;
