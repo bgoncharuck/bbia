@@ -149,7 +149,7 @@ int stuaa_compare (int a, int b) {
 
 int stuaa_isPowerOfTwo (int value) {
 
-	for (int curBit = 3; curBit <= BBIA_INTEGER_SIZE; curBit++)
+	for (int curBit = 2; curBit <= BBIA_INTEGER_SIZE; curBit++)
 		if (value == stuaa_bitflag (curBit))
 			return curBit - 1;
 

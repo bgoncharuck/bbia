@@ -97,9 +97,11 @@ int main (int argc, char * argv[]) {
 	puts ("c / 111: ");
 	bbia_div_int (c, 111);
 	bbia_print_levelValue_dec (c);
-
-	char * someStr = bbia_base_to (c, 2);
-	printf("%d == %s\n", strlen(someStr), someStr);
+	bbia_at_set (c, BBIA_LEVEL_TOP, stuaa_bitflag(31));
+	bbia_at_set (c, BBIA_LEVEL_TOP-1, 7);
+	bbia_print_levelValue_dec (c);
+	char * someStr = bbia_base_to (c, 16);
+	printf("%u == %s\n", strlen(someStr), someStr);
 	free(someStr);
 
 	if (a != NULL) bbia_free (a);

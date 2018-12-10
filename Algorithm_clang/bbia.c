@@ -872,20 +872,27 @@ static const char * numerics = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkl
 
 char * bbia_base_to (bbia * self, int base) {
 	nullPointer_funcPointer_1 (self, "bbia_base_to");
-	if (base == 2) {
-		int start = ceil (log2(self->at[self->lvlButton])/log2(base)) + BBIA_INTEGER_SIZE * (BBIA_LEVEL_TOP-self->lvlButton);
-		char * result = calloc (sizeof(char *), start);
-		start--;
 
+	int powerOfTwo = stuaa_isPowerOfTwo (base);
+	if (powerOfTwo != -2) {
+		int start = (log2(self->at[self->lvlButton])/log2(base)) + ceil(BBIA_INTEGER_SIZE/powerOfTwo) * (BBIA_LEVEL_TOP-self->lvlButton);
+		char * result = calloc (sizeof(char *), start);
+
+		int curDigit = 0;
 		for (int curLvl = BBIA_LEVEL_TOP; curLvl >= self->lvlButton; curLvl--)
-		for (int curBit = 1; curBit <= BBIA_INTEGER_SIZE && start >= 0; curBit++) {
-			if (stuaa_bitflag(curBit) & self->at[curLvl])
-				result[start--] = '1';
-			else
-				result[start--] = '0';
+		for (int curBit = 0; curBit < BBIA_INTEGER_SIZE && start >= 0; curBit += powerOfTwo) {
+
+			for (int curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++)
+				curDigit |=
+				(stuaa_bitflag (curBit + curBitInTwo) & self->at[curLvl])
+				? stuaa_bitflag (curBitInTwo) : 0;
+			
+			result[start--] = numerics[curDigit];
+			curDigit = 0;
 		}
 		return result;
 	}
+
 	return NULL;
 }
 
