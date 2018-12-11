@@ -950,9 +950,11 @@ bbia * bbia_base_from (char * str, int base) {
 					curLvl--;
 				}
 
-				result->at[curLvl] |=
-				  (stuaa_bitflag (curBitInTwo) & curDigit)
-				? stuaa_bitflag (++curBit) : 0;
+
+				if (stuaa_bitflag (curBitInTwo) & curDigit)
+					result->at[curLvl] |= stuaa_bitflag (++curBit);
+				else
+					++curBit;
 			}
 		}
 
