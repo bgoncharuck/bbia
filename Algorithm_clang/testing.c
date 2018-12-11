@@ -97,7 +97,7 @@ int main (int argc, char * argv[]) {
 	puts ("c / 111: ");
 	bbia_div_int (c, 111);
 	bbia_print_levelValue_dec (c);
-	bbia_at_set (c, BBIA_LEVEL_TOP, BBIA_LEVEL_IS_FULL);
+	bbia_at_set (c, BBIA_LEVEL_TOP, 3);
 	bbia_at_set (c, BBIA_LEVEL_TOP-1, 7);
 	char * someStr = bbia_base_to (c, 16);
 	printf("%lu == %s\n", strlen(someStr), someStr);

@@ -941,7 +941,7 @@ bbia * bbia_base_from (char * str, int base) {
 			position--
 		)
 		{
-			curDigit = stuaa_findDigitInNumerics (numerics, str[position]);
+			curDigit = strchr (numerics, str[position]) - numerics;
 
 			for (curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
 

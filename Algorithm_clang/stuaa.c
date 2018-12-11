@@ -17,16 +17,6 @@ static inline double log_base(double base, double num) {
 	return log2(num) / log2(base);
 }
 
-int stuaa_findDigitInNumerics (const char * numicsStr, char digit) {
-	for ( int curNumicsInd = 0; curNumicsInd < 64;
-		curNumicsInd++)
-
-	if (numicsStr [curNumicsInd] == digit)
-		return curNumicsInd;
-
-	return -1;
-}
-
 int stuaa_bitflag (int num) {
 
 	if ( !(num >= 0 && num <= BBIA_INTEGER_SIZE) )
@@ -240,7 +230,7 @@ int stuaa_fromBase (char * integer, int base) {
 		int tempValue = 0;
 
 		for (int curChar = size-1, curMult = 0; curChar >= 0; curChar--, curMult++) {
-			tempValue = stuaa_findDigitInNumerics (numerics, integer[curChar]);
+			tempValue = strchr (numerics, integer[curChar]) - numerics;
 
 			for (int curBit = 1; curBit <= powerOfTwo; curBit++) {
 				result |= (tempValue & stuaa_bitflag(curBit)) ?
@@ -292,7 +282,7 @@ int stuaa_fromBase_Clang (char * integer, int base) {
 		curDigit < BBIA_INTEGER_SIZE;
 
 		result *= base,
-		result += stuaa_findDigitInNumerics (numerics, integer[curDigit]),
+		result += strchr (numerics, integer[curDigit]) - numerics,
 		curDigit++
 	);
 
