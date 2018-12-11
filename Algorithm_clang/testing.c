@@ -100,12 +100,15 @@ int main (int argc, char * argv[]) {
 	bbia_at_set (c, BBIA_LEVEL_TOP, BBIA_LEVEL_IS_FULL);
 	bbia_at_set (c, BBIA_LEVEL_TOP-1, 7);
 	char * someStr = bbia_base_to (c, 16);
-	// bbia_print_levelValue_dec (c);
 	printf("%lu == %s\n", strlen(someStr), someStr);
+
+	bbia * d = bbia_base_from (someStr, 16);
 	free(someStr);
+	bbia_print_levelValue_dec (d);
 
 	if (a != NULL) bbia_free (a);
 	if (b != NULL) bbia_free (b);
 	if (c != NULL) bbia_free (c);
+	if (d != NULL) bbia_free (d);
 	return EXIT_SUCCESS;
 }

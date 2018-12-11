@@ -14,6 +14,8 @@ int stuaa_compare (int a, int b) ;
 
 int stuaa_isPowerOfTwo (int value) ;
 
+int stuaa_findDigitInNumerics (const char * numicsStr, char digit) ;
+
 char * stuaa_toBase_Clang (unsigned integer, int base) ;
 
 int stuaa_fromBase_Clang (char * integer, int base) ;

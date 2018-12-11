@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 #define throw(MSG) fprintf(stderr, "%s\n",MSG)
@@ -877,7 +878,7 @@ char * bbia_base_to (bbia * self, int base) {
 	if (powerOfTwo != -2) {
 
 		const int size =
-		1
+		1 // for sign in zero position
 		+ log2 (self->at[self->lvlButton]) / log2 (base)
 		+ ceil(BBIA_INTEGER_SIZE/powerOfTwo) * (BBIA_LEVEL_TOP-self->lvlButton);
 
@@ -924,6 +925,38 @@ bbia * bbia_base_from (char * str, int base) {
 	int powerOfTwo = stuaa_isPowerOfTwo (base);
 	if (powerOfTwo != -2) {
 
+		bbia * result = bbia_new();
+		result->sign = str[0] == '-' ? 1 : 0;
+		int size = (int) strlen(str);
+
+		for (
+			int position = size-1,
+			curLvl = BBIA_LEVEL_TOP,
+			curBit = 0,
+			curBitInTwo = 0,
+			curDigit = 0;
+
+			position > 0;
+
+			position--
+		)
+		{
+			curDigit = stuaa_findDigitInNumerics (numerics, str[position]);
+
+			for (curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
+
+				if (curBit == BBIA_INTEGER_SIZE) {
+					curBit = 0;
+					curLvl--;
+				}
+
+				result->at[curLvl] |=
+				  (stuaa_bitflag (curBitInTwo) & curDigit)
+				? stuaa_bitflag (++curBit) : 0;
+			}
+		}
+
+		return result;
 	}
 
 	return NULL;
