@@ -49,7 +49,7 @@ int main (int argc, char * argv[]) {
 	printf ("Compare and check tests : \n");
 	bbia_set_zero (a);
 	bbia_at_set (a, 3, 42);
-	b = bbia_new_fromSystemInteger(42);
+	b = bbia_new_fromSystemInteger(42, 0);
 	// bbia_at_set (b, 3, 42);
 	puts ("a: ");
 	bbia_print_levelValue (a);
@@ -58,7 +58,7 @@ int main (int argc, char * argv[]) {
 
 	printf("a is %s then b\n", (bbia_compare_bbia(a,b) == 1) ? "bigger" : "lesser");
 
-	c = bbia_new_fromSystemInteger (481);
+	c = bbia_new_fromSystemInteger (481, 0);
 	printf ("Bbia add bbia tests : \n");
 	puts ("b: ");
 	bbia_print_levelValue_dec (b);
