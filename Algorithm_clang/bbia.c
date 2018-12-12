@@ -39,9 +39,10 @@ bbia * bbia_new (void) {
 	return self;
 }
 
-bbia * bbia_new_fromSystemInteger (int integer) {
+bbia * bbia_new_fromSystemInteger (int integer, int isSigned) {
 	bbia * self = bbia_new();
 	self->at[BBIA_LEVEL_TOP] = integer;
+	self->sign = isSigned;
 	return self;
 }
 
@@ -123,6 +124,13 @@ void bbia_set_value_toLevel (bbia * self, int level, int value) {
 	self->lvlButton = level; if (value == 0) bbia_lvlButton_conf (self);
 }
 
+void bbia_set_systemInteger (bbia * self, int integer, int isSigned) {
+	nullPointer_funcVoid_1 (self, "bbia_set_systemInteger");
+	bbia_set_zero (self);
+	bbia->at[BBIA_LEVEL_TOP] = integer;
+	bbia->sign = isSigned;
+}
+
 int bbia_at_get (bbia * self, int index) {
 	nullPointer_funcInt_1 (self, "bbia_at_get");
 	return self->at[index];
@@ -133,6 +141,7 @@ void bbia_at_set (bbia * self, int index, int value) {
 	self->at[index] = value;
 	if (self->lvlButton > index) self->lvlButton = index;
 }
+
 
 // @CHECK
 
@@ -843,6 +852,109 @@ bbia * bbia_mod_int_new (bbia * self, int integer) {
 	bbia_mod_int (res, integer);
 	bbia_lvlButton_conf (res);
 	return res;
+}
+
+// LOGARITHM
+
+void bbia_log_int (int base, int isSigned, bbia * self) {
+	nullPointer_funcVoid_1 (self, "bbia_log_int");
+
+	if (bbia_check_is_one (self)) {
+		bbia_set_zero (self);
+		return;
+	}
+	// bbia can`t use non-integer power
+	if (bbia_compare_int_unsigned (self, base) == -1) {
+		return;
+	}
+	if (bbia_check_is_zero (self) || base == 0) {
+		return;
+	}
+
+	int curPower = 1;
+	bbia * compare = bbia_new_fromSystemInteger (base, isSigned;
+	while (bbia_compare_bbia_unsigned (compare, self) == -1) {
+		bbia_set_systemInteger (compare, isSigned, base);
+		bbia_pow (compare, ++curPower);
+	}
+	bbia_set_systemInteger (self, curPower, (isSigned == 1 && curPower % 2 != 0) ? 1 : 0);
+	bbia_free (compare);
+}
+
+bbia * bbia_log_int_new (int base, int isSigned, bbia * self) {
+	nullPointer_funcPointer_1 (self, "bbia_log_int_new");
+
+
+	if (bbia_check_is_one (self)) {
+		bbia_set_zero (self);
+		return;
+	}
+	// bbia can`t use non-integer power
+	if (bbia_compare_int_unsigned (self, base) == -1) {
+		return;
+	}
+	if (bbia_check_is_zero (self) || base == 0) {
+		return;
+	}
+
+	int curPower = 1;
+	bbia * compare = bbia_new_fromSystemInteger (base, isSigned;
+	while (bbia_compare_bbia_unsigned (compare, self) == -1) {
+		bbia_set_systemInteger (compare, isSigned, base);
+		bbia_pow (compare, ++curPower);
+	}
+	bbia_set_systemInteger (compare, curPower, (isSigned == 1 && curPower % 2 != 0) ? 1 : 0);
+	return compare;
+}
+
+void bbia_log_bbia (bbia * base, bbia * self) {
+	nullPointer_funcVoid_2 (self, base, "bbia_log_int");
+
+	if (bbia_check_is_one (self)) {
+		bbia_set_zero (self);
+		return;
+	}
+	// bbia can`t use non-integer power
+	if (bbia_compare_bbia_unsigned (self, base) == -1) {
+		return;
+	}
+	if (bbia_check_is_zero (self) || bbia_check_is_zero (base)) {
+		return;
+	}
+
+	int curPower = 1;
+	bbia * compare = bbia_copy_new (base);
+	while (bbia_compare_bbia_unsigned (compare, self) == -1) {
+		bbia_copy (compare, base);
+		bbia_pow (compare, ++curPower);
+	}
+	bbia_set_systemInteger (self, curPower, (base->sign == 1 && curPower % 2 != 0) ? 1 : 0);
+	bbia_free (compare);
+}
+
+bbia * bbia_log_bbia_new (bbia * base, bbia * self) {
+	nullPointer_funcPointer_2 (self, base, "bbia_log_int_new");
+
+	if (bbia_check_is_one (self)) {
+		bbia_set_zero (self);
+		return;
+	}
+	// bbia can`t use non-integer power
+	if (bbia_compare_bbia_unsigned (self, base) == -1) {
+		return;
+	}
+	if (bbia_check_is_zero (self) || bbia_check_is_zero (base)) {
+		return;
+	}
+
+	int curPower = 1;
+	bbia * compare = bbia_copy_new (base);
+	while (bbia_compare_bbia_unsigned (compare, self) == -1) {
+		bbia_copy (compare, base);
+		bbia_pow (compare, ++curPower);
+	}
+	bbia_set_systemInteger (compare, curPower, (base->sign == 1 && curPower % 2 != 0) ? 1 : 0);
+	return compare;
 }
 
 // @PRINT

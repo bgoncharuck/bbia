@@ -57,7 +57,7 @@ typedef struct __bbia bbia;
 
 // @CONSTRUCTOR
 bbia * bbia_new (void) ;
-bbia * bbia_new_fromSystemInteger (int integer) ;
+bbia * bbia_new_fromSystemInteger (int integer, int isSigned) ;
 void bbia_free (bbia * self) ;
 // @FIELDS
 void bbia_sign_change (bbia * self) ;
@@ -76,6 +76,8 @@ void bbia_set_value_signed (bbia * self, int value) ;
 void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
 // set value from zero to level
 void bbia_set_value_toLevel (bbia * self, int level, int value) ;
+// analog to bbia_new_fromSystemInteger, but without new bbia creation
+void bbia_set_systemInteger (bbia * self, int integer, int isSigned) ;
 // set/get value by index of level
 int bbia_at_get (bbia * self, int index) ;
 void bbia_at_set (bbia * self, int index, int value) ;
@@ -140,6 +142,11 @@ void bbia_mod_bbia (bbia * divided, bbia * division) ;
 bbia * bbia_mod_bbia_new (bbia * divided, bbia * division) ;
 void bbia_mod_int (bbia * self, int integer) ;
 bbia * bbia_mod_int_new (bbia * self, int integer) ;
+// @LOGARITHM
+void bbia_log_int (int base, int isSigned, bbia * self) ;
+bbia * bbia_log_int_new (int base, int isSigned, bbia * self) ;
+void bbia_log_bbia (bbia * base, bbia * self) ;
+bbia * bbia_log_bbia_new (bbia * base, bbia * self) ;
 // @PRINT
 void bbia_print_levelValue (bbia * self) ;
 void bbia_print_levelValue_dec (bbia * self) ;
