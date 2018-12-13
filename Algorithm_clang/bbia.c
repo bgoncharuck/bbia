@@ -226,7 +226,7 @@ bbia * bbia_copy_new (bbia * from) {
 void bbia_bits_shift_left (bbia * self, int value) {
 	nullPointer_funcVoid_1 (self, "bbia_bits_shift_left");
 
-	int savedBits [BBIA_LEVEL_TOP-1];
+	int savedBits [BBIA_LEVEL_TOP];
 	int bitMask[2] = {0,0};
 	for (int curBit = BBIA_INTEGER_SIZE-value+1; curBit <= BBIA_INTEGER_SIZE; curBit++)
 		bitMask[0] |= stuaa_bitflag(curBit);
@@ -248,14 +248,14 @@ void bbia_bits_shift_left (bbia * self, int value) {
 	}
 	self->at[self->lvlButton] <<= value;
 
-	for (int lvl = self->lvlButton; lvl < BBIA_LEVEL_TOP; lvl++)
+	for (int lvl = self->lvlButton; lvl <= BBIA_LEVEL_TOP; lvl++)
 		self->at[lvl] |= savedBits[lvl];
 }
 
 void bbia_bits_shift_right (bbia * self, int value) {
 	nullPointer_funcVoid_1 (self, "bbia_bits_shift_right");
 
-	int savedBits [BBIA_LEVEL_TOP-1];
+	int savedBits [BBIA_LEVEL_TOP];
 	int bitMask[2] = {0,0};
 	for (int curBit = 1; curBit <= value; curBit++)
 		bitMask[0] |= stuaa_bitflag(curBit);
@@ -276,7 +276,7 @@ void bbia_bits_shift_right (bbia * self, int value) {
 	}
 	stuaa_shiftr (self->at+BBIA_LEVEL_TOP,value);
 
-	for (int lvl = self->lvlButton; lvl < BBIA_LEVEL_TOP; lvl++)
+	for (int lvl = self->lvlButton; lvl <= BBIA_LEVEL_TOP; lvl++)
 		self->at[lvl+1] |= savedBits[lvl];
 	if (self->at[self->lvlButton] == 0) self->lvlButton++;
 }

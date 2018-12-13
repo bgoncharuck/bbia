@@ -147,6 +147,9 @@ void bbia_log_int (int base, int isSigned, bbia * self) ;
 bbia * bbia_log_int_new (int base, int isSigned, bbia * self) ;
 void bbia_log_bbia (bbia * base, bbia * self) ;
 bbia * bbia_log_bbia_new (bbia * base, bbia * self) ;
+// @SQRT
+void bbia_sqrt (bbia * self) ;
+bbia * bbia_sqrt_new (bbia * self) ;
 // @PRINT
 void bbia_print_levelValue (bbia * self) ;
 void bbia_print_levelValue_dec (bbia * self) ;

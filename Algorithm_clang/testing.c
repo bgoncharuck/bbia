@@ -26,8 +26,7 @@ int main (int argc, char * argv[]) {
 
 	printf ("Bitshift tests : \n");
 	bbia_set_zero (a);
-	for (int lvl = BBIA_LEVEL_TOP; lvl >= 2; lvl--)
-		bbia_at_set (a, lvl, (stuaa_bitflag(32) | stuaa_bitflag(31) ));
+	bbia_set_value (a, (stuaa_bitflag(32) | stuaa_bitflag(31) ));
 	printf ("Before left shift test by 2 : \n");
 	bbia_print_levelValue (a);
 
@@ -37,8 +36,7 @@ int main (int argc, char * argv[]) {
 
 	bbia_set_zero (a);
 	puts ("Before right shift by 3 :");
-	for (int lvl = BBIA_LEVEL_TOP; lvl >= 1; lvl--)
-		bbia_at_set (a, lvl, (stuaa_bitflag(1) | stuaa_bitflag(2)
+	bbia_set_value (a, (stuaa_bitflag(1) | stuaa_bitflag(2)
 	| stuaa_bitflag(3) | stuaa_bitflag(4) ));
 	bbia_print_levelValue (a);
 
