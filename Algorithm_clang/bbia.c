@@ -21,13 +21,14 @@
 #define nullPointer_funcPointer_3(p1, p2, p3, functionName)do{if (p1 == NULL || p2 == NULL || p3 == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return NULL;}}while(0)
 #define nullPointer_funcInt_1(p, functionName)do{if(p == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return -42;}}while(0)
 #define nullPointer_funcInt_2(p1, p2, functionName)do{if(p1 == NULL || p2 == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return -42;}}while(0)
+#define nullPointer_funcBool_1(p, functionName)do{if(p == NULL){fprintf(stderr, "null pointer in %s\n", functionName);return false;}}while(0)
 
 typedef enum __DIVISION_OR_MOD { DIVISION = 2, MOD = 4 } DIVISION_OR_MOD;
 
 struct __bbia {
 	// some languages don`t have unsigned int
 	signed int at[BBIA_LEVEL_COUNT];
-	signed int sign;
+	bool sign;
 	signed int lvlButton;
 };
 
@@ -39,7 +40,7 @@ bbia * bbia_new (void) {
 	return self;
 }
 
-bbia * bbia_new_fromSystemInteger (int integer, int isSigned) {
+bbia * bbia_new_fromSystemInteger (int integer, bool isSigned) {
 	bbia * self = bbia_new();
 	self->at[BBIA_LEVEL_TOP] = integer;
 	self->sign = isSigned;
@@ -55,22 +56,22 @@ void bbia_free (bbia * self) {
 
 void bbia_sign_change (bbia * self) {
 	nullPointer_funcVoid_1 (self, "bbia_sign_change");
-	self->sign = (self->sign) ? 0 : 1;
+	self->sign = (self->sign) ? false : true;
 }
 
-void bbia_sign_set (bbia * self, int sign) {
+void bbia_sign_set (bbia * self, bool sign) {
 	nullPointer_funcVoid_1 (self, "bbia_sign_set");
 	self->sign = sign;
 }
 
-int bbia_sign_check (bbia * self) {
-	nullPointer_funcInt_1 (self, "bbia_sign_check");
+bool bbia_sign_check (bbia * self) {
+	nullPointer_funcBool_1 (self, "bbia_sign_check");
 	return self->sign;
 }
 
 void bbia_lvlButton_conf (bbia * self) {
 	nullPointer_funcVoid_1 (self, "bbia_lvlButton_conf");
-	for (int curLvl = 0; curLvl < BBIA_LEVEL_TOP; curLvl++)
+	for (int curLvl = 0; stuaa_compare (curLvl, BBIA_LEVEL_TOP) == -1; curLvl++)
 		if (self->at[curLvl] != 0) {
 			self->lvlButton = curLvl;
 			return;
@@ -92,12 +93,12 @@ int bbia_lvlButton_get (bbia * self) {
 
 inline static void bbia_setters_main_op (bbia * self, int val, int sign) {
 	if (val != BBIA_LEVEL_IS_EMPTY) {
-		for (int i = 0; i <= BBIA_LEVEL_TOP; i++) self->at[i] = val;
+		for (int i = 0; stuaa_compare (i, BBIA_LEVEL_TOP) != 1; i++) self->at[i] = val;
 		self->sign = sign;
 		self->lvlButton = 0;
 	}
 	else {
-		for (int i = 0; i <= BBIA_LEVEL_TOP; i++) self->at[i] = BBIA_LEVEL_IS_EMPTY;
+		for (int i = 0; stuaa_compare (i, BBIA_LEVEL_TOP) != 1; i++) self->at[i] = BBIA_LEVEL_IS_EMPTY;
 		self->sign = 0;
 		self->lvlButton = BBIA_LEVEL_TOP;
 	}
@@ -111,7 +112,7 @@ void bbia_set_value_signed (bbia * self, int value) {bbia_setters_main_op (self,
 void bbia_set_value_fromLevel (bbia * self, int level, int value) {
 	nullPointer_funcVoid_1 (self, "bbia_set_value_fromLevel");
 
-	for (int curLvl = level; curLvl >= 0; curLvl--)
+	for (int curLvl = 0; stuaa_compare (curLvl, level) != 1; curLvl++)
 		self->at[curLvl] = value;
 	self->lvlButton = 0; if (value == 0) bbia_lvlButton_conf (self);
 }
@@ -119,12 +120,12 @@ void bbia_set_value_fromLevel (bbia * self, int level, int value) {
 void bbia_set_value_toLevel (bbia * self, int level, int value) {
 	nullPointer_funcVoid_1 (self, "bbia_set_value_toLevel");
 
-	for (int curLvl = level; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+	for (int curLvl = level; stuaa_compare (curLvl, BBIA_LEVEL_TOP) != 1; curLvl++)
 		self->at[curLvl] = value;
 	self->lvlButton = level; if (value == 0) bbia_lvlButton_conf (self);
 }
 
-void bbia_set_systemInteger (bbia * self, int integer, int isSigned) {
+void bbia_set_systemInteger (bbia * self, int integer, bool isSigned) {
 	nullPointer_funcVoid_1 (self, "bbia_set_systemInteger");
 	bbia_set_zero (self);
 	self->at[BBIA_LEVEL_TOP] = integer;
@@ -145,33 +146,33 @@ void bbia_at_set (bbia * self, int index, int value) {
 
 // @CHECK
 
-int bbia_check_is_integer (bbia * self, int integer) {
-	nullPointer_funcInt_1 (self, "bbia_check_is_integer");
-	if (self->lvlButton < BBIA_LEVEL_TOP) return 0;
+bool bbia_check_is_integer (bbia * self, int integer) {
+	nullPointer_funcBool_1 (self, "bbia_check_is_integer");
+	if (stuaa_compare (self->lvlButton, BBIA_LEVEL_TOP) == -1) return false;
 
-	return (self->at[BBIA_LEVEL_TOP] == integer) ? 1 : 0;
+	return (self->at[BBIA_LEVEL_TOP] == integer) ? true : false;
 }
 
-int bbia_check_is_zero (bbia * self) {
+bool bbia_check_is_zero (bbia * self) {
 	return bbia_check_is_integer (self, 0);
 }
 
-int bbia_check_is_one (bbia * self) {
+bool bbia_check_is_one (bbia * self) {
 	return bbia_check_is_integer (self, 1);
 }
 
-int bbia_check_is_systemInteger (bbia * self) {
-	nullPointer_funcInt_1 (self, "bbia_check_is_systemInteger");
-	return (self->lvlButton == BBIA_LEVEL_TOP) ? 1 : 0;
+bool bbia_check_is_systemInteger (bbia * self) {
+	nullPointer_funcBool_1 (self, "bbia_check_is_systemInteger");
+	return (self->lvlButton == BBIA_LEVEL_TOP) ? true : false;
 }
 
 // @COMPARE
 
 int bbia_compare_bbia_unsigned (bbia * a, bbia * b) {
 	int curCompare = 0;
-	int curLvl = (a->lvlButton <= b->lvlButton) ? a->lvlButton : b->lvlButton;
-	for (; curLvl <= BBIA_LEVEL_TOP; curLvl++) {
-		curCompare = stuaa_compare(a->at[curLvl], b->at[curLvl]);
+	int curLvl = (stuaa_compare (a->lvlButton, b->lvlButton) != 1) ? a->lvlButton : b->lvlButton;
+	for (; stuaa_compare (curLvl, BBIA_LEVEL_TOP) != 1; curLvl++) {
+		curCompare = stuaa_compare (a->at[curLvl], b->at[curLvl]);
 		if (curCompare != 0)
 			return curCompare;
 	}
@@ -182,25 +183,24 @@ int bbia_compare_bbia (bbia * a, bbia * b) {
 	nullPointer_funcInt_2 (a, b, "bbia_compare_bbia");
 	int res = bbia_compare_bbia_unsigned (a,b);
 
-	if (a->sign == 0 && b->sign == 0) return res;
+	if (a->sign == false && b->sign == false) return res;
 	else if (a->sign == b->sign) return (res == -1) ? 1 : -1;
-	else if (a->sign > b->sign) return (res == 1) ? -1 : 1;
+	else if (a->sign == true) return (res == 1) ? -1 : 1;
 	return 0;
 }
 
 int bbia_compare_int_unsigned (bbia * self, int toCompare) {
-	if (self->lvlButton < BBIA_LEVEL_TOP) return 1;
-	int curCompare = stuaa_compare(self->at[BBIA_LEVEL_TOP], toCompare);
-	return curCompare;
+	if (stuaa_compare (self->lvlButton, BBIA_LEVEL_TOP) == -1) return 1;
+	return stuaa_compare (self->at[BBIA_LEVEL_TOP], toCompare);
 }
 
-int bbia_compare_int (bbia * self, int toCompare, int isSigned) {
+int bbia_compare_int (bbia * self, int toCompare, bool isSigned) {
 	nullPointer_funcInt_1 (self, "bbia_compare_int");
 	int res = bbia_compare_int_unsigned (self, toCompare);
 
-	if (isSigned == 0 && self->sign == 0) return res;
+	if (isSigned == false && self->sign == false) return res;
 	else if (self->sign == isSigned) return (res == -1) ? 1 : -1;
-	else if (self->sign > isSigned) return (res == 1) ? -1 : 1;
+	else if (self->sign == true) return (res == 1) ? -1 : 1;
 	return 0;
 }
 
@@ -208,7 +208,7 @@ int bbia_compare_int (bbia * self, int toCompare, int isSigned) {
 
 void bbia_copy_bbia (bbia * to, bbia * from) {
 	nullPointer_funcVoid_2 (to, from, "bbia_copy_bbia");
-	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
+	for (int curLvl = 0; stuaa_compare (curLvl, BBIA_LEVEL_TOP) != 1; curLvl++)
 		to->at[curLvl] = from->at[curLvl];
 	to->sign = from->sign;
 	to->lvlButton = from->lvlButton;

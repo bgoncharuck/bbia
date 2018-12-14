@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits.h>
+#include <stdbool.h>
 
 #define BBIA_INTEGER_SIZE 32
 
@@ -57,12 +58,12 @@ typedef struct __bbia bbia;
 
 // @CONSTRUCTOR
 bbia * bbia_new (void) ;
-bbia * bbia_new_fromSystemInteger (int integer, int isSigned) ;
+bbia * bbia_new_fromSystemInteger (int integer, bool isSigned) ;
 void bbia_free (bbia * self) ;
 // @FIELDS
 void bbia_sign_change (bbia * self) ;
-void bbia_sign_set (bbia * self, int sign) ;
-int bbia_sign_check (bbia * self) ;
+void bbia_sign_set (bbia * self, bool sign) ;
+bool bbia_sign_check (bbia * self) ;
 void bbia_lvlButton_conf (bbia * self) ;
 void bbia_lvlButton_set (bbia * self, int lvl) ;
 int bbia_lvlButton_get (bbia * self) ;
@@ -77,22 +78,22 @@ void bbia_set_value_fromLevel (bbia * self, int level, int value) ;
 // set value from zero to level
 void bbia_set_value_toLevel (bbia * self, int level, int value) ;
 // analog to bbia_new_fromSystemInteger, but without new bbia creation
-void bbia_set_systemInteger (bbia * self, int integer, int isSigned) ;
+void bbia_set_systemInteger (bbia * self, int integer, bool isSigned) ;
 // set/get value by index of level
 int bbia_at_get (bbia * self, int index) ;
 void bbia_at_set (bbia * self, int index, int value) ;
 // @CHECK
 // returns bool true/false or 1/0
-int bbia_check_is_integer (bbia * self, int integer) ;
-int bbia_check_is_zero (bbia * self) ;
-int bbia_check_is_one (bbia * self) ;
-int bbia_check_is_systemInteger (bbia * self) ;
+bool bbia_check_is_integer (bbia * self, int integer) ;
+bool bbia_check_is_zero (bbia * self) ;
+bool bbia_check_is_one (bbia * self) ;
+bool bbia_check_is_systemInteger (bbia * self) ;
 // @COMPARE
 // returns 1 if a > b, -1 if b > a and 0 when equal
 int bbia_compare_bbia_unsigned (bbia * a, bbia * b) ;
 int bbia_compare_bbia (bbia * a, bbia * b) ;
 int bbia_compare_int_unsigned (bbia * a, int b) ;
-int bbia_compare_int (bbia * a, int b, int isSigned) ;
+int bbia_compare_int (bbia * a, int b, bool isSigned) ;
 // @COPY
 void bbia_copy_bbia (bbia * to, bbia * from) ;
 bbia * bbia_copy_new (bbia * from) ;
