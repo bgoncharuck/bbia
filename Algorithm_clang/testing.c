@@ -104,9 +104,14 @@ int main (int argc, char * argv[]) {
 	free(someStr);
 	bbia_print_levelValue_dec (d);
 
+	bbia * e = bbia_new_fromSystemInteger (256,0);
+	bbia_log_int (2,0,e);
+	bbia_print_levelValue_dec (e);
+
 	if (a != NULL) bbia_free (a);
 	if (b != NULL) bbia_free (b);
 	if (c != NULL) bbia_free (c);
 	if (d != NULL) bbia_free (d);
+	if (e != NULL) bbia_free (e);
 	return EXIT_SUCCESS;
 }

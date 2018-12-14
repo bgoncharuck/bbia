@@ -874,7 +874,7 @@ void bbia_log_int (int base, int isSigned, bbia * self) {
 	int curPower = 1;
 	bbia * compare = bbia_new_fromSystemInteger (base, isSigned);
 	while (bbia_compare_bbia_unsigned (compare, self) == -1) {
-		bbia_set_systemInteger (compare, isSigned, base);
+		bbia_set_systemInteger (compare, base, isSigned);
 		bbia_pow (compare, ++curPower);
 	}
 	bbia_set_systemInteger (self, curPower, (isSigned == 1 && curPower % 2 != 0) ? 1 : 0);
@@ -899,8 +899,8 @@ bbia * bbia_log_int_new (int base, int isSigned, bbia * self) {
 
 	int curPower = 1;
 	bbia * compare = bbia_new_fromSystemInteger (base, isSigned);
-	while (bbia_compare_bbia_unsigned (compare, self) == -1) {
-		bbia_set_systemInteger (compare, isSigned, base);
+	while (bbia_compare_bbia_unsigned (compare, self) < 0) {
+		bbia_set_systemInteger (compare, base, isSigned);
 		bbia_pow (compare, ++curPower);
 	}
 	bbia_set_systemInteger (compare, curPower, (isSigned == 1 && curPower % 2 != 0) ? 1 : 0);
@@ -924,7 +924,7 @@ void bbia_log_bbia (bbia * base, bbia * self) {
 
 	int curPower = 1;
 	bbia * compare = bbia_copy_new (base);
-	while (bbia_compare_bbia_unsigned (compare, self) == -1) {
+	while (bbia_compare_bbia_unsigned (compare, self) < 0) {
 		bbia_copy_bbia (compare, base);
 		bbia_pow (compare, ++curPower);
 	}
@@ -949,7 +949,7 @@ bbia * bbia_log_bbia_new (bbia * base, bbia * self) {
 
 	int curPower = 1;
 	bbia * compare = bbia_copy_new (base);
-	while (bbia_compare_bbia_unsigned (compare, self) == -1) {
+	while (bbia_compare_bbia_unsigned (compare, self) < 0) {
 		bbia_copy_bbia (compare, base);
 		bbia_pow (compare, ++curPower);
 	}
