@@ -708,7 +708,7 @@ bbia * bbia_mult_bbia_new (bbia * first, bbia * second) {
 	bbia * result = bbia_multiplicationByBitAnd_operation (first, temp);
 	bbia_free (temp);
 
-	if ((first->sign != second->sign) || (first->sign == 1 && second->sign == 1)) bbia_sign_change (result);
+	if ((first->sign != second->sign) || (first->sign == true && second->sign == true)) bbia_sign_change (result);
 	return result;
 }
 
@@ -717,12 +717,12 @@ void bbia_mult_bbia (bbia * to, bbia * second) {
 		bbia_pow (to, 2);
 		return;
 	}
-	int toChangeSign = ((to->sign != second->sign) || (to->sign == 1 && second->sign == 1)) ? 1 : 0;
+	int toChangeSign = ((to->sign != second->sign) || (to->sign == true && second->sign == true)) ? true : false;
 	bbia * res = bbia_multiplicationByBitAnd_operation (second, to);
 
 	bbia_copy_bbia (to, res);
 	bbia_free (res);
-	if (toChangeSign == 1) bbia_sign_change (to);
+	if (toChangeSign == true) bbia_sign_change (to);
 }
 
 // @POWER
@@ -877,7 +877,7 @@ void bbia_log_int (int base, int isSigned, bbia * self) {
 		bbia_set_systemInteger (compare, base, isSigned);
 		bbia_pow (compare, ++curPower);
 	}
-	bbia_set_systemInteger (self, curPower, (isSigned == 1 && curPower % 2 != 0) ? 1 : 0);
+	bbia_set_systemInteger (self, curPower, (isSigned == true && curPower % 2 != 0) ? 1 : 0);
 	bbia_free (compare);
 }
 
@@ -903,7 +903,7 @@ bbia * bbia_log_int_new (int base, int isSigned, bbia * self) {
 		bbia_set_systemInteger (compare, base, isSigned);
 		bbia_pow (compare, ++curPower);
 	}
-	bbia_set_systemInteger (compare, curPower, (isSigned == 1 && curPower % 2 != 0) ? 1 : 0);
+	bbia_set_systemInteger (compare, curPower, (isSigned == true && curPower % 2 != 0) ? 1 : 0);
 	return compare;
 }
 
@@ -928,7 +928,7 @@ void bbia_log_bbia (bbia * base, bbia * self) {
 		bbia_copy_bbia (compare, base);
 		bbia_pow (compare, ++curPower);
 	}
-	bbia_set_systemInteger (self, curPower, (base->sign == 1 && curPower % 2 != 0) ? 1 : 0);
+	bbia_set_systemInteger (self, curPower, (base->sign == true && curPower % 2 != 0) ? 1 : 0);
 	bbia_free (compare);
 }
 
@@ -953,7 +953,7 @@ bbia * bbia_log_bbia_new (bbia * base, bbia * self) {
 		bbia_copy_bbia (compare, base);
 		bbia_pow (compare, ++curPower);
 	}
-	bbia_set_systemInteger (compare, curPower, (base->sign == 1 && curPower % 2 != 0) ? 1 : 0);
+	bbia_set_systemInteger (compare, curPower, (base->sign == true && curPower % 2 != 0) ? 1 : 0);
 	return compare;
 }
 
@@ -1019,7 +1019,7 @@ void bbia_print_levelValue (bbia * self) {
 
 void bbia_print_levelValue_dec (bbia * self) {
 	nullPointer_funcVoid_1 (self, "bbia_print_levelValue_dec");
-	printf ("%c|", (self->sign == 1) ? '-' : '+');
+	printf ("%c|", (self->sign == true) ? '-' : '+');
 	for (int curLvl = 0; curLvl <= BBIA_LEVEL_TOP; curLvl++)
 		printf ("%u_", self->at[curLvl]);
 	puts("");
@@ -1084,7 +1084,7 @@ bbia * bbia_base_from (char * str, int base) {
 	if (powerOfTwo != -2) {
 
 		bbia * result = bbia_new();
-		result->sign = str[0] == '-' ? 1 : 0;
+		result->sign = str[0] == '-' ? true : false;
 		int size = (int) strlen(str);
 
 		for (
