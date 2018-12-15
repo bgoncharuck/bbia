@@ -195,7 +195,7 @@ namespace bbi {
 			for (uint curLvl = 0; curLvl <= level; curLvl++)
 				this.at[curLvl] = value;
 			this.sign = false;
-			this.lvlButton = 0; if (value == CBBI.LEVEL_IS_EMPTY) bbia_lvlButton_conf (self);
+			this.lvlButton = 0; if (value == CBBI.LEVEL_IS_EMPTY) this.LvlButton_Configure();
 		}
 
 		public void Set_Value_FromLevel_Signed (uint level, uint value) {
@@ -207,7 +207,7 @@ namespace bbi {
 			for (uint curLvl = level; curLvl <= CBBI.LEVEL_TOP; curLvl++)
 				this.at[curLvl] = value;
 			this.sign = false;
-			this.lvlButton = level; if (value == CBBI.LEVEL_IS_EMPTY) bbia_lvlButton_conf (self);
+			this.lvlButton = level; if (value == CBBI.LEVEL_IS_EMPTY) this.LvlButton_Configure();
 		}
 
 		public void Set_Value_ToLevel_Signed (uint level, uint value) {
@@ -273,7 +273,7 @@ namespace bbi {
 
 		// @BIT_OPERATIONS
 
-		void Bits_Shift_Left (uint value) {
+		public void Bits_Shift_Left (uint value) {
 
 			uint savedBits [CBBI.LEVEL_TOP];
 			uint bitMask[2] = {0,0};
@@ -301,7 +301,7 @@ namespace bbi {
 				this.at[lvl] |= savedBits[lvl];
 		}
 
-		void Bits_Shift_Right (uint value) {
+		public void Bits_Shift_Right (uint value) {
 
 			uint savedBits [CBBI.LEVEL_TOP];
 			uint bitMask[2] = {0,0};
@@ -326,134 +326,111 @@ namespace bbi {
 
 			for (uint lvl = this.lvlButton; lvl < CBBI.LEVEL_TOP; lvl++)
 				this.at[lvl+1] |= savedBits[lvl];
-			if (this.at[self->lvlButton] == CBBI.LEVEL_IS_EMPTY) this.lvlButton++;
+			if (this.at[this.lvlButton] == CBBI.LEVEL_IS_EMPTY) this.lvlButton++;
 		}
 
-		void bbia_bits_or (bbia * first, bbia * second) {
-			nullPointer_funcVoid_2 (first,second,"bbia_bits_or");
-			first->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != -1) ? first->lvlButton : second->lvlButton;
-
-			for (int curLvl = first->lvlButton; stuaa_compare (curLvl, CBBI.LEVEL_TOP) != 1; curLvl++)
-				first->at[curLvl] |= second->at[curLvl];
+		public void Bits_Or (BitBigInt second) {
+			this.lvlButton = (this.lvlButton <= second.lvlButton) ? this.lvlButton : second.lvlButton;
+			for (int curLvl = this.lvlButton; curLvl <= CBBI.LEVEL_TOP; curLvl++)
+				this.at[curLvl] |= second.at[curLvl];
 		}
 
-		bbia * bbia_bits_or_new (bbia * first, bbia * second) {
-			nullPointer_funcPointer_2 (first,second,"bbia_bits_or_new");
-			bbia * self = bbia_new();
-			self->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != -1) ? first->lvlButton : second->lvlButton;
-
-			for (int curLvl = self->lvlButton; stuaa_compare (curLvl, CBBI.LEVEL_TOP) != 1; curLvl++)
-				self->at[curLvl] = first->at[curLvl] | second->at[curLvl];
-			return self;
+		public BitBigInt Bits_Or_New (BitBigInt second) {
+			BitBigInt result = new BitBigInt(this);
+			result.Bits_Or(second);
+			return result;
 		}
 
-		void bbia_bits_and (bbia * first, bbia * second) {
-			nullPointer_funcVoid_2 (first,second,"bbia_bits_and");
-			first->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != -1) ? first->lvlButton : second->lvlButton;
-
-			for (int curLvl = first->lvlButton; stuaa_compare (curLvl, CBBI.LEVEL_TOP) != 1; curLvl++)
-				first->at[curLvl] &= second->at[curLvl];
+		public void Bits_And (BitBigInt second) {
+			this.lvlButton = (this.lvlButton <= second.lvlButton) ? this.lvlButton : second.lvlButton;
+			for (int curLvl = this.lvlButton; curLvl <= CBBI.LEVEL_TOP; curLvl++)
+				this.at[curLvl] &= second.at[curLvl];
 		}
 
-		bbia * bbia_bits_and_new (bbia * first, bbia * second) {
-			nullPointer_funcPointer_2 (first,second,"bbia_bits_and_new");
-			bbia * self = bbia_new();
-			self->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != -1) ? first->lvlButton : second->lvlButton;
-
-			for (int curLvl = self->lvlButton; stuaa_compare (curLvl, CBBI.LEVEL_TOP) != 1; curLvl++)
-				self->at[curLvl] = first->at[curLvl] & second->at[curLvl];
-			return self;
+		public BitBigInt Bits_And_New (BitBigInt second) {
+			BitBigInt result = new BitBigInt(this);
+			result.Bits_And(second);
+			return result;
 		}
 
-		void bbia_bits_flag_set (bbia * self, int num) {
-			nullPointer_funcVoid_1 (self,"bbia_bits_flag_set");
-			int lvl = CBBI.LEVEL_TOP - num / CBBI.INTEGER_SIZE;
-			num %= CBBI.INTEGER_SIZE;
-			if (num != 0)
-				self->at[lvl] |= uintArithmetics.Bitflag (num);
+		public void Bits_Flag_Set (uint bit) {
+			uint lvl = CBBI.LEVEL_TOP - bit / CBBI.INTEGER_SIZE;
+			bit %= CBBI.INTEGER_SIZE;
+			if (bit != 0)
+				self.at[lvl] |= uintArithmetics.Bitflag (bit);
 			else
-				self->at[lvl+1] |= uintArithmetics.Bitflag (CBBI.INTEGER_SIZE);
-			bbia_lvlButton_conf (self);
+				self.at[lvl+1] |= uintArithmetics.Bitflag (CBBI.INTEGER_SIZE);
+			this.LvlButton_Configure();
 		}
 
-		void bbia_bits_flag_unset (bbia * self, int num) {
-			nullPointer_funcVoid_1 (self,"bbia_bits_flag_unset");
-			int lvl = CBBI.LEVEL_TOP - num / CBBI.INTEGER_SIZE;
-			num %= CBBI.INTEGER_SIZE;
-			if (num != 0)
-				self->at[lvl] &= ~uintArithmetics.Bitflag (num);
+		public void Bits_Flag_Unset (uint bit) {
+			uint lvl = CBBI.LEVEL_TOP - bit / CBBI.INTEGER_SIZE;
+			bit %= CBBI.INTEGER_SIZE;
+			if (bit != 0)
+				self.at[lvl] &= ~uintArithmetics.Bitflag (bit);
 			else
-				self->at[lvl+1] &= ~uintArithmetics.Bitflag (CBBI.INTEGER_SIZE);
-			bbia_lvlButton_conf (self);
+				self.at[lvl+1] &= ~uintArithmetics.Bitflag (CBBI.INTEGER_SIZE);
+			this.LvlButton_Configure();
 		}
 
-		void bbia_bits_flag_set_mult (bbia * self, int * numArray) {
-			nullPointer_funcVoid_2 (self,numArray,"bbia_bits_flag_set_mult");
-			while (numArray != NULL)
-				bbia_bits_flag_set (self, *numArray++);
+		public void Bits_Flag_Set_Mult (uint[] bitFlagArray) {
+			for (uint curFlag = 0; curFlag < bitFlagArray.length; curFlag++)
+				this.Bits_Flag_Set (bitFlagArray[curFlag]);
 		}
 
-		void bbia_bits_flag_unset_mult (bbia * self, int * numArray) {
-			nullPointer_funcVoid_2 (self,numArray,"bbia_bits_flag_unset_mult");
-			while (numArray != NULL)
-				bbia_bits_flag_unset (self, *numArray++);
+		public void Bits_Flag_Unset_Mult (uint[] bitFlagArray) {
+			for (uint curFlag = 0; curFlag < bitFlagArray.length; curFlag++)
+				this.Bits_Flag_Unset (bitFlagArray[curFlag]);
 		}
 
-		bbia * bbia_bits_flag (int num) {
-			bbia * self = bbia_new ();
-			int lvl = CBBI.LEVEL_TOP - num / CBBI.INTEGER_SIZE;
-			num %= CBBI.INTEGER_SIZE;
-			if (num != 0)
-				self->at[lvl] |= uintArithmetics.Bitflag (num);
+		public BitBigInt Bits_Flag_New (uint bit) {
+			BitBigInt result = new BitBigInt();
+			uint lvl = CBBI.LEVEL_TOP - bit / CBBI.INTEGER_SIZE;
+			bit %= CBBI.INTEGER_SIZE;
+			if (bit != 0)
+				result.at[lvl] |= uintArithmetics.Bitflag (bit);
 			else
-				self->at[lvl+1] |= uintArithmetics.Bitflag (CBBI.INTEGER_SIZE);
+				result.at[lvl+1] |= uintArithmetics.Bitflag (CBBI.INTEGER_SIZE);
 
-			bbia_lvlButton_conf (self);
-			return self;
+			result.LvlButton_Configure();
+			return result;
 		}
 
-		bbia * bbia_bits_isFull () {
-			bbia * self = bbia_new();
-			for (int curLvl = 0; stuaa_compare (curLvl, CBBI.LEVEL_TOP) != 1; curLvl++)
-				self->at[curLvl] = CBBI.LEVEL_IS_FULL;
-			self->lvlButton = 0;
-			return self;
+		BitBigInt Bits_Full_New () {
+			BitBigInt result = new BitBigInt();
+			for (uint curLvl = 0; curLvl <= CBBI.LEVEL_TOP; curLvl++)
+				result.at[curLvl] = CBBI.LEVEL_IS_FULL;
+			result.lvlButton = 0;
+			return result;
+		}
+		BitBigInt Bits_Empty_New () => return new BitBigInt();
+
+		BitBigInt Bits_Full_TillBit_New (int bit) {
+			BitBigInt result = bbia_new();
+			uint lvl = CBBI.LEVEL_TOP - bit / CBBI.INTEGER_SIZE;
+			bit %= CBBI.INTEGER_SIZE;
+			if (bit == 0) lvl++;
+
+			for (uint curLvl = lvl + 1; curLvl < CBBI.LEVEL_TOP; curLvl--)
+				result.at[curLvl] = CBBI.LEVEL_IS_FULL;
+			for (uint curBit = 1; curBit < bit; curBit++)
+				result.at[lvl] |= uintArithmetics.Bitflag (curBit);
+			this.LvlButton_Configure();
+			return result;
 		}
 
-		bbia * bbia_bits_isEmpty () {
-			bbia * self = bbia_new();
-			for (int curLvl = 0; stuaa_compare (curLvl, CBBI.LEVEL_TOP) != 1; curLvl++)
-				self->at[curLvl] = CBBI.LEVEL_IS_EMPTY;
-			self->lvlButton = CBBI.LEVEL_TOP;
-			return self;
-		}
+		BitBigInt Bits_Full_TillBit_New (int bit) {
+			BitBigInt result = bbia_new();
+			uint lvl = CBBI.LEVEL_TOP - bit / CBBI.INTEGER_SIZE;
+			bit %= CBBI.INTEGER_SIZE;
+			if (bit == 0) lvl++;
 
-		bbia * bbia_bits_tillBit_isFull (int num) {
-			bbia * self = bbia_new();
-			int lvl = CBBI.LEVEL_TOP - num / CBBI.INTEGER_SIZE;
-			num %= CBBI.INTEGER_SIZE;
-			if (num == 0) lvl++;
-
-			for (int curLvl = lvl + 1; stuaa_compare (curLvl, CBBI.LEVEL_TOP) != 1; curLvl--)
-				self->at[curLvl] = CBBI.LEVEL_IS_FULL;
-			for (int curBit = 1; stuaa_compare (curBit, num) != 1; curBit++)
-				self->at[lvl] |= uintArithmetics.Bitflag (curBit);
-			bbia_lvlButton_conf (self);
-			return self;
-		}
-
-		bbia * bbia_bits_tillBit_isEmpty (int num) {
-			bbia * self = bbia_new();
-			int lvl = CBBI.LEVEL_TOP - num / CBBI.INTEGER_SIZE;
-			num %= CBBI.INTEGER_SIZE;
-			if (num == 0) lvl++;
-
-			for (int curLvl = lvl + 1; stuaa_compare (curLvl, CBBI.LEVEL_TOP) != 1; curLvl--)
-				self->at[curLvl] = CBBI.LEVEL_IS_EMPTY;
-			for (int curBit = 1; stuaa_compare (curBit, num) != 1; curBit++)
-				self->at[lvl] &= ~(uintArithmetics.Bitflag (curBit));
-			bbia_lvlButton_conf (self);
-			return self;
+			for (uint curLvl = lvl + 1; curLvl < CBBI.LEVEL_TOP; curLvl--)
+				result.at[curLvl] = CBBI.LEVEL_IS_EMPTY;
+			for (uint curBit = 1; curBit < bit; curBit++)
+				result.at[lvl] &= ~(uintArithmetics.Bitflag (curBit));
+			this.LvlButton_Configure();
+			return result;
 		}
 
 	}

@@ -283,7 +283,7 @@ void bbia_bits_shift_right (bbia * self, int value) {
 
 void bbia_bits_or (bbia * first, bbia * second) {
 	nullPointer_funcVoid_2 (first,second,"bbia_bits_or");
-	first->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != -1) ? first->lvlButton : second->lvlButton;
+	first->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != 1) ? first->lvlButton : second->lvlButton;
 
 	for (int curLvl = first->lvlButton; stuaa_compare (curLvl, BBIA_LEVEL_TOP) != 1; curLvl++)
 		first->at[curLvl] |= second->at[curLvl];
@@ -292,7 +292,7 @@ void bbia_bits_or (bbia * first, bbia * second) {
 bbia * bbia_bits_or_new (bbia * first, bbia * second) {
 	nullPointer_funcPointer_2 (first,second,"bbia_bits_or_new");
 	bbia * self = bbia_new();
-	self->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != -1) ? first->lvlButton : second->lvlButton;
+	self->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != 1) ? first->lvlButton : second->lvlButton;
 
 	for (int curLvl = self->lvlButton; stuaa_compare (curLvl, BBIA_LEVEL_TOP) != 1; curLvl++)
 		self->at[curLvl] = first->at[curLvl] | second->at[curLvl];
@@ -301,7 +301,7 @@ bbia * bbia_bits_or_new (bbia * first, bbia * second) {
 
 void bbia_bits_and (bbia * first, bbia * second) {
 	nullPointer_funcVoid_2 (first,second,"bbia_bits_and");
-	first->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != -1) ? first->lvlButton : second->lvlButton;
+	first->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != 1) ? first->lvlButton : second->lvlButton;
 
 	for (int curLvl = first->lvlButton; stuaa_compare (curLvl, BBIA_LEVEL_TOP) != 1; curLvl++)
 		first->at[curLvl] &= second->at[curLvl];
@@ -310,7 +310,7 @@ void bbia_bits_and (bbia * first, bbia * second) {
 bbia * bbia_bits_and_new (bbia * first, bbia * second) {
 	nullPointer_funcPointer_2 (first,second,"bbia_bits_and_new");
 	bbia * self = bbia_new();
-	self->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != -1) ? first->lvlButton : second->lvlButton;
+	self->lvlButton = (stuaa_compare (first->lvlButton, second->lvlButton) != 1) ? first->lvlButton : second->lvlButton;
 
 	for (int curLvl = self->lvlButton; stuaa_compare (curLvl, BBIA_LEVEL_TOP) != 1; curLvl++)
 		self->at[curLvl] = first->at[curLvl] & second->at[curLvl];
