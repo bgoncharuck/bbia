@@ -91,7 +91,7 @@ int bbia_lvlButton_get (bbia * self) {
 
 // @SETERS
 
-inline static void bbia_setters_main_op (bbia * self, int val, int sign) {
+inline static void bbia_setters_main_op (bbia * self, int val, bool sign) {
 	if (val != BBIA_LEVEL_IS_EMPTY) {
 		for (int i = 0; stuaa_compare (i, BBIA_LEVEL_TOP) != 1; i++) self->at[i] = val;
 		self->sign = sign;
@@ -103,11 +103,11 @@ inline static void bbia_setters_main_op (bbia * self, int val, int sign) {
 		self->lvlButton = BBIA_LEVEL_TOP;
 	}
 }
-void bbia_set_zero (bbia * self) {bbia_setters_main_op (self, BBIA_LEVEL_IS_EMPTY, 0);}
-void bbia_set_min (bbia * self) {bbia_setters_main_op (self, BBIA_LEVEL_IS_FULL, 1);}
-void bbia_set_max (bbia * self) {bbia_setters_main_op (self, BBIA_LEVEL_IS_FULL, 0);}
-void bbia_set_value (bbia * self, int value) {bbia_setters_main_op (self, value, 0);}
-void bbia_set_value_signed (bbia * self, int value) {bbia_setters_main_op (self, value, 1);}
+void bbia_set_zero (bbia * self) {bbia_setters_main_op (self, BBIA_LEVEL_IS_EMPTY, false);}
+void bbia_set_min (bbia * self) {bbia_setters_main_op (self, BBIA_LEVEL_IS_FULL, true);}
+void bbia_set_max (bbia * self) {bbia_setters_main_op (self, BBIA_LEVEL_IS_FULL, false);}
+void bbia_set_value (bbia * self, int value) {bbia_setters_main_op (self, value, false);}
+void bbia_set_value_signed (bbia * self, int value) {bbia_setters_main_op (self, value, true);}
 
 void bbia_set_value_fromLevel (bbia * self, int level, int value) {
 	nullPointer_funcVoid_1 (self, "bbia_set_value_fromLevel");

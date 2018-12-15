@@ -134,8 +134,57 @@ namespace bbi {
 
 	public class BitBigInt {
 
+		// FIELDS
+		public uint[] at;
+		public bool sign;
+		public uint lvlButton;
 
+		public BitBigInt () {
+			this.at = new uint[CBBI.LEVEL_COUNT];
+			this.sign = false;
+			this.lvlButton = CBBI.LEVEL_TOP;
+		}
 
+		// from system integer
+		public BitBigInt (bool sign, uint integer) {
+			this.at = new uint[CBBI.LEVEL_COUNT];
+			this.sign = sign;
+			this.lvlButton = CBBI.LEVEL_TOP;
+			this.at[CBBI.LEVEL_TOP] = integer;
+		}
+
+		public void Sign_Change () => this.sign = (this.sign) ? false : true;
+		public void Sign_Set (bool newSign) => this.sign = newSign;
+
+		public void LvlButton_Configure () {
+			for (uint curLvl = 0; curLvl < CBBI.LEVEL_TOP; curLvl++)
+				if (this.at[curLvl] != CBBI.LEVEL_IS_EMPTY) {
+					this.lvlButton = curLvl;
+					return;
+				}
+			this.lvlButton = CBBI.LEVEL_TOP;
+		}
+		public void LvlButton_Set (uint level) => this.lvlButton = level;
+
+		private void _setters_op (uint val, bool sign) {
+			if (val != CBBI.LEVEL_IS_EMPTY) {
+				for (uint curLvl = 0; curLvl <= CBBI.LEVEL_TOP; curLvl++) this.at[curLvl] = val;
+				this.sign = sign;
+				this.lvlButton = 0;
+			}
+			else {
+				for (uint curLvl = 0; curLvl <= CBBI.LEVEL_TOP; curLvl++) this.at[curLvl] = BBIA_LEVEL_IS_EMPTY;
+				this.sign = false;
+				this.lvlButton = BBIA_LEVEL_TOP;
+			}
+		}
+		public void Set_Zero () => this._setters_op (CBBI.LEVEL_IS_EMPTY, false);
+		public void Set_Min () => this._setters_op (CBBI.LEVEL_IS_FULL, true);
+		public void Set_Max () => this._setters_op (CBBI.LEVEL_IS_FULL, false);
+		public void Set_Value (int value) => this._setters_op (value, false);
+		public void Set_Value_Signed (int value) => this._setters_op (value, true);
+
+		
 	}
 
 	// testing
