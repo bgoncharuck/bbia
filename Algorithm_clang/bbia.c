@@ -183,9 +183,9 @@ int bbia_compare_bbia (bbia * a, bbia * b) {
 	nullPointer_funcInt_2 (a, b, "bbia_compare_bbia");
 	int res = bbia_compare_bbia_unsigned (a,b);
 
-	if (a->sign == false && b->sign == false) return res;
-	else if (a->sign == b->sign) return (res == -1) ? 1 : -1;
-	else if (a->sign == true) return (res == 1) ? -1 : 1;
+	if (a->sign == b->sign) return res;
+	else if (a->sign == true) return -1;
+	else if (b->sign == true) return 1;
 	return 0;
 }
 
@@ -198,9 +198,9 @@ int bbia_compare_int (bbia * self, int toCompare, bool isSigned) {
 	nullPointer_funcInt_1 (self, "bbia_compare_int");
 	int res = bbia_compare_int_unsigned (self, toCompare);
 
-	if (isSigned == false && self->sign == false) return res;
-	else if (self->sign == isSigned) return (res == -1) ? 1 : -1;
-	else if (self->sign == true) return (res == 1) ? -1 : 1;
+	if (self->sign == isSigned) return res;
+	else if (self->sign == true) return -1;
+	else if (isSigned == true) return 1;
 	return 0;
 }
 

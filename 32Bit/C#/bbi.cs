@@ -130,6 +130,8 @@ namespace bbi {
 					return true;
 			return false;
 		}
+
+		public int Comapre (uint a, uint b) => return (a == b) ? 0 : (a > b) ? 1 : -1;
 	}
 
 	public class BitBigInt {
@@ -173,18 +175,92 @@ namespace bbi {
 				this.lvlButton = 0;
 			}
 			else {
-				for (uint curLvl = 0; curLvl <= CBBI.LEVEL_TOP; curLvl++) this.at[curLvl] = BBIA_LEVEL_IS_EMPTY;
+				for (uint curLvl = 0; curLvl <= CBBI.LEVEL_TOP; curLvl++) this.at[curLvl] = CBBI.LEVEL_IS_EMPTY;
 				this.sign = false;
-				this.lvlButton = BBIA_LEVEL_TOP;
+				this.lvlButton = CBBI.LEVEL_TOP;
 			}
 		}
 		public void Set_Zero () => this._setters_op (CBBI.LEVEL_IS_EMPTY, false);
 		public void Set_Min () => this._setters_op (CBBI.LEVEL_IS_FULL, true);
 		public void Set_Max () => this._setters_op (CBBI.LEVEL_IS_FULL, false);
-		public void Set_Value (int value) => this._setters_op (value, false);
-		public void Set_Value_Signed (int value) => this._setters_op (value, true);
+		public void Set_Value (uint value) => this._setters_op (value, false);
+		public void Set_Value_Signed (uint value) => this._setters_op (value, true);
 
-		
+		public void Set_Value_FromLevel (uint level, uint value) {
+			for (uint curLvl = 0; curLvl <= level; curLvl++)
+				this.at[curLvl] = value;
+			this.sign = false;
+			this.lvlButton = 0; if (value == CBBI.LEVEL_IS_EMPTY) bbia_lvlButton_conf (self);
+		}
+
+		public void Set_Value_FromLevel_Signed (uint level, uint value) {
+			this.Set_Value_FromLevel (level,value);
+			this.sign = true;
+		}
+
+		public void Set_Value_ToLevel (uint level, uint value) {
+			for (uint curLvl = level; curLvl <= CBBI.LEVEL_TOP; curLvl++)
+				this.at[curLvl] = value;
+			this.sign = false;
+			this.lvlButton = level; if (value == CBBI.LEVEL_IS_EMPTY) bbia_lvlButton_conf (self);
+		}
+
+		public void Set_Value_ToLevel_Signed (uint level, uint value) {
+			this.Set_Value_ToLevel (level,value);
+			this.sign = true;
+		}
+
+		public void Set_SystemInteger (bool isSigned, uint integer) {
+			this.Set_Zero();
+			this.at[CBBI.LEVEL_TOP] = integer;
+			this.sign = isSigned;
+		}
+
+
+		public bool Check_IsInteger (uint integer) {
+			if (this.lvlButton < CBBI.LEVEL_TOP) return false;
+			return (this.at[CBBI.LEVEL_TOP] == integer) ? true : false;
+		}
+		public bool Check_IsZero () => return this.Check_IsInteger (0);
+		public bool Check_IsOne () => return this.Check_IsInteger (1);
+		public bool Check_IsSystemInteger () => return (this.lvlButton == CBBI.LEVEL_TOP) ? true : false;
+
+		public int Compare_Unsigned (BitBigInt b) {
+			int curCompare = 0;
+			int curLvl = (this.lvlButton <= b.lvlButton) ? this.lvlButton : b.lvlButton;
+			for (; curLvl <= CBBI.LEVEL_TOP; curLvl++) {
+				curCompare = uintArithmetics.Compare (this.at[curLvl], b.at[curLvl]);
+				if (curCompare != 0)
+					return curCompare;
+			}
+			return 0;
+		}
+
+		public int Compare (BitBigInt b) {
+			int res = this.Compare (b);
+
+			if (this.sign == b.sign) return res;
+			else if (this.sign == true) return -1;
+			else if (b.sign == true) return 1;
+			return 0;
+		}
+
+		public int Compare_Unsigned (uint toCompare) {
+			if (this.lvlButton < CBBI.LEVEL_TOP) return 1;
+			return uintArithmetics.Compare (this.at[CBBI.LEVEL_TOP], toCompare);
+		}
+
+		public int Compare (bool isSigned, uint toCompare) {
+			int res = bbia_compare_int_unsigned (self, toCompare);
+
+
+			if (this.sign == isSigned) return res;
+			else if (this.sign == true) return -1;
+			else if (isSigned == true) return 1;
+			return 0;
+		}
+
+
 	}
 
 	// testing
