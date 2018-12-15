@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 int stuaa_bitflag (short num) ;
 
 void stuaa_shiftr (int * self, int value) ;
