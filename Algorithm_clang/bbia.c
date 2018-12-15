@@ -419,8 +419,8 @@ void bbia_add_bbia_op (bbia * to, bbia * from) {
 	else {
 		to->lvlButton = (to->lvlButton <= from->lvlButton) ? to->lvlButton : from->lvlButton;
 		int level = BBIA_LEVEL_TOP;
-		register int outBit = 0;
-		register int curBit = 0;
+		register short outBit = 0;
+		register short curBit = 0;
 
 		// standart addition algorithm for binary N-bit integer
 		for (; (level >= to->lvlButton) || (outBit != 0 && level > 0); level--)
@@ -433,7 +433,7 @@ void bbia_add_bbia_op (bbia * to, bbia * from) {
 			if (outBit != 0) { outBit--; curBit++; }
 			if (curBit > 1) { outBit++; curBit -= 2; }
 
-			// enable ot disable bit in to
+			// enable or disable bit in to
 			if (curBit == 1) to->at[level] |= stuaa_bitflag (bitPos);
 			else to->at[level] &= ~(stuaa_bitflag (bitPos));
 		}
