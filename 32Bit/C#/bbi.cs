@@ -437,7 +437,7 @@ namespace bbi {
 
 		// ADD/SUB private module operations
 
-		private void _add_bbi_op (BitBigInt from) {
+		internal protected void _add_bbi_op (BitBigInt from) {
 			// if from is system integer and out of bounders not possible then try simple language addition
 			if (from.Check_IsSystemInteger() && this.at[0] < BBIC.LEVEL_IS_FULL) {
 				this.Add_Level (from.at[BBIC.LEVEL_TOP], BBIC.LEVEL_TOP);
@@ -529,7 +529,144 @@ namespace bbi {
 				this.LvlButton_Configure();
 			}
 		}
-		
+
+		// @ADD
+
+		private void Add_LevelOut (uint integer, uint fromLvl, uint prevLvl) {
+			if (prevLvl != 0) {
+				if (uintArithmetics.OutOfUint_Add(this.at[prevLvl-1],1) == true) {
+					this.Add_LevelOut (integer, fromLvl, prevLvl-1);
+					return;
+				}
+				else
+					this.at[prevLvl-1]++;
+			}
+			else if (prevLvl == 0) {
+				BitBigInt temp = new BitBigInt();
+				temp.at[fromLvl] = integer;
+				temp.lvlButton = fromLvl;
+				this._add_bbi_op (temp);
+				return;
+			}
+
+			for (uint curLvl = prevLvl; curLvl < fromLvl; curLvl++)
+				this.at[curLvl] = BBIC.LEVEL_IS_EMPTY;
+			// x = x + y
+			// the number needed to overflow is z = FULL - y + 1
+			// the value to set is x = EMPTY + x - z
+			this.at[fromLvl] = BBIC.LEVEL_IS_EMPTY + this.at[fromLvl] - (BBIC.LEVEL_IS_FULL - integer + 1);
+		}
+
+		public void Add_Level (uint integer, uint level) {
+			if (uintArithmetics.OutOfUint_Add (this.at[level], integer) == false)
+				this.at[level] += integer;
+			else
+				this.Add_LevelOut (integer, level, level);
+		}
+
+		public void Add (uint integer) {
+			if (this.sign == false)
+				this.Add_Level (integer, BBIC.LEVEL_TOP);
+			else if (this.sign == true)
+				this.Add_Level (integer, BBIC.LEVEL_TOP);
+		}
+
+		public void Add (BitBigInt second) {
+			if (this.sign == second.sign)
+				this._add_bbi_op (second);
+			else
+				this._sub_bbi_op (second);
+		}
+
+		public void Add_To (BitBigInt to, BitBigInt second) {
+			to.Copy (second);
+			if (this.sign == second.sign)
+				to._add_bbi_op(second);
+			else
+				to._sub_bbi_op(second);
+		}
+
+		public BitBigInt Add_New (BitBigInt second) {
+			BitBigInt result = new BitBigInt(this);
+			if (this.sign == second.sign)
+				result._add_bbi_op(second);
+			else
+				result._sub_bbi_op(second);
+			return result;
+		}
+
+		// SUBTRAHEND
+
+		void bbia_sub_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
+			if (prevLvl != 0) {
+				if (stuaa_outofbounders_min(this.at[prevLvl-1],1) == 1) {
+					bbia_sub_int_levelOut (self, integer, fromLvl, prevLvl-1);
+					return;
+				}
+				else
+					this.at[prevLvl-1]--;
+			}
+			else if (prevLvl == 0) {
+				bbia * temp = bbia_new();
+				temp.at[fromLvl] = integer;
+				temp.lvlButton = fromLvl;
+				bbia_sub_bbia_op (self, temp);
+				bbia_free (temp);
+				return;
+			}
+
+			for (int curLvl = prevLvl; curLvl < fromLvl; curLvl++)
+				this.at[curLvl] = BBIC.LEVEL_IS_FULL;
+			// x = x - y
+			// the number needed to overflow is z = EMPTY + y - 1
+			// the value to set x = FULL - x + z
+			this.at[fromLvl] = BBIC.LEVEL_IS_FULL - this.at[fromLvl] + (BBIC.LEVEL_IS_EMPTY + integer - 1);
+			// @TODO CHECK
+			for (int curLvl = prevLvl+1; curLvl <= BBIC.LEVEL_TOP; curLvl++)
+				this.at[curLvl] = BBIC.LEVEL_IS_FULL - this.at[curLvl] + 1;
+		}
+
+		void bbia_sub_int_level (bbia * self, int integer, int level) {
+			if (stuaa_outofbounders_min (self.at[level], integer) == 0)
+				self.at[level] -= integer;
+			else
+				bbia_sub_int_levelOut (self, integer, level, level);
+		}
+
+		void bbia_sub_int (bbia * self, int integer) {
+			nullPointer_funcVoid_1 (self, "bbia_sub_int");
+			if (self.sign == false)
+				bbia_sub_int_level (self, integer, BBIC.LEVEL_TOP);
+			else if (self.sign == true)
+				bbia_add_int_level (self, integer, BBIC.LEVEL_TOP);
+		}
+
+		void bbia_sub_bbia (bbia * first, bbia * second) {
+			nullPointer_funcVoid_2 (first, second, "bbia_sub_bbia");
+			if (first.sign == second.sign)
+				bbia_sub_bbia_op (first, second);
+			else
+				bbia_add_bbia_op (first, second);
+		}
+
+		void bbia_sub_bbia_to (bbia * to, bbia * first, bbia * second) {
+			nullPointer_funcVoid_3 (to, first, second, "bbia_sub_bbia_to");
+			bbia_copy_bbia (to, first);
+			if (first.sign == second.sign)
+				bbia_sub_bbia_op (to, second);
+			else
+				bbia_add_bbia_op (to, second);
+		}
+
+		bbia * bbia_sub_bbia_new (bbia * first, bbia * second) {
+			nullPointer_funcPointer_2 (first, second, "bbia_sub_bbia_new");
+			bbia * self = bbia_copy_new(first);
+			if (first.sign == second.sign)
+				bbia_sub_bbia_op (self, second);
+			else
+				bbia_add_bbia_op (self, second);
+			return self;
+		}
 
 	}
 
