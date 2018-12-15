@@ -124,11 +124,11 @@ namespace bbi {
 
 		public bool OutOfUint_Sub (uint from, uint test) => return from < uint.MinValue + test;
 
-		public uint Log2 (uint value) {
+		public bool BaseOf2 (uint value) {
 			for (uint curBit = 2; curBit <= CBBI.INTEGER_SIZE; curBit++)
 				if (value == Bitflag (curBit))
-					return curBit - 1;
-			return 0;
+					return true;
+			return false;
 		}
 	}
 
