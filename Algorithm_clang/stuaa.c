@@ -17,7 +17,7 @@ static inline double log_base(double base, double num) {
 	return log2(num) / log2(base);
 }
 
-int stuaa_bitflag (int num) {
+int stuaa_bitflag (short num) {
 
 	if ( !(num >= 0 && num <= BBIA_INTEGER_SIZE) )
 		return 0;
@@ -267,7 +267,7 @@ char * stuaa_toBase_Clang (unsigned integer, int base) {
 	return result;
 }
 
-int stuaa_fromBase_Clang (char * integer, int base) {
+unsigned stuaa_fromBase_Clang (char * integer, int base) {
 
 	if (integer == NULL) {
 		throw ("null pointer in stuaa_fromBase()");
@@ -286,5 +286,5 @@ int stuaa_fromBase_Clang (char * integer, int base) {
 		curDigit++
 	);
 
-	return (signed) result;
+	return result;
 }
