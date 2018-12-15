@@ -240,7 +240,7 @@ void bbia_bits_shift_left (bbia * self, int value) {
 	// 2. Set saved bits
 	// for all levels lesser then top
 	// we set saved bits
-	self->lvlButton = (self->lvlButton == BBIA_LEVEL_IS_EMPTY) ? 0 : self->lvlButton - 1;
+	self->lvlButton = (self->lvlButton == 0) ? 0 : self->lvlButton - 1;
 	for (int lvl = BBIA_LEVEL_TOP; stuaa_compare (lvl, self->lvlButton) == 1; self->at[lvl] <<= value, lvl--) {
 		bitMask[1] = self->at[lvl] & bitMask[0];
 		stuaa_shiftr (bitMask+1, BBIA_INTEGER_SIZE-value);
