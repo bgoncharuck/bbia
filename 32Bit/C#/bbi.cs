@@ -568,7 +568,7 @@ namespace bbi {
 			if (this.sign == false)
 				this.Add_Level (integer, BBIC.LEVEL_TOP);
 			else if (this.sign == true)
-				this.Add_Level (integer, BBIC.LEVEL_TOP);
+				this.Sub_Level (integer, BBIC.LEVEL_TOP);
 		}
 
 		public void Add (BitBigInt second) {
@@ -597,75 +597,70 @@ namespace bbi {
 
 		// SUBTRAHEND
 
-		void bbia_sub_int_levelOut (bbia * self, int integer, int fromLvl, int prevLvl) {
+		private void Sub_LevelOut (uint integer, uint fromLvl, uint prevLvl) {
 			if (prevLvl != 0) {
-				if (stuaa_outofbounders_min(this.at[prevLvl-1],1) == 1) {
-					bbia_sub_int_levelOut (self, integer, fromLvl, prevLvl-1);
+				if (uintArithmetics.OutOfUint_Sub(this.at[prevLvl-1],1) == true) {
+					Sub_LevelOut (integer, fromLvl, prevLvl-1);
 					return;
 				}
 				else
 					this.at[prevLvl-1]--;
 			}
 			else if (prevLvl == 0) {
-				bbia * temp = bbia_new();
+				BitBigInt temp = new BitBigInt();
 				temp.at[fromLvl] = integer;
 				temp.lvlButton = fromLvl;
-				bbia_sub_bbia_op (self, temp);
-				bbia_free (temp);
+				this._sub_bbi_op (temp);
 				return;
 			}
 
-			for (int curLvl = prevLvl; curLvl < fromLvl; curLvl++)
+			for (uint curLvl = prevLvl; curLvl < fromLvl; curLvl++)
 				this.at[curLvl] = BBIC.LEVEL_IS_FULL;
 			// x = x - y
 			// the number needed to overflow is z = EMPTY + y - 1
 			// the value to set x = FULL - x + z
 			this.at[fromLvl] = BBIC.LEVEL_IS_FULL - this.at[fromLvl] + (BBIC.LEVEL_IS_EMPTY + integer - 1);
-			// @TODO CHECK
+
 			for (int curLvl = prevLvl+1; curLvl <= BBIC.LEVEL_TOP; curLvl++)
 				this.at[curLvl] = BBIC.LEVEL_IS_FULL - this.at[curLvl] + 1;
 		}
 
-		void bbia_sub_int_level (bbia * self, int integer, int level) {
-			if (stuaa_outofbounders_min (self.at[level], integer) == 0)
-				self.at[level] -= integer;
+		public void Sub_Level (uint integer, uint level) {
+			if (uintArithmetics.OutOfUint_Sub (this.at[level], integer) == false)
+				this.at[level] -= integer;
 			else
-				bbia_sub_int_levelOut (self, integer, level, level);
+				this.Sub_LevelOut (integer, level, level);
 		}
 
-		void bbia_sub_int (bbia * self, int integer) {
-			nullPointer_funcVoid_1 (self, "bbia_sub_int");
-			if (self.sign == false)
-				bbia_sub_int_level (self, integer, BBIC.LEVEL_TOP);
-			else if (self.sign == true)
-				bbia_add_int_level (self, integer, BBIC.LEVEL_TOP);
+		public void Sub (uint integer) {
+			if (this.sign == false)
+				this.Sub_Level (integer, BBIC.LEVEL_TOP);
+			else if (this.sign == true)
+				this.Add_Level (integer, BBIC.LEVEL_TOP);
 		}
 
-		void bbia_sub_bbia (bbia * first, bbia * second) {
-			nullPointer_funcVoid_2 (first, second, "bbia_sub_bbia");
-			if (first.sign == second.sign)
-				bbia_sub_bbia_op (first, second);
+		public void Sub (BitBigInt second) {
+			if (this.sign == second.sign)
+				this._sub_bbi_op (second);
 			else
-				bbia_add_bbia_op (first, second);
+				this._add_bbi_op (second);
 		}
 
-		void bbia_sub_bbia_to (bbia * to, bbia * first, bbia * second) {
-			nullPointer_funcVoid_3 (to, first, second, "bbia_sub_bbia_to");
-			bbia_copy_bbia (to, first);
-			if (first.sign == second.sign)
-				bbia_sub_bbia_op (to, second);
+		public void Sub_To (BitBigInt to, BitBigInt second) {
+			to.Copy (second);
+			if (this.sign == second.sign)
+				to._sub_bbi_op(second);
 			else
-				bbia_add_bbia_op (to, second);
+				to._add_bbi_op(second);
 		}
 
-		bbia * bbia_sub_bbia_new (bbia * first, bbia * second) {
-			nullPointer_funcPointer_2 (first, second, "bbia_sub_bbia_new");
-			bbia * self = bbia_copy_new(first);
-			if (first.sign == second.sign)
-				bbia_sub_bbia_op (self, second);
+		public BitBigInt Sub_New (BitBigInt second) {
+			BitBigInt result = new BitBigInt(this);
+			if (this.sign == second.sign)
+				result._sub_bbi_op(second);
 			else
-				bbia_add_bbia_op (self, second);
-			return self;
+				result._add_bbi_op(second);
+			return result;
 		}
 
 	}
