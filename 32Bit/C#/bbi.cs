@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace BitBigInt {
+namespace bbi {
 
-	public class CBBIA {
+	public class CBBI {
 
 		public const uint INTEGER_SIZE = 32;
 
@@ -45,29 +45,29 @@ namespace BitBigInt {
 
 		/*DIGIT*/
 		// signed int 1111...n (n == INTEGER_SIZE)
-		public const uint LEVEL_IS_FULL = 4294967295;
+		public const uint LEVEL_IS_FULL = uint.MaxValue;
 		// signed int 0000...n (n == INTEGER_SIZE)
-		public const uint LEVEL_IS_EMPTY = 0;
+		public const uint LEVEL_IS_EMPTY = uint.MinValue;
 
 		/*SIGN*/
 		public const bool SIGNED = true;
 		public const bool UNSIGNED = false;
 	}
 
-	public class EBBIA {
+	public class EBBI {
 
 		[Serializable]
-		public class ExceptionBBIA : Exception {
-			public ExceptionBBIA () {}
-			public ExceptionBBIA (string type)
+		public class ExceptionBBI : Exception {
+			public ExceptionBBI () {}
+			public ExceptionBBI (string type)
 			: base (String.Format("BitBigInt Exception: {0}", type)){}
 		}
 
 		[Serializable]
-		public class InvalidBitInBitflag : ExceptionBBIA {
+		public class InvalidBitInBitflag : ExceptionBBI {
 			public InvalidBitInBitflag () {}
 			public InvalidBitInBitflag (short bit)
-			: base(String.Format("Invalid Bit In Bitflag {0} ; Must be from 1 to {1}", bit, CBBIA.INTEGER_SIZE)){}
+			: base(String.Format("Invalid Bit In Bitflag {0} ; Must be from 1 to {1}", bit, CBBI.INTEGER_SIZE)){}
 		}
 
 	}
@@ -77,8 +77,8 @@ namespace BitBigInt {
 
 		public uint Bitflag (short bit) {
 
-			if ( !(bit >= 0 && bit <= CBBIA.INTEGER_SIZE) )
-				throw new EBBIA.InvalidBitInBitflag(bit);
+			if ( !(bit >= 0 && bit <= CBBI.INTEGER_SIZE) )
+				throw new EBBI.InvalidBitInBitflag(bit);
 
 			switch (bit) {
 				case 1 : return 0x1;
@@ -120,16 +120,21 @@ namespace BitBigInt {
 			return 0;
 		}
 
-		public bool OutOfBounders_Add (uint to, uint test) {
+		public bool OutOfUint_Add (uint to, uint test) => return to > uint.MaxValue - test;
 
-		}
+		public bool OutOfUint_Sub (uint from, uint test) => return from < uint.MinValue + test;
 
-		public bool OutOfBounders_Sub (uint to, uint test) {
-			
+		public uint Log2 (uint value) {
+			for (uint curBit = 2; curBit <= CBBI.INTEGER_SIZE; curBit++)
+				if (value == Bitflag (curBit))
+					return curBit - 1;
+			return 0;
 		}
 	}
 
 	public class BitBigInt {
+
+
 
 	}
 

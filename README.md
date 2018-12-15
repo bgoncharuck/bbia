@@ -1,4 +1,4 @@
-# Bit Big Integer Algorithm v. 0.1.3
+# Bit Big Integer Algorithm v. 0.1.4
 
 BBIA is superstructure on system integer and a try to create fast and language independent algorithm which can save Nbit integer.
 
@@ -32,7 +32,7 @@ If you try to use other realizations (languages) that will not work.
 I will add simple port to C (unsigned ver), Java, C# and JavaScript(TypeScript) for every release.
 Will be added Rust version. You are free to add other languages.
 
-## What works for now?
+## What works for now? : Operations
 * STUAA (bitflag, shiftr, outofbounders)
 * bitflag, multi bitflag
 * bits fulll/empty till
@@ -44,6 +44,10 @@ Will be added Rust version. You are free to add other languages.
 * bbia and bbia sum, dif, multiplication, division
 * from and to base of 2 in string
 * sqrt, log (base, bbia)
+
+## What works for now? : Languages
+* Algorithm Version (Clang 32 bit)
+* 32bit : C#
 
 ## Current tested bit sizes for 32bit integer size
 <p> 2^30 bits and 4byte integer
