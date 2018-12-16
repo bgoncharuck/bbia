@@ -959,47 +959,36 @@ namespace bbi {
 
 		// SQRT
 
-		void bbia_sqrt (BitBigInt self) {
-			nullPointer_funcVoid_1 (self, "bbia_sqrt");
+		public void Sqrt () {
+			BitBigInt compare = new BitBigInt(this);
+			BitBigInt temp = this.Pow_New(2);
 
-			BitBigInt compare = bbia_copy_new (self);
-			BitBigInt temp = bbia_pow_new (self, 2);
-
-			while (bbia_compare_bbia_unsigned (temp, compare) == 1 ) {
-				bbia_free (temp);
+			while (compare.CompareUnsigned(temp) == -1) {
 				// x / r
-				temp = bbia_div_bbia_new (compare,self);
+				temp = compare.Div_New(this);
 				// r + x / r
-				bbia_add_bbia (self, temp);
-				bbia_free (temp);
+				this.Add (temp);
 				// (r + x / r) / 2
-				bbia_bits_shift_right (self, 1);
+				this.Bits_ShiftRight (1);
 				// temp = r*r
-				BitBigInt temp = bbia_pow_new (self, 2);
+				temp = this.Pow_New(2);
 			}
-			bbia_free (temp);
-			bbia_free (compare);
 		}
 
-		BitBigInt bbia_sqrt_new (BitBigInt self) {
-			nullPointer_funcPointer_1 (self, "bbia_sqrt_new");
+		public BitBigInt Sqrt_New () {
+			BitBigInt compare = new BitBigInt(this);
+			BitBigInt temp = compare.Pow_New(2);
 
-			BitBigInt compare = bbia_copy_new (self);
-			BitBigInt temp = bbia_pow_new (compare, 2);
-
-			while (bbia_compare_bbia_unsigned (temp, self) == 1 ) {
-				bbia_free (temp);
+			while (this.CompareUnsigned(temp) == -1) {
 				// x / r
-				temp = bbia_div_bbia_new (self,compare);
+				temp = this.Div_New(compare);
 				// r + x / r
-				bbia_add_bbia (compare, temp);
-				bbia_free (temp);
+				compare.Add (temp);
 				// (r + x / r) / 2
-				bbia_bits_shift_right (compare, 1);
+				compare.Bits_ShiftRight (1);
 				// temp = r*r
-				BitBigInt temp = bbia_pow_new (compare, 2);
+				temp = compare.Pow_New(2);
 			}
-			bbia_free (temp);
 			return compare;
 		}
 
