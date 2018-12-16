@@ -76,7 +76,7 @@ namespace bbi {
 		public class DivisionByZero : BBIException {
 			public DivisionByZero () {}
 			public DivisionByZero (BitBigInt divided)
-			: base(String.Format("A try to divide {0} by 0 ; Undefined operation.", divided){}
+			: base(String.Format("A try to divide {0} by 0 ; Undefined operation.", divided.toBase(16)){}
 		}
 
 	}
@@ -804,6 +804,10 @@ namespace bbi {
 		}
 
 		public void Div (BitBigInt division) {
+			if (division.Check_IsZero() == true) {
+				throw new Exceptions.DivisionByZero(this);
+				return;
+			}
 			bool toChangeSign = ((this.sign != division.sign) || (this.sign == true && division.sign == true)) ? true : false;
 			divided._divisionBy_op (division, DIVISION);
 			divided.LvlButton_Configure();
@@ -832,36 +836,183 @@ namespace bbi {
 
 		// @MOD
 
-		void bbia_mod_bbia (BitBigInt divided, BitBigInt division) {
-			nullPointer_funcVoid_2 (divided, division, "bbia_mod_bbia");
-			bbia_divisionBy_operation (divided, division, MOD);
-			bbia_lvlButton_conf (divided);
+		public void Mod (BitBigInt division) {
+			if (division.Check_IsZero() == true) {
+				throw new Exceptions.DivisionByZero(this);
+				return;
+			}
+			divided._divisionBy_op (division, MOD);
+			divided.LvlButton_Configure();
 		}
 
-		BitBigInt bbia_mod_new BitBigInt (BitBigInt divided, BitBigInt division) {
+		public BitBigInt Mod_New (BitBigInt division) {
 			BitBigInt res = new BitBigInt (divided);
-			bbia_divisionBy_operation (res, division, MOD);
-			bbia_lvlButton_conf (res);
+			res.Mod (division);
 			return res;
 		}
 
-		void bbia_mod_int (BitBigInt self, int integer) {
-			nullPointer_funcVoid_1 (self, "bbia_mod_int");
-			BitBigInt division = new BitBigInt();
-			division->at[Constants.LEVEL_TOP] = integer;
-
-			bbia_divisionBy_operation (self, division, MOD);
-			bbia_lvlButton_conf (self);
-			bbia_free (division);
+		public void Mod (uint integer) {
+			if (integer == Constants.LEVEL_IS_EMPTY) {
+				throw new Exceptions.DivisionByZero(this);
+				return;
+			}
+			this.Mod (new BitBigInt (false, integer));
 		}
 
-		BitBigInt bbia_mod_int_new (BitBigInt self, int integer) {
-			BitBigInt res = new BitBigInt (self);
-			bbia_mod_int (res, integer);
-			bbia_lvlButton_conf (res);
+		public BitBigInt Mod_New (uint integer) {
+			BitBigInt res = new BitBigInt (this);
+			res.Mod (integer);
 			return res;
 		}
 
+		// LOGARITHM
+
+		void bbia_log_int (int base, int isSigned, bbia * self) {
+			nullPointer_funcVoid_1 (self, "bbia_log_int");
+
+			if (bbia_check_is_one (self)) {
+				bbia_set_zero (self);
+				return;
+			}
+			// bbia can`t use non-integer power
+			if (bbia_compare_int_unsigned (self, base) == -1) {
+				return;
+			}
+			if (bbia_check_is_zero (self) || base == 0) {
+				return;
+			}
+
+			int curPower = 1;
+			bbia * compare = bbia_new_fromSystemInteger (base, isSigned);
+			while (bbia_compare_bbia_unsigned (compare, self) == -1) {
+				bbia_set_systemInteger (compare, base, isSigned);
+				bbia_pow (compare, ++curPower);
+			}
+			bbia_set_systemInteger (self, curPower, (isSigned == true && curPower % 2 != 0) ? 1 : 0);
+			bbia_free (compare);
+		}
+
+		bbia * bbia_log_int_new (int base, int isSigned, bbia * self) {
+			nullPointer_funcPointer_1 (self, "bbia_log_int_new");
+
+
+			if (bbia_check_is_one (self)) {
+				bbia_set_zero (self);
+				return NULL;
+			}
+			// bbia can`t use non-integer power
+			if (bbia_compare_int_unsigned (self, base) == -1) {
+				return NULL;
+			}
+			if (bbia_check_is_zero (self) || base == 0) {
+				return NULL;
+			}
+
+			int curPower = 1;
+			bbia * compare = bbia_new_fromSystemInteger (base, isSigned);
+			while (bbia_compare_bbia_unsigned (compare, self) < 0) {
+				bbia_set_systemInteger (compare, base, isSigned);
+				bbia_pow (compare, ++curPower);
+			}
+			bbia_set_systemInteger (compare, curPower, (isSigned == true && curPower % 2 != 0) ? 1 : 0);
+			return compare;
+		}
+
+		void bbia_log_bbia (bbia * base, bbia * self) {
+			nullPointer_funcVoid_2 (self, base, "bbia_log_int");
+
+			if (bbia_check_is_one (self)) {
+				bbia_set_zero (self);
+				return;
+			}
+			// bbia can`t use non-integer power
+			if (bbia_compare_bbia_unsigned (self, base) == -1) {
+				return;
+			}
+			if (bbia_check_is_zero (self) || bbia_check_is_zero (base)) {
+				return;
+			}
+
+			int curPower = 1;
+			bbia * compare = bbia_copy_new (base);
+			while (bbia_compare_bbia_unsigned (compare, self) < 0) {
+				bbia_copy_bbia (compare, base);
+				bbia_pow (compare, ++curPower);
+			}
+			bbia_set_systemInteger (self, curPower, (base->sign == true && curPower % 2 != 0) ? 1 : 0);
+			bbia_free (compare);
+		}
+
+		bbia * bbia_log_bbia_new (bbia * base, bbia * self) {
+			nullPointer_funcPointer_2 (self, base, "bbia_log_int_new");
+
+			if (bbia_check_is_one (self)) {
+				bbia_set_zero (self);
+				return NULL;
+			}
+			// bbia can`t use non-integer power
+			if (bbia_compare_bbia_unsigned (self, base) == -1) {
+				return NULL;
+			}
+			if (bbia_check_is_zero (self) || bbia_check_is_zero (base)) {
+				return NULL;
+			}
+
+			int curPower = 1;
+			bbia * compare = bbia_copy_new (base);
+			while (bbia_compare_bbia_unsigned (compare, self) < 0) {
+				bbia_copy_bbia (compare, base);
+				bbia_pow (compare, ++curPower);
+			}
+			bbia_set_systemInteger (compare, curPower, (base->sign == true && curPower % 2 != 0) ? 1 : 0);
+			return compare;
+		}
+
+		// SQRT
+
+		void bbia_sqrt (bbia * self) {
+			nullPointer_funcVoid_1 (self, "bbia_sqrt");
+
+			bbia * compare = bbia_copy_new (self);
+			bbia * temp = bbia_pow_new (self, 2);
+
+			while (bbia_compare_bbia_unsigned (temp, compare) == 1 ) {
+				bbia_free (temp);
+				// x / r
+				temp = bbia_div_bbia_new (compare,self);
+				// r + x / r
+				bbia_add_bbia (self, temp);
+				bbia_free (temp);
+				// (r + x / r) / 2
+				bbia_bits_shift_right (self, 1);
+				// temp = r*r
+				bbia * temp = bbia_pow_new (self, 2);
+			}
+			bbia_free (temp);
+			bbia_free (compare);
+		}
+
+		bbia * bbia_sqrt_new (bbia * self) {
+			nullPointer_funcPointer_1 (self, "bbia_sqrt_new");
+
+			bbia * compare = bbia_copy_new (self);
+			bbia * temp = bbia_pow_new (compare, 2);
+
+			while (bbia_compare_bbia_unsigned (temp, self) == 1 ) {
+				bbia_free (temp);
+				// x / r
+				temp = bbia_div_bbia_new (self,compare);
+				// r + x / r
+				bbia_add_bbia (compare, temp);
+				bbia_free (temp);
+				// (r + x / r) / 2
+				bbia_bits_shift_right (compare, 1);
+				// temp = r*r
+				bbia * temp = bbia_pow_new (compare, 2);
+			}
+			bbia_free (temp);
+			return compare;
+		}
 
 	}
 
