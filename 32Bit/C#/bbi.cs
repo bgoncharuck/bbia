@@ -868,113 +868,102 @@ namespace bbi {
 		// LOGARITHM
 
 		public void Log (uint base,  bool isSigned) {
-			nullPointer_funcVoid_1 (self, "bbia_log_int");
 
-			if (bbia_check_is_one (self)) {
-				bbia_set_zero (self);
+			if (this.Check_IsOne) {
+				self.Set_Zero();
 				return;
 			}
-			// bbia can`t use non-integer power
-			if (bbia_compare_int_unsigned (self, base) == -1) {
+			if (this.CompareUnsigned (base) == -1) {
 				return;
 			}
-			if (bbia_check_is_zero (self) || base == 0) {
+			if (this.Check_IsZero() || base == 0) {
 				return;
 			}
 
-			int curPower = 1;
-			bbia * compare = bbia_new_fromSystemInteger (base, isSigned);
-			while (bbia_compare_bbia_unsigned (compare, self) == -1) {
-				bbia_set_systemInteger (compare, base, isSigned);
-				bbia_pow (compare, ++curPower);
+			uint curPower = 1;
+			BitBigInt compare = new BitBigInt (isSigned, base);
+			while (this.CompareUnsigned (compare) == 1) {
+				compare.Set_SystemInteger (isSigned, base);
+				compare.Pow (++curPower);
 			}
-			bbia_set_systemInteger (self, curPower, (isSigned == true && curPower % 2 != 0) ? 1 : 0);
-			bbia_free (compare);
+			this.Set_SystemInteger ((isSigned == true && curPower % 2 != 0) ? true : false, curPower);
 		}
 
-		bbia * bbia_log_int_new (int base, int isSigned, bbia * self) {
-			nullPointer_funcPointer_1 (self, "bbia_log_int_new");
+		public BitBigInt Log_New (uint base,  bool isSigned) {
 
-
-			if (bbia_check_is_one (self)) {
-				bbia_set_zero (self);
-				return NULL;
+			if (this.Check_IsOne) {
+				return new BitBigInt();
 			}
-			// bbia can`t use non-integer power
-			if (bbia_compare_int_unsigned (self, base) == -1) {
-				return NULL;
+			if (this.CompareUnsigned (base) == -1) {
+				return null;
 			}
-			if (bbia_check_is_zero (self) || base == 0) {
-				return NULL;
+			if (this.Check_IsZero() || base == 0) {
+				return null;
 			}
 
-			int curPower = 1;
-			bbia * compare = bbia_new_fromSystemInteger (base, isSigned);
-			while (bbia_compare_bbia_unsigned (compare, self) < 0) {
-				bbia_set_systemInteger (compare, base, isSigned);
-				bbia_pow (compare, ++curPower);
+			uint curPower = 1;
+			BitBigInt compare = new BitBigInt (isSigned, base);
+			while (this.CompareUnsigned (compare) == 1) {
+				compare.Set_SystemInteger (isSigned, base);
+				compare.Pow (++curPower);
 			}
-			bbia_set_systemInteger (compare, curPower, (isSigned == true && curPower % 2 != 0) ? 1 : 0);
+			compare.Set_SystemInteger ((isSigned == true && curPower % 2 != 0) ? true : false, curPower);
 			return compare;
 		}
 
-		void bbia_log_bbia (bbia * base, bbia * self) {
-			nullPointer_funcVoid_2 (self, base, "bbia_log_int");
+		public void Log (BitBigInt base) {
 
-			if (bbia_check_is_one (self)) {
-				bbia_set_zero (self);
+			if (this.Check_IsOne) {
+				self.Set_Zero();
 				return;
 			}
-			// bbia can`t use non-integer power
-			if (bbia_compare_bbia_unsigned (self, base) == -1) {
+			if (this.CompareUnsigned (base) == -1) {
 				return;
 			}
-			if (bbia_check_is_zero (self) || bbia_check_is_zero (base)) {
+			if (this.Check_IsZero() || base.Check_IsZero) {
 				return;
 			}
 
-			int curPower = 1;
-			bbia * compare = bbia_copy_new (base);
-			while (bbia_compare_bbia_unsigned (compare, self) < 0) {
-				bbia_copy_bbia (compare, base);
-				bbia_pow (compare, ++curPower);
+			uint curPower = 1;
+			BitBigInt compare = new BitBigInt(base);
+
+			while (this.CompareUnsigned (compare) == 1) {
+				compare.Set_SystemInteger (isSigned, base);
+				compare.Pow (++curPower);
 			}
-			bbia_set_systemInteger (self, curPower, (base->sign == true && curPower % 2 != 0) ? 1 : 0);
-			bbia_free (compare);
+			this.Set_SystemInteger ((isSigned == true && curPower % 2 != 0) ? true : false, curPower);
 		}
 
-		bbia * bbia_log_bbia_new (bbia * base, bbia * self) {
-			nullPointer_funcPointer_2 (self, base, "bbia_log_int_new");
+		public BitBigInt Log_New (BitBigInt base) {
 
-			if (bbia_check_is_one (self)) {
-				bbia_set_zero (self);
-				return NULL;
+			if (this.Check_IsOne) {
+				return new BitBigInt();
 			}
-			// bbia can`t use non-integer power
-			if (bbia_compare_bbia_unsigned (self, base) == -1) {
-				return NULL;
+			if (this.CompareUnsigned (base) == -1) {
+				return;
 			}
-			if (bbia_check_is_zero (self) || bbia_check_is_zero (base)) {
-				return NULL;
+			if (this.Check_IsZero() || base.Check_IsZero) {
+				return;
 			}
 
-			int curPower = 1;
-			bbia * compare = bbia_copy_new (base);
-			while (bbia_compare_bbia_unsigned (compare, self) < 0) {
-				bbia_copy_bbia (compare, base);
-				bbia_pow (compare, ++curPower);
+			uint curPower = 1;
+			BitBigInt compare = new BitBigInt(base);
+
+			while (this.CompareUnsigned (compare) == 1) {
+				compare.Set_SystemInteger (isSigned, base);
+				compare.Pow (++curPower);
 			}
-			bbia_set_systemInteger (compare, curPower, (base->sign == true && curPower % 2 != 0) ? 1 : 0);
+			compare.Set_SystemInteger ((isSigned == true && curPower % 2 != 0) ? true : false, curPower);
 			return compare;
 		}
 
 		// SQRT
 
-		void bbia_sqrt (bbia * self) {
+		void bbia_sqrt (BitBigInt self) {
 			nullPointer_funcVoid_1 (self, "bbia_sqrt");
 
-			bbia * compare = bbia_copy_new (self);
-			bbia * temp = bbia_pow_new (self, 2);
+			BitBigInt compare = bbia_copy_new (self);
+			BitBigInt temp = bbia_pow_new (self, 2);
 
 			while (bbia_compare_bbia_unsigned (temp, compare) == 1 ) {
 				bbia_free (temp);
@@ -986,17 +975,17 @@ namespace bbi {
 				// (r + x / r) / 2
 				bbia_bits_shift_right (self, 1);
 				// temp = r*r
-				bbia * temp = bbia_pow_new (self, 2);
+				BitBigInt temp = bbia_pow_new (self, 2);
 			}
 			bbia_free (temp);
 			bbia_free (compare);
 		}
 
-		bbia * bbia_sqrt_new (bbia * self) {
+		BitBigInt bbia_sqrt_new (BitBigInt self) {
 			nullPointer_funcPointer_1 (self, "bbia_sqrt_new");
 
-			bbia * compare = bbia_copy_new (self);
-			bbia * temp = bbia_pow_new (compare, 2);
+			BitBigInt compare = bbia_copy_new (self);
+			BitBigInt temp = bbia_pow_new (compare, 2);
 
 			while (bbia_compare_bbia_unsigned (temp, self) == 1 ) {
 				bbia_free (temp);
@@ -1008,7 +997,7 @@ namespace bbi {
 				// (r + x / r) / 2
 				bbia_bits_shift_right (compare, 1);
 				// temp = r*r
-				bbia * temp = bbia_pow_new (compare, 2);
+				BitBigInt temp = bbia_pow_new (compare, 2);
 			}
 			bbia_free (temp);
 			return compare;
