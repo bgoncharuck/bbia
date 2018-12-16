@@ -4,10 +4,11 @@ namespace bbi {
 
 	public class Constants {
 
-		public const uint INTEGER_SIZE = 32;
+		public const byte INTEGER_SIZE = 32;
 
 		/*SIZE*/
 		public const uint BITS_512 = 512/INTEGER_SIZE ;// 2^9
+		/*
 		public const uint BITS_1024 = 1024/INTEGER_SIZE ;// 2^10
 		public const uint BITS_2048 = 2048/INTEGER_SIZE ;// 2^11
 		public const uint BITS_4096 = 4096/INTEGER_SIZE ;// 2^12
@@ -35,6 +36,7 @@ namespace bbi {
 		// It can`t be tested on current computer.
 		// 4294967296 but used 4294967295 to avoid overflow in some systems
 		public const uint BITS_4294967296 = 4294967295/INTEGER_SIZE ; // 2^32 - 1
+		*/
 
 		/*LEVEL*/
 		/*@CHOOSE size here*/
@@ -67,8 +69,14 @@ namespace bbi {
 		[Serializable]
 		public class InvalidBitInBitflag : BBIException {
 			public InvalidBitInBitflag () {}
-			public InvalidBitInBitflag (short bit)
+			public InvalidBitInBitflag (byte bit)
 			: base(String.Format("Invalid Bit In Bitflag {0} ; Must be from 1 to {1}", bit, Constants.INTEGER_SIZE)){}
+		}
+
+		public class DivisionByZero : BBIException {
+			public DivisionByZero () {}
+			public DivisionByZero (BitBigInt divided)
+			: base(String.Format("A try to divide {0} by 0 ; Undefined operation.", divided){}
 		}
 
 	}
@@ -76,7 +84,7 @@ namespace bbi {
 	// stuaa, but C# have unsigned int
 	public class uintArithmetics {
 
-		public uint Bitflag (short bit) {
+		public uint Bitflag (byte bit) {
 
 			if ( !(bit >= 0 && bit <= Constants.INTEGER_SIZE) )
 				throw new Exceptions.InvalidBitInBitflag(bit);
@@ -132,7 +140,7 @@ namespace bbi {
 			return false;
 		}
 
-		public int Comapre (uint a, uint b) => return (a == b) ? 0 : (a > b) ? 1 : -1;
+		public sbyte Comapre (uint a, uint b) => return (a == b) ? 0 : (a > b) ? 1 : -1;
 	}
 
 	public class BitBigInt {
@@ -231,8 +239,8 @@ namespace bbi {
 		public bool Check_IsOne () => return this.Check_IsInteger (1);
 		public bool Check_IsSystemInteger () => return (this.lvlButton == Constants.LEVEL_TOP) ? true : false;
 
-		public int CompareUnsigned (BitBigInt b) {
-			int curCompare = 0;
+		public sbyte CompareUnsigned (BitBigInt b) {
+			sbyte curCompare = 0;
 			int curLvl = (this.lvlButton <= b.lvlButton) ? this.lvlButton : b.lvlButton;
 			for (; curLvl <= Constants.LEVEL_TOP; curLvl++) {
 				curCompare = uintArithmetics.Compare (this.at[curLvl], b.at[curLvl]);
@@ -242,8 +250,8 @@ namespace bbi {
 			return 0;
 		}
 
-		public int Compare (BitBigInt b) {
-			int res = this.Compare (b);
+		public sbyte Compare (BitBigInt b) {
+			sbyte res = this.Compare (b);
 
 			if (this.sign == b.sign) return res;
 			else if (this.sign == true) return -1;
@@ -251,13 +259,13 @@ namespace bbi {
 			return 0;
 		}
 
-		public int CompareUnsigned (uint toCompare) {
+		public sbyte CompareUnsigned (uint toCompare) {
 			if (this.lvlButton < Constants.LEVEL_TOP) return 1;
 			return uintArithmetics.Compare (this.at[Constants.LEVEL_TOP], toCompare);
 		}
 
-		public int Compare (bool isSigned, uint toCompare) {
-			int res = bbia_compare_int_unsigned (self, toCompare);
+		public sbyte Compare (bool isSigned, uint toCompare) {
+			sbyte res = this.CompareUnsigned (toCompare);
 
 			if (this.sign == isSigned) return res;
 			else if (this.sign == true) return -1;
@@ -358,9 +366,9 @@ namespace bbi {
 			uint lvl = Constants.LEVEL_TOP - bit / Constants.INTEGER_SIZE;
 			bit %= Constants.INTEGER_SIZE;
 			if (bit != 0)
-				self.at[lvl] |= uintArithmetics.Bitflag (bit);
+				this.at[lvl] |= uintArithmetics.Bitflag (bit);
 			else
-				self.at[lvl+1] |= uintArithmetics.Bitflag (Constants.INTEGER_SIZE);
+				this.at[lvl+1] |= uintArithmetics.Bitflag (Constants.INTEGER_SIZE);
 			this.LvlButton_Configure();
 		}
 
@@ -368,9 +376,9 @@ namespace bbi {
 			uint lvl = Constants.LEVEL_TOP - bit / Constants.INTEGER_SIZE;
 			bit %= Constants.INTEGER_SIZE;
 			if (bit != 0)
-				self.at[lvl] &= ~uintArithmetics.Bitflag (bit);
+				this.at[lvl] &= ~uintArithmetics.Bitflag (bit);
 			else
-				self.at[lvl+1] &= ~uintArithmetics.Bitflag (Constants.INTEGER_SIZE);
+				this.at[lvl+1] &= ~uintArithmetics.Bitflag (Constants.INTEGER_SIZE);
 			this.LvlButton_Configure();
 		}
 
@@ -445,8 +453,8 @@ namespace bbi {
 			else {
 				this.lvlButton = (this.lvlButton <= from.lvlButton) ? this.lvlButton : from.lvlButton;
 				uint level = Constants.LEVEL_TOP;
-				register short outBit = 0;
-				register short curBit = 0;
+				register byte outBit = 0;
+				register byte curBit = 0;
 
 				// standart addition algorithm for binary N-bit integer
 				for (; (level >= this.lvlButton) || (outBit != 0 && level > 0); level--)
@@ -497,9 +505,9 @@ namespace bbi {
 			else {
 				uint bitPos = 1;
 				uint level = Constants.LEVEL_TOP;
-				register short outBit = 0;
-				register short curBitSecond = 0;
-				register short curBitFirst = 0;
+				register byte outBit = 0;
+				register byte curBitSecond = 0;
+				register byte curBitFirst = 0;
 
 				for (; level >= this.lvlButton; level--)
 				for (bitPos = 1; bitPos <= Constants.INTEGER_SIZE; bitPos++) {
@@ -664,7 +672,7 @@ namespace bbi {
 
 		// @MULTIPLICATION
 
-		private BitBigInt _multiplicationByBitAnd_op (BitBigInt temp) {
+		private void _multiplicationByBitAnd_op (BitBigInt temp) {
 
 			// Integer x BBIA
 			// 101 x 010
@@ -674,8 +682,11 @@ namespace bbi {
 			// 000 + 1010 + 00000 = 1010 (101 x 010)
 			// See calculation folder for more information
 
-			BitBigInt result = new BitBigInt();
+			BitBigInt multiplier = new BitBigInt(this);
 			bool curBitVal = false;
+
+			for (uint i = 0; i <= Constants.LEVEL_TOP; i++) this.at[i] = Constants.LEVEL_IS_EMPTY;
+			this.lvlButton = Constants.LEVEL_TOP;
 
 			for (
 				uint curBit = 1, lvl = Constants.LEVEL_TOP,
@@ -686,45 +697,51 @@ namespace bbi {
 				curBit++, lvlBit = curBit % Constants.INTEGER_SIZE
 			) {
 				if (lvlBit != 0)
-					curBitVal = (this.at[lvl] & uintArithmetics.Bitflag (lvlBit)) ? true : false;
+					curBitVal = (multiplier.at[lvl] & uintArithmetics.Bitflag (lvlBit)) ? true : false;
 				else
-					curBitVal = (this.at[lvl--] & uintArithmetics.Bitflag (Constants.INTEGER_SIZE)) ? true : false;
+					curBitVal = (multiplier.at[lvl--] & uintArithmetics.Bitflag (Constants.INTEGER_SIZE)) ? true : false;
 
 				if (curBitVal == true)
-					result.Add (temp);
+					this.Add (temp);
 
 				temp.Bits_ShiftLeft (1);
 			}
-
-			result.LvlButton_Configure();
-			return result;
 		}
 
 		public BitBigInt Mult_New (bool sign, uint integer) {
-			BitBigInt result = this._multiplicationByBitAnd_op (new BitBigInt(sign, integer));
+			BitBigInt result = new BitBigInt(this);
+			result._multiplicationByBitAnd_op (new BitBigInt (sign, integer));
 			if ((this.sign != sign) || (this.sign == true && sign == true)) result.Sign_Change();
 			return result;
 		}
 
-		public void Mult (bool sign, int integer) => return this.Copy (this.Mult_New(sign,integer));
+		public void Mult (bool sign, uint integer) {
+			this._multiplicationByBitAnd_op (new BitBigInt(sign, integer));
+			if ((this.sign != sign) || (this.sign == true && sign == true)) this.Sign_Change();
+		}
 
 		BitBigInt Mult_New (BitBigInt second) {
 			if (this.CompareUnsigned (second) == 0)
 				return this.Pow_New (2);
 
-			BitBigInt result = this._multiplicationByBitAnd_op (new BitBigInt(second));
+			BitBigInt result = new BitBigInt(this);
+			result._multiplicationByBitAnd_op (new BitBigInt(second));
 			if ((this.sign != second.sign) || (this.sign == true && second.sign == true)) result.Sign_Change();
 			return result;
 		}
 
-		public void Mult (BitBigInt second) {
+		// @MULT BBI BBI
+		public void Mult_Unsigned (BitBigInt second) {
 			if (this.CompareUnsigned (second) == 0) {
 				this.Pow (2);
 				return;
 			}
+			this._multiplicationByBitAnd_op (new BitBigInt (second) );
+		}
 
+		public void Mult (BitBigInt second) {
 			bool toChangeSign = ((this.sign != second.sign) || (this.sign == true && second.sign == true)) ? true : false;
-			this.copy (second._multiplicationByBitAnd_operation (this));
+			this.Mult_Unsigned (second);
 			if (toChangeSign == true) this.Sign_Change();
 		}
 
@@ -740,9 +757,108 @@ namespace bbi {
 			}
 		}
 
+		public void Pow_Signed (uint power) {
+			if (this.sign && power % 2 == 0) this.Sign_Change();
+			this.Pow (power);
+		}
+
 		public BitBigInt Pow_New (uint power) {
 			BitBigInt res = new BitBigInt(this);
-			res.Pow (power);
+			res.Pow_Signed (power);
+			return res;
+		}
+
+		// @DIVISION
+
+		private enum DIVISION_OR_MOD : byte {DIVISION, MOD};
+
+		private void _divisionBy_op (BitBigInt division, DIVISION_OR_MOD flag) {
+
+			// set result to zero and work with it like with current multiplication of division
+			BitBigInt currentMultiplierOfDivision = new BitBigInt();
+			currentMultiplierOfDivision->at[Constants.LEVEL_TOP] = 2;
+
+			// create temporary to store what must be subtrahended from mod
+			BitBigInt currentDifference = new BitBigInt (division);
+
+			for (; this.CompareUnsigned (currentDifference) == 1;
+			       currentMultiplierOfDivision.Add (1) /*analog for i++)*/)
+			{
+				currentDifference.Copy (division);
+				currentDifference.Mult_Unsigned (currentMultiplierOfDivision);
+			}
+
+			currentMultiplierOfDivision.Sub (1); // analog for i--
+			// division result
+			if (flag == DIVISION) {
+				this.Copy(currentMultiplierOfDivision);
+				return;
+			}
+
+			// mod result
+			else if (flag == MOD) {
+				currentDifference.Copy (division);
+				currentDifference.Mult_Unsigned (currentMultiplierOfDivision);
+				this.Sub (currentDifference);
+			}
+		}
+
+		public void Div (BitBigInt division) {
+			bool toChangeSign = ((this.sign != division.sign) || (this.sign == true && division.sign == true)) ? true : false;
+			divided._divisionBy_op (division, DIVISION);
+			divided.LvlButton_Configure();
+			if (toChangeSign == true) this.Sign_Change();
+		}
+
+		BitBigInt Div_New (BitBigInt division) {
+			BitBigInt res = new BitBigInt (divided);
+			res.Div (division);
+			return res;
+		}
+
+		public void Div (bool signed, uint integer) {
+			if (integer == Constants.LEVEL_IS_EMPTY) {
+				throw new Exceptions.DivisionByZero(this);
+				return;
+			}
+			this.Div (new BitBigInt (signed, integer));
+		}
+
+		BitBigInt Div_New (bool sign, uint integer) {
+			BitBigInt res = new BitBigInt (sign, integer);
+			res.Div (division);
+			return res;
+		}
+
+		// @MOD
+
+		void bbia_mod_bbia (BitBigInt divided, BitBigInt division) {
+			nullPointer_funcVoid_2 (divided, division, "bbia_mod_bbia");
+			bbia_divisionBy_operation (divided, division, MOD);
+			bbia_lvlButton_conf (divided);
+		}
+
+		BitBigInt bbia_mod_new BitBigInt (BitBigInt divided, BitBigInt division) {
+			BitBigInt res = new BitBigInt (divided);
+			bbia_divisionBy_operation (res, division, MOD);
+			bbia_lvlButton_conf (res);
+			return res;
+		}
+
+		void bbia_mod_int (BitBigInt self, int integer) {
+			nullPointer_funcVoid_1 (self, "bbia_mod_int");
+			BitBigInt division = new BitBigInt();
+			division->at[Constants.LEVEL_TOP] = integer;
+
+			bbia_divisionBy_operation (self, division, MOD);
+			bbia_lvlButton_conf (self);
+			bbia_free (division);
+		}
+
+		BitBigInt bbia_mod_int_new (BitBigInt self, int integer) {
+			BitBigInt res = new BitBigInt (self);
+			bbia_mod_int (res, integer);
+			bbia_lvlButton_conf (res);
 			return res;
 		}
 

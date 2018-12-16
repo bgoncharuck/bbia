@@ -7,6 +7,7 @@
 
 /*SIZE*/
 #define BBIA_BITS_512 512/BBIA_INTEGER_SIZE // 2^9
+/*
 #define BBIA_BITS_1024 1024/BBIA_INTEGER_SIZE // 2^10
 #define BBIA_BITS_2048 2048/BBIA_INTEGER_SIZE // 2^11
 #define BBIA_BITS_4096 4096/BBIA_INTEGER_SIZE // 2^12
@@ -34,6 +35,7 @@
 // It can`t be tested on current computer.
 // 4294967296 but used 4294967295 to avoid overflow in some systems
 #define BBIA_BITS_4294967296 4294967295/BBIA_INTEGER_SIZE // 2^32
+*/
 
 /*LEVEL*/
 /*@CHOOSE size here*/

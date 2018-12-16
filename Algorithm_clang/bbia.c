@@ -683,6 +683,7 @@ bbia * bbia_multiplicationByBitAnd_operation (bbia * self, bbia * temp) {
 	return result;
 }
 
+// @TODO SIGN
 bbia * bbia_mult_int_new (bbia * self, int integer) {
 	nullPointer_funcPointer_1 (self, "bbia_mult_int_new");
 	bbia * integerValue = bbia_new();
@@ -801,6 +802,7 @@ bbia * bbia_div_bbia_new (bbia * divided, bbia * division) {
 	return res;
 }
 
+// @TODO SIGN
 void bbia_div_int (bbia * self, int integer) {
 	nullPointer_funcVoid_1 (self, "bbia_div_int");
 	if (integer == BBIA_LEVEL_IS_EMPTY) {
