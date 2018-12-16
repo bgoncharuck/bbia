@@ -858,6 +858,7 @@ bbia * bbia_mod_int_new (bbia * self, int integer) {
 
 // LOGARITHM
 
+// @TODO sign
 void bbia_log_int (int base, int isSigned, bbia * self) {
 	nullPointer_funcVoid_1 (self, "bbia_log_int");
 

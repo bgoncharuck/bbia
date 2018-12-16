@@ -867,7 +867,7 @@ namespace bbi {
 
 		// LOGARITHM
 
-		void bbia_log_int (int base, int isSigned, bbia * self) {
+		public void Log (uint base,  bool isSigned) {
 			nullPointer_funcVoid_1 (self, "bbia_log_int");
 
 			if (bbia_check_is_one (self)) {
