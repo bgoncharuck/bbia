@@ -24,17 +24,24 @@ class bbi {
 	}
 
 	Sign_Change () { this.sign = (this.sign) ? false : true; }
-	Sign_Set (newSign) { this.sign = newSign; }
+	Sign_Set (newSign) {
+		if (newSign instanceof Boolean)
+			this.sign = newSign;
+	}
 
 	LvlButton_Configure () {
 		for (let curLvl = 0; curLvl < constants.LEVEL_TOP; curLvl++)
-			if (this.at[curLvl] != constants.LEVEL_IS_EMPTY) {
+			if (this.at[curLvl] !== constants.LEVEL_IS_EMPTY) {
 				this.lvlButton = curLvl;
 				return;
 			}
 			this.lvlButton = constants.LEVEL_TOP;
 	}
-	LvlButton_Set (level) { this.lvlButton = level; }
+
+	LvlButton_Set (level) {
+		if (level instanceof Number)
+			this.lvlButton = level;
+	}
 
 	
 }
