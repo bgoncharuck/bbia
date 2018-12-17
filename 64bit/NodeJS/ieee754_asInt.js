@@ -1,3 +1,10 @@
+// Because of ieee754_asInt in development for now, it`s mostly dummy or STUAA
+// const INTEGER_SIZE = 64;
+
+// 32(52) bit from 64 can be used in ieee754 for integer, for full using of 64 bits needs ieee754_asInt
+const INTEGER_SIZE = 32;
+// @Warning: but it will use memory like 64 bit dtype
+
 module.exports = {
 	bitflag: (bit) => {
 
@@ -80,6 +87,6 @@ module.exports = {
 	},
 
 	fromBaseOfTwo (num, base) => {
-		
+
 	}
 };
