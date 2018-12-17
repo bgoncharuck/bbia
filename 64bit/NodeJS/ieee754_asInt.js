@@ -60,26 +60,107 @@ function shift_right (num, size) {
 }
 
 function compare (a, b) {
-	return -1;
+	if (a > b) {
+		if (bitflag(INTEGER_SIZE) & b) return -1;
+		else return 1;
+	}
+	else if (a < b) {
+		if (bitflag(INTEGER_SIZE) & a) return 1;
+		else return -1;
+	}
+	return 0;
 }
 
-function outofmax (to, test) {
+function outofmax_bitDecay (to, test, bitDec) {
+
+	if (bitDec < 1) return false;
+
+	if (to & bitflag (bitDec) && test & bitflag (bitDec)) return true;
+
+	else if (to & bitflag (bitDec) || test & bitflag (bitDec)) {
+		if (to & bitflag (bitDec-1) && test & bitflag (bitDec-1)) return true;
+	}
+
+	else if (to & bitflag (bitDec) || test & bitflag (bitDec))
+		return outofmax_bitDecay (to, test, bitDec - 2);
+
 	return false;
 }
 
+outofmax (to, test) => outofmax_bitDecay (to,test, INTEGER_SIZE);
+
 function outofmin (to, test) {
+	let curToBit = 0, curTestBit = 0;
+
+	for (let curBit = INTEGER_SIZE; curBit > 0; curBit--) {
+		curToBit = to & stuaa_bitflag (curBit);
+		curTestBit = test & stuaa_bitflag (curBit);
+
+		if ( curToBit != curTestBit ) {
+			if (curTestBit != 0) return true;
+			return false;
+		}
+	}
+
 	return false;
 }
 
 function inBaseOfTwo (num) {
-	return 2;
+	for (let curBit = 2; curBit <= INTEGER_SIZE; curBit++)
+		if (num == bitflag (curBit))
+			return curBit - 1;
+
+	return -2;
 }
 
+const numerics = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/,"; //base64
+
 function toBaseOfTwo (num, base) {
-	return "";
+
+	let powerOfTwo = inBaseOfTwo (base);
+	if (powerOfTwo != -2) {
+
+		let result = "";
+		let tempValue = 0;
+
+		for (let curBit = 0; curBit < INTEGER_SIZE; curBit += powerOfTwo) {
+			for (int curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
+				tempValue |=
+				(bitflag(curBit + curBitInTwo) & num)
+				? bitflag (curBitInTwo) : 0;
+			}
+
+			result += numerics[tempValue];
+			tempValue = 0;
+		}
+
+		return result.split("").reverse().join("");
+	}
+
+	return "ERROR_incorrect_base";
 }
 
 function fromBaseOfTwo (str, base) {
+
+	let powerOfTwo = isPowerOfTwo (base);
+	if (powerOfTwo != -2) {
+
+		int result = 0;
+		int size = strlen(integer);
+		int tempValue = 0;
+
+		for (int curChar = size-1, curMult = 0; curChar >= 0; curChar--, curMult++) {
+			tempValue = numerics.indexOf(str.split('')[curChar]);
+
+			for (int curBit = 1; curBit <= powerOfTwo; curBit++) {
+				result |= (tempValue & bitflag(curBit)) ?
+				bitflag (curBit + powerOfTwo * curMult) : 0;
+			}
+		}
+
+		return result;
+	}
+
 	return 0;
 }
 
@@ -131,6 +212,18 @@ module.exports = {
 	mod: (a, division) => a % division,
 
 	pow: (a, power) => a ** power,
+
+	eq_add: (a, b) => a += b,
+
+	eq_sub: (from, what) => from -= what,
+
+	eq_mult: (a, b) => a *= b,
+
+	eq_div: (a, division) => a /= division,
+
+	eq_mod: (a, division) => a %= division,
+
+	eq_pow: (a, power) => a **= power,
 
 	isBaseOfTwo: (num) => isBaseOfTwo (num),
 
