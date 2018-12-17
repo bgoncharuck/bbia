@@ -56,7 +56,7 @@ function shift_right (num, size) {
 	}
 
 	num >>= size;
-	if (save == true) num |= bitflag (INTEGER_SIZE-size);
+	if (save === true) num |= bitflag (INTEGER_SIZE-size);
 }
 
 function compare (a, b) {
@@ -87,7 +87,7 @@ function outofmax_bitDecay (to, test, bitDec) {
 	return false;
 }
 
-outofmax (to, test) => outofmax_bitDecay (to,test, INTEGER_SIZE);
+function outofmax (to, test) { outofmax_bitDecay (to,test, INTEGER_SIZE); }
 
 function outofmin (to, test) {
 	let curToBit = 0, curTestBit = 0;
@@ -107,7 +107,7 @@ function outofmin (to, test) {
 
 function inBaseOfTwo (num) {
 	for (let curBit = 2; curBit <= INTEGER_SIZE; curBit++)
-		if (num == bitflag (curBit))
+		if (num === bitflag (curBit))
 			return curBit - 1;
 
 	return -2;
@@ -124,7 +124,7 @@ function toBaseOfTwo (num, base) {
 		let tempValue = 0;
 
 		for (let curBit = 0; curBit < INTEGER_SIZE; curBit += powerOfTwo) {
-			for (int curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
+			for (let curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
 				tempValue |=
 				(bitflag(curBit + curBitInTwo) & num)
 				? bitflag (curBitInTwo) : 0;
@@ -145,14 +145,14 @@ function fromBaseOfTwo (str, base) {
 	let powerOfTwo = isPowerOfTwo (base);
 	if (powerOfTwo != -2) {
 
-		int result = 0;
-		int size = strlen(integer);
-		int tempValue = 0;
+		let result = 0;
+		let size = strlen(leteger);
+		let tempValue = 0;
 
-		for (int curChar = size-1, curMult = 0; curChar >= 0; curChar--, curMult++) {
+		for (let curChar = size-1, curMult = 0; curChar >= 0; curChar--, curMult++) {
 			tempValue = numerics.indexOf(str.split('')[curChar]);
 
-			for (int curBit = 1; curBit <= powerOfTwo; curBit++) {
+			for (let curBit = 1; curBit <= powerOfTwo; curBit++) {
 				result |= (tempValue & bitflag(curBit)) ?
 				bitflag (curBit + powerOfTwo * curMult) : 0;
 			}

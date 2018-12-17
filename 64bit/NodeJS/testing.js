@@ -1,4 +1,5 @@
 const uint = require('./ieee754_asInt.js');
 
-let curBit = uint.bitflag(32);
-console.log(`${curBit}`);
+let curDigit = 0xFFFFFFFF;
+console.log(`${uint.toBaseOfTwo(curDigit,2)}`);
+console.log(`${uint.toBaseOfTwo(curDigit,16)}`);
