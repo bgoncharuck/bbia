@@ -924,6 +924,62 @@ class bbi {
 			return compare;
 		}
 
+		toBaseOfTwo (base) {
+			if (typeis (base, "number") === false) return "+0";
+			let powerOfTwo = uint.inBaseOfTwo (base);
+			if (powerOfTwo === -2) return "+0";
+
+			let position =
+			1 // for sign in zero position
+			+ Math.log2 (this.at[this.lvlButton]) / Math.log2 (base)
+			+ Math.ceil (Constants.INTEGER_SIZE/powerOfTwo) * (Constants.LEVEL_TOP-this.lvlButton);
+
+
+			let reverse = "";
+
+			for (
+				let curLvl = Constants.LEVEL_TOP,
+				curBit = 0,
+				curBitInTwo = 0,
+				curDigit = 0;
+
+				uint.bigger (position, 0);
+
+				position--
+			)
+			{
+				for (curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
+
+					if (curBit === Constants.INTEGER_SIZE) {
+						curBit = 0;
+						curLvl--;
+					}
+
+					curDigit =
+					uint.bitor (
+					curBit,
+					uint.bitand (uint.bitflag (++curBit), this.at[curLvl])
+					? uint.bitflag (curBitInTwo)
+					: 0
+					);
+				}
+
+				reverse += uint.numerics.charCodeAt(curDigit);
+				curDigit = 0;
+			}
+
+			reverse += (this.sign === false) ? '+' : '-';
+
+			return split("").reverse().join("");
+		}
+
+		fromBaseOfTwo (str, base) {
+
+		}
+
+		fromBaseOfTwo_new (str, base) {
+
+		}
 }
 
 module.exports = {

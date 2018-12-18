@@ -217,7 +217,9 @@ module.exports = {
 
 	pow: (a, power) => a ** power,
 
-	isBaseOfTwo: (num) => isBaseOfTwo (num),
+	numerics: numerics,
+
+	inBaseOfTwo: (num) => inBaseOfTwo (num),
 
 	toBaseOfTwo: (num, base) => toBaseOfTwo (num, base),
 
