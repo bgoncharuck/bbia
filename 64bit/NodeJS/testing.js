@@ -15,7 +15,13 @@ console.log(bbiConstructorTest_1 instanceof bbi);
 console.log(bbiConstructorTest_2 instanceof bbi);
 console.log(bbiConstructorTest_3 instanceof bbi);
 console.log(bbiConstructorTest_3);
+
 /*
+function kek (a,b) {a |= b};
+let a = 0;
+let b = uint.bitflag(3);
+kek (a,b);
+console.log(`${uint.toBaseOfTwo(a,2)}`);
 bbiConstructorTest_2.Sign_Change();
 console.log(bbiConstructorTest_2.sign == false);
 bbiConstructorTest_2.Sign_Change();

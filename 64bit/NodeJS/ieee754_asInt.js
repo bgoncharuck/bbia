@@ -57,6 +57,7 @@ function shift_right (num, size) {
 
 	num >>= size;
 	if (save === true) num |= bitflag (INTEGER_SIZE-size);
+	return num;
 }
 
 function compare (a, b) {
@@ -186,7 +187,7 @@ module.exports = {
 
 	bitshift_right: (num, size) => shift_right (num, size),
 
-	bitshift_left: (num, size) => num <<= size,
+	bitshift_left: (num, size) => num << size,
 
 	bigger: (what, then) => what > then,
 

@@ -223,6 +223,7 @@ bbia * bbia_copy_new (bbia * from) {
 
 // @BIT_OPERATIONS
 
+// @TODO if bitshift for more then INT_SIZE
 void bbia_bits_shift_left (bbia * self, int value) {
 	nullPointer_funcVoid_1 (self, "bbia_bits_shift_left");
 
