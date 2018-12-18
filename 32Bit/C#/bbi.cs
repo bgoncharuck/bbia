@@ -414,7 +414,7 @@ namespace bbi {
 		}
 		public BitBigInt Bits_Empty () => return new BitBigInt();
 
-		public BitBigInt Bits_FullTillBit (int bit) {
+		public BitBigInt Bits_FullTillBit (uint bit) {
 			BitBigInt result = new BitBigInt();
 			uint lvl = Constants.LEVEL_TOP - bit / Constants.INTEGER_SIZE;
 			bit %= Constants.INTEGER_SIZE;
@@ -428,7 +428,7 @@ namespace bbi {
 			return result;
 		}
 
-		public BitBigInt Bits_EmptyTillBit (int bit) {
+		public BitBigInt Bits_EmptyTillBit (uint bit) {
 			BitBigInt result = new BitBigInt();
 			uint lvl = Constants.LEVEL_TOP - bit / Constants.INTEGER_SIZE;
 			bit %= Constants.INTEGER_SIZE;

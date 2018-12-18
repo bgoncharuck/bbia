@@ -179,9 +179,9 @@ module.exports = {
 
 	bitnot: (num) => ~num,
 
-	bitnotand: (a, b) => ~(a & b),
+	bitnotand: (num, bit) => a & ~(b),
 
-	bitnotor: (a, b) => ~(a | b),
+	bitnotor: (num, bit) => a | ~(b),
 
 	bitxor: (a, b) => a ^ b,
 
@@ -216,18 +216,6 @@ module.exports = {
 	mod: (a, division) => a % division,
 
 	pow: (a, power) => a ** power,
-
-	eq_add: (a, b) => a += b,
-
-	eq_sub: (from, what) => from -= what,
-
-	eq_mult: (a, b) => a *= b,
-
-	eq_div: (a, division) => a /= division,
-
-	eq_mod: (a, division) => a %= division,
-
-	eq_pow: (a, power) => a **= power,
 
 	isBaseOfTwo: (num) => isBaseOfTwo (num),
 

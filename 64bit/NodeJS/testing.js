@@ -15,6 +15,9 @@ console.log(bbiConstructorTest_1 instanceof bbi);
 console.log(bbiConstructorTest_2 instanceof bbi);
 console.log(bbiConstructorTest_3 instanceof bbi);
 console.log(bbiConstructorTest_3);
+bbiConstructorTest_3.at[Constants.LEVEL_TOP] = 12;
+let bbiBitOrNewTest = bbiConstructorTest_2.Bits_Or_New(bbiConstructorTest_3);
+console.log (bbiBitOrNewTest);
 
 /*
 function kek (a,b) {a |= b};

@@ -4,6 +4,8 @@ const Constants = require('./bbi_constants');
 function typeis (what, is) {
 	if (is === "bbi")
 		return what instanceof bbi;
+	else if (is === "array")
+		return Array.isArray (what);
 	return typeof what === is;
 }
 
@@ -203,7 +205,7 @@ class bbi {
 
 			let savedBits = new Array(Constants.LEVEL_TOP).fill(0);
 			let bitMask = [0,0];
-			for (let curBit = 1; curBit <= value; curBit++)
+			for (let curBit = 1; uint.lesserequal (curBit, value); curBit++)
 				bitMask[0] = uint.bitor (bitMask[0], uint.bitflag(curBit));
 			// 1. Shift with saved bits
 			// we shift all levels from zero to top
@@ -229,6 +231,217 @@ class bbi {
 		else if (uint.biggerequal (value, Constants.INTEGER_SIZE))
 			this.Set_Zero();
 	}
+
+	Bits_Or (second) {
+		if (typeis (second, "bbi")) {
+
+			this.lvlButton = (uint.lesserequal (this.lvlButton, second.lvlButton)) ? this.lvlButton : second.lvlButton;
+			for (let curLvl = this.lvlButton; uint.lesserequal (curLvl, Constants.LEVEL_TOP); curLvl++)
+			this.at[curLvl] = uint.bitor (this.at[curLvl], second.at[curLvl]);
+		}
+	}
+
+	Bits_Or_New (second) {
+		if (typeis (second, "bbi") === false) return new bbi();
+		let result = new bbi(this);
+		result.Bits_Or(second);
+		return result;
+	}
+
+	Bits_And (second) {
+		if (typeis (second, "bbi")) {
+
+			this.lvlButton = (uint.lesserequal (this.lvlButton, second.lvlButton)) ? this.lvlButton : second.lvlButton;
+			for (let curLvl = this.lvlButton; uint.lesserequal (curLvl, Constants.LEVEL_TOP); curLvl++)
+			this.at[curLvl] = uint.bitand (this.at[curLvl], second.at[curLvl]);
+		}
+	}
+
+	Bits_And_New (second) {
+		if (typeis (second, "bbi") === false) return new bbi();
+		let result = new bbi(this);
+		result.Bits_And(second);
+		return result;
+	}
+
+	Bits_FlagSet (bit) {
+		if (typeis (bit, "number")) {
+
+			let lvl = Constants.LEVEL_TOP - uint.div (bit, Constants.INTEGER_SIZE);
+			bit %= Constants.INTEGER_SIZE;
+			if (bit != 0)
+				this.at[lvl] = uint.bitor (this.at[lvl], uint.bitflag (bit));
+			else
+				this.at[lvl+1] |= uint.bitor (this.at[lvl], uint.bitflag (Constants.INTEGER_SIZE));
+			this.LvlButton_Configure();
+		}
+	}
+
+	Bits_FlagUnset (bit) {
+		if (typeis (bit, "number")) {
+
+			let lvl = Constants.LEVEL_TOP - uint.div (bit, Constants.INTEGER_SIZE);
+			bit %= Constants.INTEGER_SIZE;
+			if (bit != 0)
+				this.at[lvl] = uint.bitnotand (this.at[lvl], uint.bitflag (bit));
+			else
+				this.at[lvl+1] = uint.bitnotand (this.at[lvl+1], uint.bitflag (Constants.INTEGER_SIZE));
+			this.LvlButton_Configure();
+		}
+	}
+
+	Bits_FlagSetMult (bitFlagArray) {
+		if (typeis (bitFlagArray, "array")) {
+
+			for (let curFlag = 0; uint.lesser (curFlag, bitFlagArray.length); curFlag++)
+				this.Bits_FlagSet (bitFlagArray[curFlag]);
+		}
+	}
+
+	Bits_FlagUnsetMult (bitFlagArray) {
+		if (typeis (bitFlagArray, "array")) {
+
+			for (let curFlag = 0; uint.lesser (curFlag, bitFlagArray.length); curFlag++)
+				this.Bits_FlagUnset (bitFlagArray[curFlag]);
+		}
+	}
+
+		Bits_Flag (bit) {
+			let result = new bbi();
+			result.Bits_FlagSet (bit);
+			return result;
+		}
+
+		Bits_Full () {
+			let result = new bbi();
+			for (let curLvl = 0; uint.lesserequal (curLvl, Constants.LEVEL_TOP); curLvl++)
+				result.at[curLvl] = Constants.LEVEL_IS_FULL;
+			result.lvlButton = 0;
+			return result;
+		}
+		Bits_Empty () { return new bbi(); }
+
+		Bits_FullTillBit (bit) {
+			let result = new bbi();
+			let lvl = Constants.LEVEL_TOP - uint.div (bit, Constants.INTEGER_SIZE);
+			bit %= Constants.INTEGER_SIZE;
+			if (bit === 0) lvl++;
+
+			for (let curLvl = lvl + 1; uint.lesser (curLvl, Constants.LEVEL_TOP); curLvl--)
+				result.at[curLvl] = Constants.LEVEL_IS_FULL;
+			for (let curBit = 1; uint.lesser (curBit, bit); curBit++)
+				result.at[lvl] = uint.bitor (result.at[lvl], uint.bitflag (curBit));
+			this.LvlButton_Configure();
+			return result;
+		}
+
+		Bits_EmptyTillBit (bit) {
+			let result = new bbi();
+			let lvl = Constants.LEVEL_TOP - uint.div (bit, Constants.INTEGER_SIZE);
+			bit %= Constants.INTEGER_SIZE;
+			if (bit === 0) lvl++;
+
+			for (let curLvl = lvl + 1; uint.lesser (curLvl, Constants.LEVEL_TOP); curLvl--)
+				result.at[curLvl] = Constants.LEVEL_IS_EMPTY;
+			for (let curBit = 1; uint.lesser (curBit, bit); curBit++)
+				result.at[lvl] = uint.bitnotand (result.at[lvl], uint.bitflag (curBit));
+			this.LvlButton_Configure();
+			return result;
+		}
+
+		// ADD/SUB private module operations
+
+		_add_bbi_op (from) {
+			// if from is system integer and out of bounders not possible then try simple language addition
+			if (from.Check_IsSystemInteger() && uint.lesser (this.at[0], Constants.LEVEL_IS_FULL)) {
+				this.Add_Level (from.at[Constants.LEVEL_TOP], Constants.LEVEL_TOP);
+				return;
+			}
+			else {
+				this.lvlButton = (uint.lesserequal (this.lvlButton, from.lvlButton) ) ? this.lvlButton : from.lvlButton;
+				let level = Constants.LEVEL_TOP;
+				let outBit = 0;
+				let curBit = 0;
+
+				// standart addition algorithm for binary N-bit integer
+				for (; (uint.biggerequal (level, this.lvlButton)) || (outBit !== 0 && uint.bigger (level, 0)); level--)
+				for (let bitPos = 1; uint.lesserequal (bitPos, Constants.INTEGER_SIZE); bitPos++) {
+					// if nBit of to is enabled
+					curBit = (uint.bitand (this.at[level], uint.bitflag (bitPos))) ? 1 : 0;
+					// if nBit of from is enabled
+					if (uint.bitand (from.at[level], uint.bitflag (bitPos))) curBit++;
+
+					if (outBit !== 0) { outBit--; curBit++; }
+					if (curBit > 1) { outBit++; curBit -= 2; }
+
+					// enable or disable bit in to
+					if (curBit === 1) this.at[level] = uint.bitor (this.at[level], uint.bitflag (bitPos));
+					else this.at[level] = uint.bitnotand (this.at[lvl], uint.bitflag (bigPos));
+				}
+				// OUT OF BOUNDERS
+				if (level === 0 && outBit !== 0) {
+					this.Set_Zero();
+					level = Constants.LEVEL_TOP;
+					for (; outBit !== 0 && level > 0; level--)
+					for (let bitPos = 1; uint.lesserequal (bitPos, Constants.INTEGER_SIZE); outBit--, bitPos++)
+					this.at[level] = uint.bitor (this.at[level], uint.bitflag (bitPos));
+					this.LvlButton_Configure();
+					this.Sign_Change();
+				}
+				else if (this.at[level] != 0) this.lvlButton = level;
+			}
+		}
+
+		// @TODO must not be accessed within class
+		_sub_bbi_op (subtrahend) {
+			// if subtrahend is system integer and out of bounders not possible then try simple language difference
+			if (subtrahend.Check_IsSystemInteger() && this.Check_IsSystemInteger()
+			&& uint.outofmin (this.at[Constants.LEVEL_TOP], subtrahend.at[Constants.LEVEL_TOP]) == false) {
+				this.Sub_Level (subtrahend.at[Constants.LEVEL_TOP], Constants.LEVEL_TOP);
+				return;
+			}
+			// OUT OF BOUNDERS
+			else if (this.CompareUnsigned (subtrahend) == -1) {
+				let temp = new bbi(subtrahend);
+				temp._sub_bbi_op (this);
+				temp.Sign_Set ((this.sign == false) ? true : false);
+				this.Copy(temp);
+				return;
+			}
+			else {
+				let bitPos = 1;
+				let level = Constants.LEVEL_TOP;
+				let outBit = 0;
+				let curBitSecond = 0;
+				let curBitFirst = 0;
+
+				for (; uint.biggerequal (level, this.lvlButton); level--)
+				for (bitPos = 1; uint.lesserequal (bitPos, Constants.INTEGER_SIZE); bitPos++) {
+					curBitFirst = uint.bitand (this.at[level], uint.bitflag (bitPos)) ? 1 : 0;
+					curBitSecond = uint.bitand (subtrahend.at[level], uint.bitflag (bitPos)) ? 1 : 0;
+
+					if (curBitFirst === curBitSecond) {
+						if (outBit === 0) this.at[level] = uint.bitnotand (this.at[level], uint.bitflag (bitPos));
+						else {
+							this.at[level] = uint.bitor (this.at[level], uint.bitflag (bitPos));
+							outBit = 0;
+						}
+					}
+					else if (curBitSecond === 1) {
+						if (outBit === 1) this.at[level] = uint.bitnotand (this.at[level], uint.bitflag (bitPos));
+						else {
+							this.at[level] = uint.bitor (this.at[level], uint.bitflag (bitPos));
+							outBit = curBitSecond;
+						}
+					}
+					else if (outBit !== 0) {
+						this.at[level] = uint.bitnotand (this.at[level], uint.bitflag (bitPos));
+						outBit = 0;
+					}
+				}
+				this.LvlButton_Configure();
+			}
+		}
 
 }
 
