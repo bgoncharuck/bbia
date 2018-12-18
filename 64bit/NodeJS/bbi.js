@@ -973,12 +973,56 @@ class bbi {
 			return split("").reverse().join("");
 		}
 
-		fromBaseOfTwo (str, base) {
+		Validate_inBase (str) {
+			return true;
+		}
 
+		fromBaseOfTwo (str, base) {
+			if ( !(typeis (str, "string") && typeis (base, "number")) ) return;
+			let powerOfTwo = uint.inBaseOfTwo (base);
+			if (powerOfTwo === -2 || Validate_inBase (str) === false) return;
+
+			this.Set_Zero();
+			this.Sign_Set (str.charCodeAt(0) === '-');
+
+			let position = str.length-1;
+
+			for (
+				let curLvl = Constants.LEVEL_TOP,
+				curBit = 0,
+				curBitInTwo = 0,
+				curDigit = 0;
+
+				position > 0;
+
+				position--
+			)
+			{
+				curDigit = uint.numerics.indexOf(str.split('')[position]);
+
+				for (curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
+
+					if (curBit === Constants.INTEGER_SIZE) {
+						curBit = 0;
+						curLvl--;
+					}
+
+					if (uint.bitand (uint.bitflag (curBitInTwo), curDigit))
+						this.at[curLvl] = uint.bitor (this.at[curLvl], uint.bitflag (++curBit));
+					else
+						++curBit;
+				}
+			}
 		}
 
 		fromBaseOfTwo_new (str, base) {
+			if ( !(typeis (str, "string") && typeis (base, "number")) ) return;
+			let powerOfTwo = uint.inBaseOfTwo (base);
+			if (powerOfTwo === -2 || Validate_inBase (str) === false) return;
 
+			let result = new bbi();
+			result.fromBaseOfTwo (str, base);
+			return result;
 		}
 }
 

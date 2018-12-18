@@ -1081,6 +1081,7 @@ char * bbia_base_to (bbia * self, int base) {
 	return NULL;
 }
 
+// @TODO validate str
 bbia * bbia_base_from (char * str, int base) {
 	nullPointer_funcPointer_1 (str, "bbia_base_from");
 
