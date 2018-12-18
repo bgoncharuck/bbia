@@ -806,7 +806,124 @@ class bbi {
 			}
 		}
 
-		
+		// @LOGARITHM
+
+		Log () {
+			if (this.Check_IsOne()) {
+				self.Set_Zero();
+				return;
+			}
+			if (arguments.length === 2 && typeis (arguments[0], "boolean") && typeis (arguments[1], "number") ) {
+				if (this.CompareUnsigned (arguments[1]) === -1) {
+					return;
+				}
+				if (this.Check_IsZero() || arguments[1] === 0) {
+					return;
+				}
+
+				let curPower = 1;
+			 	let compare = new BitBigInt (arguments[0], arguments[1]);
+				while (this.CompareUnsigned (compare) === 1) {
+					compare.Set_SystemInteger (arguments[0], arguments[1]);
+					compare.Pow (++curPower);
+				}
+				this.Set_SystemInteger ((arguments[0] === true && curPower % 2 !== 0) ? true : false, curPower);
+			}
+			else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
+				if (this.CompareUnsigned (arguments[0]) === -1) {
+					return;
+				}
+				if (this.Check_IsZero() || arguments[0].Check_IsZero()) {
+					return;
+				}
+
+				let curPower = 1;
+			 	let compare = new bbi(arguments[0]);
+
+				while (this.CompareUnsigned (compare) === 1) {
+					compare.Copy (arguments[0]);
+					compare.Pow (++curPower);
+				}
+				this.Set_SystemInteger ((arguments[0].sign === true && curPower % 2 !== 0) ? true : false, curPower);
+			}
+		}
+
+		Log_New () {
+			if (this.Check_IsOne()) {
+				return new bbi();
+			}
+			if (arguments.length === 2 && typeis (arguments[0], "boolean") && typeis (arguments[1], "number") ) {
+				if (this.CompareUnsigned (arguments[1]) === -1) {
+					return new bbi();
+				}
+				if (this.Check_IsZero() || arguments[1] === 0) {
+					return new bbi();
+				}
+
+				let curPower = 1;
+				let compare = new BitBigInt (arguments[0], arguments[1]);
+				while (this.CompareUnsigned (compare) === 1) {
+					compare.Set_SystemInteger (arguments[0], arguments[1]);
+					compare.Pow (++curPower);
+				}
+				compare.Set_SystemInteger ((arguments[0] === true && curPower % 2 !== 0) ? true : false, curPower);
+				return compare;
+			}
+			else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
+				if (this.CompareUnsigned (arguments[0]) === -1) {
+					return new bbi();
+				}
+				if (this.Check_IsZero() || arguments[0].Check_IsZero()) {
+					return new bbi();
+				}
+
+				let curPower = 1;
+			 	let compare = new bbi(arguments[0]);
+
+				while (this.CompareUnsigned (compare) === 1) {
+					compare.Copy (arguments[0]);
+					compare.Pow (++curPower);
+				}
+				compare.Set_SystemInteger ((arguments[0].sign === true && curPower % 2 !== 0) ? true : false, curPower);
+				return compare;
+			}
+		}
+
+		// SQRT
+
+		Sqrt () {
+		 	let compare = new bbi(this);
+			let temp = this.Pow_New(2);
+
+			while (compare.CompareUnsigned(temp) === -1) {
+				// x / r
+				temp = compare.Div_New(this);
+				// r + x / r
+				this.Add (temp);
+				// (r + x / r) / 2
+				this.Bits_ShiftRight (1);
+				// temp = r*r
+				temp = this.Pow_New(2);
+			}
+		}
+
+		Sqrt_New () {
+		 	let compare = new bbi(this);
+			let temp = compare.Pow_New(2);
+
+			while (this.CompareUnsigned(temp) === -1) {
+				// x / r
+				temp = this.Div_New(compare);
+				// r + x / r
+				compare.Add (temp);
+				// (r + x / r) / 2
+				compare.Bits_ShiftRight (1);
+				// temp = r*r
+				temp = compare.Pow_New(2);
+			}
+			return compare;
+		}
+
 }
 
 module.exports = {

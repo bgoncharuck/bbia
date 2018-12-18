@@ -920,7 +920,7 @@ namespace bbi {
 			if (this.CompareUnsigned (base) == -1) {
 				return;
 			}
-			if (this.Check_IsZero() || base.Check_IsZero) {
+			if (this.Check_IsZero() || base.Check_IsZero()) {
 				return;
 			}
 
@@ -928,10 +928,10 @@ namespace bbi {
 			BitBigInt compare = new BitBigInt(base);
 
 			while (this.CompareUnsigned (compare) == 1) {
-				compare.Set_SystemInteger (isSigned, base);
+				compare.Copy (base);
 				compare.Pow (++curPower);
 			}
-			this.Set_SystemInteger ((isSigned == true && curPower % 2 != 0) ? true : false, curPower);
+			this.Set_SystemInteger ((base.sign == true && curPower % 2 != 0) ? true : false, curPower);
 		}
 
 		public BitBigInt Log_New (BitBigInt base) {
@@ -942,7 +942,7 @@ namespace bbi {
 			if (this.CompareUnsigned (base) == -1) {
 				return;
 			}
-			if (this.Check_IsZero() || base.Check_IsZero) {
+			if (this.Check_IsZero() || base.Check_IsZero()) {
 				return;
 			}
 
@@ -950,10 +950,10 @@ namespace bbi {
 			BitBigInt compare = new BitBigInt(base);
 
 			while (this.CompareUnsigned (compare) == 1) {
-				compare.Set_SystemInteger (isSigned, base);
+				compare.Copy (base);
 				compare.Pow (++curPower);
 			}
-			compare.Set_SystemInteger ((isSigned == true && curPower % 2 != 0) ? true : false, curPower);
+			compare.Set_SystemInteger ((base.sign == true && curPower % 2 != 0) ? true : false, curPower);
 			return compare;
 		}
 
