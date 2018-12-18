@@ -52,7 +52,7 @@ class bbi {
 	}
 
 	_setters_op (val, sign) {
-		if (val != Constants.LEVEL_IS_EMPTY) {
+		if (val !== Constants.LEVEL_IS_EMPTY) {
 			for (let curLvl = 0; uint.lesserequal (curLvl, Constants.LEVEL_TOP); curLvl++)
 				this.at[curLvl] = val;
 			this.sign = sign;
@@ -269,7 +269,7 @@ class bbi {
 
 			let lvl = Constants.LEVEL_TOP - uint.div (bit, Constants.INTEGER_SIZE);
 			bit %= Constants.INTEGER_SIZE;
-			if (bit != 0)
+			if (bit !== 0)
 				this.at[lvl] = uint.bitor (this.at[lvl], uint.bitflag (bit));
 			else
 				this.at[lvl+1] |= uint.bitor (this.at[lvl], uint.bitflag (Constants.INTEGER_SIZE));
@@ -282,7 +282,7 @@ class bbi {
 
 			let lvl = Constants.LEVEL_TOP - uint.div (bit, Constants.INTEGER_SIZE);
 			bit %= Constants.INTEGER_SIZE;
-			if (bit != 0)
+			if (bit !== 0)
 				this.at[lvl] = uint.bitnotand (this.at[lvl], uint.bitflag (bit));
 			else
 				this.at[lvl+1] = uint.bitnotand (this.at[lvl+1], uint.bitflag (Constants.INTEGER_SIZE));
@@ -388,7 +388,7 @@ class bbi {
 					this.LvlButton_Configure();
 					this.Sign_Change();
 				}
-				else if (this.at[level] != 0) this.lvlButton = level;
+				else if (this.at[level] !== 0) this.lvlButton = level;
 			}
 		}
 
@@ -479,21 +479,23 @@ class bbi {
 			}
 		}
 
-		Add (integer) {
-			if (this.sign === false)
-				this.Add_Level (integer, Constants.LEVEL_TOP);
-			else if (this.sign === true)
-				this.Sub_Level (integer, Constants.LEVEL_TOP);
-		}
-
-		Add (second) {
-			if (typeis (second, "bbi")) {
+		Add () {
+			if (arguments.length !== 1) return;
+			else if (typeis (arguments[0], "bbi")) {
 
 				if (this.sign === second.sign)
 					this._add_bbi_op (second);
 				else
 					this._sub_bbi_op (second);
 			}
+			else if (typeis (arguments[0], "number")) {
+
+				if (this.sign === false)
+					this.Add_Level (integer, Constants.LEVEL_TOP);
+				else if (this.sign === true)
+					this.Sub_Level (integer, Constants.LEVEL_TOP);
+			}
+
 		}
 
 		Add_To (to, second) {
@@ -520,7 +522,7 @@ class bbi {
 		}
 
 		_sub_LevelOut (integer, fromLvl, prevLvl) {
-			if (prevLvl != 0) {
+			if (prevLvl !== 0) {
 				if (uint.outofmin(this.at[prevLvl-1],1) === true) {
 					_sub_LevelOut (integer, fromLvl, prevLvl-1);
 					return;
@@ -557,20 +559,21 @@ class bbi {
 			}
 		}
 
-		Sub (integer) {
-			if (this.sign === false)
-				this.Sub_Level (integer, Constants.LEVEL_TOP);
-			else if (this.sign === true)
-				this.Add_Level (integer, Constants.LEVEL_TOP);
-		}
-
-		Sub (second) {
+		Sub () {
+			if (arguments.length !== 1) return;
 			if (typeis (second, "bbi")) {
 
 				if (this.sign === second.sign)
 					this._sub_bbi_op (second);
 				else
 					this._add_bbi_op (second);
+			}
+			else if (typeis (arguments[0], "number")) {
+
+				if (this.sign === false)
+					this.Sub_Level (integer, Constants.LEVEL_TOP);
+				else if (this.sign === true)
+					this.Add_Level (integer, Constants.LEVEL_TOP);
 			}
 		}
 
@@ -596,6 +599,121 @@ class bbi {
 				return result;
 			}
 		}
+
+		// @MULTIPLICATION
+
+		_multiplicationByBitAnd_op (temp) {
+
+			if (typeis (temp, bbi) === false) return;
+			if (temp.Check_IsOne()) return;
+			if (temp.Check_IsZero()) {
+				this.Set_Zero();
+				return;
+			}
+
+			// Integer x BBIA
+			// 101 x 010
+			// 101 x 01(0) === 101 & 000 = 000
+			// 101 x 0(1)0 === 1010 & 1111 = 1010
+			// 101 x (0)10 === 10100 & 00000 = 00000
+			// 000 + 1010 + 00000 = 1010 (101 x 010)
+			// See calculation folder for more information
+
+			let multiplier = new bbi(this);
+			let curBitVal = false;
+
+			for (let i = 0; uint.lesserequal (i, Constants.LEVEL_TOP); i++) this.at[i] = Constants.LEVEL_IS_EMPTY;
+			this.lvlButton = Constants.LEVEL_TOP;
+
+			for (
+				let curBit = 1, lvl = Constants.LEVEL_TOP,
+				lvlBit = curBit % Constants.INTEGER_SIZE;
+
+				uint.lesserequal (curBit, Constants.BITS_COUNT);
+
+				curBit++, lvlBit = curBit % Constants.INTEGER_SIZE
+			) {
+				if (lvlBit !== 0)
+					curBitVal = uint.bitand (multiplier.at[lvl], uint.bitflag (lvlBit)) ? true : false;
+				else
+					curBitVal = uint.bitand (multiplier.at[lvl--], uint.bitflag (Constants.INTEGER_SIZE)) ? true : false;
+
+				if (curBitVal === true)
+					this.Add (temp);
+
+				temp.Bits_ShiftLeft (1);
+			}
+		}
+
+		Mult_New () {
+			if (arguments.length === 2 && typeis (arguments[0], "boolean") && typeis (arguments[1], "number") ) {
+
+				let result = new bbi(this);
+				result._multiplicationByBitAnd_op (new bbi (arguments[0], arguments[1]));
+				if ((this.sign !== arguments[0]) || (this.sign === true && arguments[0] === true)) result.Sign_Change();
+				return result;
+			}
+			else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
+
+				if (this.CompareUnsigned (arguments[0]) === 0)
+					return this.Pow_New (2);
+
+				let result = new bbi(this);
+				result._multiplicationByBitAnd_op (new bbi(arguments[0]));
+				if ((this.sign !== arguments[0].sign) || (this.sign === true && arguments[0].sign === true)) result.Sign_Change();
+				return result;
+			}
+		}
+
+		Mult () {
+			if (arguments.length === 2 && typeis (arguments[0], "boolean") && typeis (arguments[1], "number") ) {
+				this._multiplicationByBitAnd_op (new bbi(arguments[0], arguments[1]));
+				if ((this.sign !== arguments[0]) || (this.sign === true && sign === arguments[0])) this.Sign_Change();
+			}
+			else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
+				let toChangeSign = ((this.sign !== second.sign) || (this.sign === true && second.sign === true)) ? true : false;
+				this.Mult_Unsigned (second);
+				if (toChangeSign === true) this.Sign_Change();
+			}
+		}
+
+		Mult_Unsigned (second) {
+			if (typeis (second, "bbi")) {
+
+				if (this.CompareUnsigned (second) === 0) {
+					this.Pow (2);
+					return;
+				}
+				this._multiplicationByBitAnd_op (new BitBigInt (second));
+			}
+		}
+
+		// @POWER
+
+		Pow (power) {
+			if (typeis (power, "number")) {
+
+				let temp = new bbi(this);
+				let saved = new bbi(this);
+
+				while (power-- !== 1) {
+					this.Mult (temp);
+					temp.Copy (saved);
+				}
+			}
+		}
+
+		Pow_Signed (power) {
+			if (this.sign && power % 2 === 0) this.Sign_Change();
+			this.Pow (power);
+		}
+
+		Pow_New (power) {
+			let res = new bbi(this);
+			res.Pow_Signed (power);
+			return res;
+		}
+
 
 }
 
