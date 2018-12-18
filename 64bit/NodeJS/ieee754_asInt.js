@@ -87,7 +87,10 @@ function outofmax_bitDecay (to, test, bitDec) {
 	return false;
 }
 
-function outofmax (to, test) { outofmax_bitDecay (to,test, INTEGER_SIZE); }
+function outofmax (to, test) {
+	if (to + test > 0xFFFFFFFF) return true;
+	return outofmax_bitDecay (to,test, INTEGER_SIZE);
+}
 
 function outofmin (to, test) {
 	let curToBit = 0, curTestBit = 0;
