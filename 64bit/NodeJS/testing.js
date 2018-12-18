@@ -30,3 +30,15 @@ console.log(bbiConstructorTest_2.sign == false);
 bbiConstructorTest_2.Sign_Change();
 console.log(bbiConstructorTest_2.sign == false);
 */
+
+let test1 = new bbi(false, 3);
+let test2 = new bbi(false, 7);
+let test3 = new bbi(false, 2);
+let test4 = new bbi(false, 32);
+let test5 = new bbi(true, 45);
+
+console.log (test1.toBaseOfTwo (16));
+console.log (test2.toBaseOfTwo (16));
+console.log (test3.toBaseOfTwo (16));
+console.log (test4.toBaseOfTwo (16));
+console.log (test5.toBaseOfTwo (16));

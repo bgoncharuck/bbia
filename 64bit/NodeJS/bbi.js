@@ -957,20 +957,20 @@ class bbi {
 
 					curDigit =
 					uint.bitor (
-					curBit,
+					curDigit,
 					uint.bitand (uint.bitflag (++curBit), this.at[curLvl])
 					? uint.bitflag (curBitInTwo)
 					: 0
 					);
 				}
 
-				reverse += uint.numerics.charCodeAt(curDigit);
+				reverse += uint.numerics.split("")[curDigit];
 				curDigit = 0;
 			}
 
 			reverse += (this.sign === false) ? '+' : '-';
 
-			return split("").reverse().join("");
+			return reverse.split("").reverse().join("");
 		}
 
 		Validate_inBase (str) {
