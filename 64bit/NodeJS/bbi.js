@@ -604,7 +604,6 @@ class bbi {
 
 		_multiplicationByBitAnd_op (temp) {
 
-			if (typeis (temp, bbi) === false) return;
 			if (temp.Check_IsOne()) return;
 			if (temp.Check_IsZero()) {
 				this.Set_Zero();
@@ -714,7 +713,100 @@ class bbi {
 			return res;
 		}
 
+		// @DIVISION
 
+		// enum DIVISION_OR_MOD : {DIVISION, MOD}
+		// true === division, false === mod
+
+		_divisionBy_op (division, flag) {
+
+			if (division.Check_IsOne()) return;
+
+			// set result to zero and work with it like with current multiplication of division
+			let currentMultiplierOfDivision = new bbi();
+			currentMultiplierOfDivision.at[Constants.LEVEL_TOP] = 2;
+
+			// create temporary to store what must be subtrahended from mod
+			let currentDifference = new BitBigInt (division);
+
+			for (; this.CompareUnsigned (currentDifference) === 1;
+			       currentMultiplierOfDivision.Add (1) )
+			{
+				currentDifference.Copy (division);
+				currentDifference.Mult_Unsigned (currentMultiplierOfDivision);
+			}
+
+			currentMultiplierOfDivision.Sub (1); // analog for i--
+			// division result
+			if (flag === true) {
+				this.Copy(currentMultiplierOfDivision);
+				return;
+			}
+
+			// mod result
+			else if (flag === false) {
+				currentDifference.Copy (division);
+				currentDifference.Mult_Unsigned (currentMultiplierOfDivision);
+				this.Sub (currentDifference);
+			}
+		}
+
+		Div () {
+			if (arguments.length === 2 && typeis (arguments[0], "boolean") && typeis (arguments[1], "number") ) {
+				if (arguments[1] === Constants.LEVEL_IS_EMPTY) {return;}
+				this.Div (new bbi(arguments[0], arguments[1]));
+			}
+			else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
+
+				if (arguments[0].Check_IsZero() === true) {return;}
+				let toChangeSign = ((this.sign !== arguments[0].sign) || (this.sign === true && arguments[0].sign === true)) ? true : false;
+				this._divisionBy_op (arguments[0], true);
+				this.LvlButton_Configure();
+				if (toChangeSign === true) this.Sign_Change();
+			}
+		}
+
+		Div_New () {
+			if (arguments.length === 2 && typeis (arguments[0], "boolean") && typeis (arguments[1], "number") ) {
+				let res = new bbi(this);
+				res.Div (arguments[0], arguments[1]);
+				return res;
+			}
+			else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
+				let res = new bbi(this);
+				res.Div (arguments[0]);
+				return res;
+			}
+		}
+
+		// @MOD
+
+		Mod () {
+			if (arguments.length === 1 && typeis (arguments[0], "number") ) {
+				if (integer === Constants.LEVEL_IS_EMPTY) {return;}
+				this.Mod (new bbi(false, arguments[0]));
+			}
+			else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
+				if (division.Check_IsZero() === true) {return;}
+				divided._divisionBy_op (arguments[0], false);
+				divided.LvlButton_Configure();
+			}
+		}
+
+		Mod_New () {
+			if (arguments.length === 1 && typeis (arguments[0], "number") ) {
+				let res = new bbi(this);
+				res.Mod (arguments[0]);
+				return res;
+			}
+			else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
+				let res = new bbi(this);
+				res.Mod (arguments[0]);
+				return res;
+			}
+		}
+
+		
 }
 
 module.exports = {

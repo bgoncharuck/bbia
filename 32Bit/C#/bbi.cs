@@ -776,7 +776,7 @@ namespace bbi {
 
 			// set result to zero and work with it like with current multiplication of division
 			BitBigInt currentMultiplierOfDivision = new BitBigInt();
-			currentMultiplierOfDivision->at[Constants.LEVEL_TOP] = 2;
+			currentMultiplierOfDivision.at[Constants.LEVEL_TOP] = 2;
 
 			// create temporary to store what must be subtrahended from mod
 			BitBigInt currentDifference = new BitBigInt (division);
@@ -809,13 +809,13 @@ namespace bbi {
 				return;
 			}
 			bool toChangeSign = ((this.sign != division.sign) || (this.sign == true && division.sign == true)) ? true : false;
-			divided._divisionBy_op (division, DIVISION);
-			divided.LvlButton_Configure();
+			this._divisionBy_op (division, DIVISION);
+			this.LvlButton_Configure();
 			if (toChangeSign == true) this.Sign_Change();
 		}
 
 		BitBigInt Div_New (BitBigInt division) {
-			BitBigInt res = new BitBigInt (divided);
+			BitBigInt res = new BitBigInt (this);
 			res.Div (division);
 			return res;
 		}
@@ -829,8 +829,8 @@ namespace bbi {
 		}
 
 		BitBigInt Div_New (bool sign, uint integer) {
-			BitBigInt res = new BitBigInt (sign, integer);
-			res.Div (division);
+			BitBigInt res = new BitBigInt (this);
+			res.Div (sign, integer);
 			return res;
 		}
 
