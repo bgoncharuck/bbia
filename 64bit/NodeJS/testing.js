@@ -14,7 +14,7 @@ let bbiConstructorTest_3 = new bbi(bbiConstructorTest_2);
 console.log(bbiConstructorTest_1 instanceof bbi);
 console.log(bbiConstructorTest_2 instanceof bbi);
 console.log(bbiConstructorTest_3 instanceof bbi);
-console.log(bbiConstructorTest_2.at[Constants.LEVEL_TOP]);
+console.log(bbiConstructorTest_3);
 /*
 bbiConstructorTest_2.Sign_Change();
 console.log(bbiConstructorTest_2.sign == false);
