@@ -340,7 +340,7 @@ namespace bbi {
 
 		public void Bits_Or (BitBigInt second) {
 			this.lvlButton = (this.lvlButton <= second.lvlButton) ? this.lvlButton : second.lvlButton;
-			for (int curLvl = this.lvlButton; curLvl <= Constants.LEVEL_TOP; curLvl++)
+			for (uint curLvl = this.lvlButton; curLvl <= Constants.LEVEL_TOP; curLvl++)
 				this.at[curLvl] |= second.at[curLvl];
 		}
 
@@ -352,7 +352,7 @@ namespace bbi {
 
 		public void Bits_And (BitBigInt second) {
 			this.lvlButton = (this.lvlButton <= second.lvlButton) ? this.lvlButton : second.lvlButton;
-			for (int curLvl = this.lvlButton; curLvl <= Constants.LEVEL_TOP; curLvl++)
+			for (uint curLvl = this.lvlButton; curLvl <= Constants.LEVEL_TOP; curLvl++)
 				this.at[curLvl] &= second.at[curLvl];
 		}
 
@@ -628,7 +628,7 @@ namespace bbi {
 			// the value to set x = FULL - x + z
 			this.at[fromLvl] = Constants.LEVEL_IS_FULL - this.at[fromLvl] + (Constants.LEVEL_IS_EMPTY + integer - 1);
 
-			for (int curLvl = prevLvl+1; curLvl <= Constants.LEVEL_TOP; curLvl++)
+			for (uint curLvl = prevLvl+1; curLvl <= Constants.LEVEL_TOP; curLvl++)
 				this.at[curLvl] = Constants.LEVEL_IS_FULL - this.at[curLvl] + 1;
 		}
 

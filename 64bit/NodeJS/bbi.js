@@ -145,15 +145,15 @@ class bbi {
 	Compare () {
 		if (arguments.length === 2 && typeis (arguments[0], "boolean") && typeis (arguments[1], "number")) {
 			let res = this.CompareUnsigned (arguments[1]);
-			if (this.sign == arguments[0]) return res;
-			else if (this.sign == true) return -1;
-			else if (arguments[0] == true) return 1;
+			if (this.sign === arguments[0]) return res;
+			else if (this.sign === true) return -1;
+			else if (arguments[0] === true) return 1;
 		}
 		else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
 			let res = this.CompareUnsigned (arguments[0]);
-			if (this.sign == arguments[0].sign) return res;
-			else if (this.sign == true) return -1;
-			else if (arguments[0].sign == true) return 1;
+			if (this.sign === arguments[0].sign) return res;
+			else if (this.sign === true) return -1;
+			else if (arguments[0].sign === true) return 1;
 		}
 		return 0;
 	}
@@ -185,7 +185,7 @@ class bbi {
 			// 2. Set saved bits
 			// for all levels lesser then top
 			// we set saved bits
-			this.lvlButton = (this.lvlButton == 0) ? 0 : this.lvlButton - 1;
+			this.lvlButton = (this.lvlButton === 0) ? 0 : this.lvlButton - 1;
 			for (let lvl = Constants.LEVEL_TOP; uint.bigger (lvl, this.lvlButton); this.at[lvl] = uint.bitshift_left (this.at[lvl], value), lvl--) {
 				bitMask[1] = uint.bitand (this.at[lvl], bitMask[0]);
 				bitMask[1] = uint.bitshift_right (bitMask[1], Constants.INTEGER_SIZE-value);
@@ -392,19 +392,18 @@ class bbi {
 			}
 		}
 
-		// @TODO must not be accessed within class
 		_sub_bbi_op (subtrahend) {
 			// if subtrahend is system integer and out of bounders not possible then try simple language difference
 			if (subtrahend.Check_IsSystemInteger() && this.Check_IsSystemInteger()
-			&& uint.outofmin (this.at[Constants.LEVEL_TOP], subtrahend.at[Constants.LEVEL_TOP]) == false) {
+			&& uint.outofmin (this.at[Constants.LEVEL_TOP], subtrahend.at[Constants.LEVEL_TOP]) === false) {
 				this.Sub_Level (subtrahend.at[Constants.LEVEL_TOP], Constants.LEVEL_TOP);
 				return;
 			}
 			// OUT OF BOUNDERS
-			else if (this.CompareUnsigned (subtrahend) == -1) {
+			else if (this.CompareUnsigned (subtrahend) === -1) {
 				let temp = new bbi(subtrahend);
 				temp._sub_bbi_op (this);
-				temp.Sign_Set ((this.sign == false) ? true : false);
+				temp.Sign_Set ((this.sign === false) ? true : false);
 				this.Copy(temp);
 				return;
 			}
@@ -440,6 +439,161 @@ class bbi {
 					}
 				}
 				this.LvlButton_Configure();
+			}
+		}
+
+		// @ADD
+
+		_add_LevelOut (integer, fromLvl, prevLvl) {
+			if (prevLvl !== 0) {
+				if (uint.outofmax(this.at[prevLvl-1],1) === true) {
+					this._add_LevelOut (integer, fromLvl, prevLvl-1);
+					return;
+				}
+				else
+					this.at[prevLvl-1]++;
+			}
+			else if (prevLvl === 0) {
+				let temp = new bbi();
+				temp.at[fromLvl] = integer;
+				temp.lvlButton = fromLvl;
+				this._add_bbi_op (temp);
+				return;
+			}
+
+			for (let curLvl = prevLvl; uint.lesser (curLvl, fromLvl); curLvl++)
+				this.at[curLvl] = Constants.LEVEL_IS_EMPTY;
+			// x = x + y
+			// the number needed to overflow is z = FULL - y + 1
+			// the value to set is x = EMPTY + x - z
+			this.at[fromLvl] = 1 + uint.add (Constants.LEVEL_IS_EMPTY, uint.sub (this.at[fromLvl], uint.sub ( uint.sub(Constants.LEVEL_IS_FULL, integer))));
+		}
+
+		Add_Level (integer, level) {
+			if (typeis (level, "number") && typeis (integer, "number")) {
+
+				if (uint.outofmax (this.at[level], integer) === false)
+					this.at[level] += integer;
+				else
+					this._add_LevelOut (integer, level, level);
+			}
+		}
+
+		Add (integer) {
+			if (this.sign === false)
+				this.Add_Level (integer, Constants.LEVEL_TOP);
+			else if (this.sign === true)
+				this.Sub_Level (integer, Constants.LEVEL_TOP);
+		}
+
+		Add (second) {
+			if (typeis (second, "bbi")) {
+
+				if (this.sign === second.sign)
+					this._add_bbi_op (second);
+				else
+					this._sub_bbi_op (second);
+			}
+		}
+
+		Add_To (to, second) {
+			if (typeis(to, "bbi") && typeis(second, "bbi")) {
+
+				to.Copy (second);
+				if (this.sign === second.sign)
+					to._add_bbi_op(second);
+				else
+					to._sub_bbi_op(second);
+			}
+		}
+
+		Add_New (second) {
+			if (typeis (second, "bbi")) {
+
+				let result = new bbi(this);
+				if (this.sign === second.sign)
+					result._add_bbi_op(second);
+				else
+					result._sub_bbi_op(second);
+				return result;
+			}
+		}
+
+		_sub_LevelOut (integer, fromLvl, prevLvl) {
+			if (prevLvl != 0) {
+				if (uint.outofmin(this.at[prevLvl-1],1) === true) {
+					_sub_LevelOut (integer, fromLvl, prevLvl-1);
+					return;
+				}
+				else
+					this.at[prevLvl-1]--;
+			}
+			else if (prevLvl === 0) {
+				let temp = new bbi();
+				temp.at[fromLvl] = integer;
+				temp.lvlButton = fromLvl;
+				this._sub_bbi_op (temp);
+				return;
+			}
+
+			for (let curLvl = prevLvl; uint.lesser (curLvl, fromLvl); curLvl++)
+				this.at[curLvl] = Constants.LEVEL_IS_FULL;
+			// x = x - y
+			// the number needed to overflow is z = EMPTY + y - 1
+			// the value to set x = FULL - x + z
+			this.at[fromLvl] = uint.sub (Constants.LEVEL_IS_FULL, uint.add (this.at[fromLvl], uint.add (Constants.LEVEL_IS_EMPTY, integer))) -1;
+
+			for (let curLvl = prevLvl+1; curLvl <= Constants.LEVEL_TOP; curLvl++)
+				this.at[curLvl] = this.sub (Constants.LEVEL_IS_FULL, this.at[curLvl]) + 1;
+		}
+
+		Sub_Level (integer, level) {
+			if (typeis (level, "number") && typeis (integer, "number")) {
+
+				if (uint.outofmin (this.at[level], integer) === false)
+					this.at[level] -= integer;
+				else
+					this._sub_LevelOut (integer, level, level);
+			}
+		}
+
+		Sub (integer) {
+			if (this.sign === false)
+				this.Sub_Level (integer, Constants.LEVEL_TOP);
+			else if (this.sign === true)
+				this.Add_Level (integer, Constants.LEVEL_TOP);
+		}
+
+		Sub (second) {
+			if (typeis (second, "bbi")) {
+
+				if (this.sign === second.sign)
+					this._sub_bbi_op (second);
+				else
+					this._add_bbi_op (second);
+			}
+		}
+
+		Sub_To (to, second) {
+			if (typeis(to, "bbi") && typeis(second, "bbi")) {
+
+				to.Copy (second);
+				if (this.sign === second.sign)
+					to._sub_bbi_op(second);
+				else
+					to._add_bbi_op(second);
+			}
+		}
+
+		Sub_New (second) {
+			if (typeis (second, "bbi")) {
+
+				let result = new bbi(this);
+				if (this.sign === second.sign)
+					result._sub_bbi_op(second);
+				else
+					result._add_bbi_op(second);
+				return result;
 			}
 		}
 
