@@ -14,10 +14,10 @@ let bbiConstructorTest_3 = new bbi(bbiConstructorTest_2);
 console.log(bbiConstructorTest_1 instanceof bbi);
 console.log(bbiConstructorTest_2 instanceof bbi);
 console.log(bbiConstructorTest_3 instanceof bbi);
-console.log(bbiConstructorTest_3);
+// console.log(bbiConstructorTest_3);
 bbiConstructorTest_3.at[Constants.LEVEL_TOP] = 12;
 let bbiBitOrNewTest = bbiConstructorTest_2.Bits_Or_New(bbiConstructorTest_3);
-console.log (bbiBitOrNewTest);
+// console.log (bbiBitOrNewTest);
 
 /*
 function kek (a,b) {a |= b};
@@ -60,3 +60,11 @@ test4.Log (false, 2);
 // test4.Sqrt ();
 // test4.Pow(2);
 console.log (test4.toBaseOfTwo (16));
+
+let max = new bbi(false, 0xFFFFFFF);
+// max.at[Constants.LEVEL_TOP-1] = 0xFFFFFFFF;
+// max.lvlButton = 14;
+// max.at[Constants.LEVEL_TOP-2] = 0xFFFFFFFF;
+// max.at[Constants.LEVEL_TOP-3] = 0xFFFFFFFF;
+max.Set_Max();
+console.log(max.toBaseOfTwo(64));
