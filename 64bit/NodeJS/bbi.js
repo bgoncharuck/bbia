@@ -3,15 +3,10 @@ const Constants = require('./bbi_constants');
 
 function typeis (what, is) {
 	if (is === "bbi")
-		return what instanceof bbi;
+	return what instanceof bbi;
 	else if (is === "array")
-		return Array.isArray (what);
+	return Array.isArray (what);
 	return typeof what === is;
-}
-
-function dummyStackFunc () {return;}
-function JSstackExceedSolution () {
-	setTimeout (dummyStackFunc, 1000);
 }
 
 class bbi {
@@ -610,11 +605,11 @@ class bbi {
 
 		_multiplicationByBitAnd_op (temp) {
 
-			if (temp.Check_IsOne()) return;
-			if (temp.Check_IsZero()) {
-				this.Set_Zero();
-				return;
-			}
+			// if (temp.Check_IsOne()) return;
+			// if (temp.Check_IsZero()) {
+				// this.Set_Zero();
+				// return;
+			// }
 
 			// Integer x BBIA
 			// 101 x 010
@@ -660,8 +655,8 @@ class bbi {
 			}
 			else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
 
-				if (this.CompareUnsigned (arguments[0]) === 0)
-					return this.Pow_New (2);
+				// if (this.CompareUnsigned (arguments[0]) === 0)
+					// return this.Pow_New (2);
 
 				let result = new bbi(this);
 				result._multiplicationByBitAnd_op (new bbi(arguments[0]));
@@ -685,17 +680,17 @@ class bbi {
 		Mult_Unsigned (second) {
 			if (typeis (second, "bbi")) {
 
-				if (this.CompareUnsigned (second) === 0) {
-					this.Pow (2);
-					return;
-				}
+				// if (this.CompareUnsigned (second) === 0) {
+					// this.Pow (2);
+					// return;
+				// }
 				this._multiplicationByBitAnd_op (new bbi (second));
 			}
 		}
 
 		// @POWER
 
-		Pow (power) {
+		_Pow (power) {
 			if (typeis (power, "number")) {
 				if (power === 0) {
 					this.Set_Value(false,1);
@@ -712,14 +707,22 @@ class bbi {
 			}
 		}
 
-		Pow_Signed (power) {
+		___Pow_old (first, power) {
+			if (power <= 1) return;
+			process.nextTick (() => {
+				this.Mult (first);
+				this.Pow (first, power--);
+			});
+		}
+
+		Pow (power) {
 			if (this.sign && power % 2 === 0) this.Sign_Change();
-			this.Pow (power);
+			this._Pow (power);
 		}
 
 		Pow_New (power) {
 			let res = new bbi(this);
-			res.Pow_Signed (power);
+			res.Pow (this,power);
 			return res;
 		}
 
