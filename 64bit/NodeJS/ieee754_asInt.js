@@ -213,17 +213,17 @@ module.exports = {
 
 	outofmin: (to, test) => outofmin (to, test),
 
-	add: (a, b) => a + b,
+	add: (a, b) => ~~(a + b),
 
-	sub: (from, what) => from - what,
+	sub: (from, what) => ~~(from - what),
 
-	mult: (a, b) => a * b,
+	mult: (a, b) => ~~(a * b),
 
-	div: (a, division) => a / division,
+	div: (a, division) => ~~(a / division),
 
 	mod: (a, division) => a % division,
 
-	pow: (a, power) => a ** power,
+	pow: (a, power) => ~~(a ** power),
 
 	validate_inBase: () => true,
 

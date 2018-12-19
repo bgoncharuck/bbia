@@ -43,7 +43,7 @@ class bbi {
 				this.lvlButton = curLvl;
 				return;
 			}
-		this.lvlButton = Constants.LEVEL_TOP;
+			this.lvlButton = Constants.LEVEL_TOP;
 	}
 
 	LvlButton_Set (level) {
@@ -273,7 +273,7 @@ class bbi {
 			if (bit !== 0)
 				this.at[lvl] = uint.bitor (this.at[lvl], uint.bitflag (bit));
 			else
-				this.at[lvl+1] = uint.bitor (this.at[lvl], uint.bitflag (Constants.INTEGER_SIZE));
+				this.at[lvl+1] |= uint.bitor (this.at[lvl+1], uint.bitflag (Constants.INTEGER_SIZE));
 			this.LvlButton_Configure();
 		}
 	}
@@ -474,7 +474,7 @@ class bbi {
 			if (typeis (level, "number") && typeis (integer, "number")) {
 
 				if (uint.outofmax (this.at[level], integer) === false)
-					this.at[level] += integer;
+					this.at[level] = uint.add (this.at[level], integer);
 				else
 					this._add_LevelOut (integer, level, level);
 			}
@@ -495,6 +495,7 @@ class bbi {
 					this.Add_Level (arguments[0], Constants.LEVEL_TOP);
 				else if (this.sign === true)
 					this.Sub_Level (arguments[0], Constants.LEVEL_TOP);
+				// console.log (this.toBaseOfTwo(64));
 			}
 
 		}
@@ -554,7 +555,7 @@ class bbi {
 			if (typeis (level, "number") && typeis (integer, "number")) {
 
 				if (uint.outofmin (this.at[level], integer) === false)
-					this.at[level] -= integer;
+					this.at[level] = uint.sub (this.at[level], integer);
 				else
 					this._sub_LevelOut (integer, level, level);
 			}
@@ -796,13 +797,13 @@ class bbi {
 
 		Mod () {
 			if (arguments.length === 1 && typeis (arguments[0], "number") ) {
-				if (integer === Constants.LEVEL_IS_EMPTY) {return;}
+				if (arguments[0] === Constants.LEVEL_IS_EMPTY) {return;}
 				this.Mod (new bbi(false, arguments[0]));
 			}
 			else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
-				if (division.Check_IsZero() === true) {return;}
-				divided._divisionBy_op (arguments[0], false);
-				divided.LvlButton_Configure();
+				if (arguments[0].Check_IsZero() === true) {return;}
+				this._divisionBy_op (arguments[0], false);
+				this.LvlButton_Configure();
 			}
 		}
 
@@ -942,18 +943,6 @@ class bbi {
 			let powerOfTwo = uint.inBaseOfTwo (base);
 			if (powerOfTwo === -2) return "+0";
 
-			let position =
-			 (this.at[this.lvlButton] < 0) ?
-			1 // for sign in zero position
-			+ uint.log2 (this.at[this.lvlButton]) / Math.log2 (base)
-			+ Math.ceil (Constants.INTEGER_SIZE/powerOfTwo) * (Constants.LEVEL_TOP-this.lvlButton)
-			:
-			1
-			+ Math.log2 (this.at[this.lvlButton]) / Math.log2 (base)
-			+ Math.ceil (Constants.INTEGER_SIZE/powerOfTwo) * (Constants.LEVEL_TOP-this.lvlButton);
-
-			// console.log (position);
-			position |= 0;
 			let reverse = "";
 
 			for (
@@ -962,9 +951,7 @@ class bbi {
 				curBitInTwo = 0,
 				curDigit = 0;
 
-				uint.bigger (position, 0);
-
-				position--
+				uint.biggerequal (curLvl, this.lvlButton);
 			)
 			{
 				for (curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++) {
