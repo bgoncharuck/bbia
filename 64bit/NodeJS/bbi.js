@@ -9,6 +9,11 @@ function typeis (what, is) {
 	return typeof what === is;
 }
 
+function dummyStackFunc () {return;}
+function JSstackExceedSolution () {
+	setTimeout (dummyStackFunc, 1000);
+}
+
 class bbi {
 	constructor () {
 		// from system integer

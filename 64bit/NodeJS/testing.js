@@ -56,5 +56,5 @@ console.log(test1.toBaseOfTwo (16));
 test1.Add (new bbi (false, 900));
 console.log(test1.toBaseOfTwo (16));
 
-test4.Log (false, 2);
-console.log (test4.toBaseOfTwo (16));
+// test4.Log (false, 2);
+// console.log (test4.toBaseOfTwo (16));
