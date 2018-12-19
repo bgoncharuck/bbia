@@ -42,3 +42,19 @@ console.log (test2.toBaseOfTwo (16));
 console.log (test3.toBaseOfTwo (16));
 console.log (test4.toBaseOfTwo (16));
 console.log (test5.toBaseOfTwo (16));
+
+let test6 = test1.fromBaseOfTwo_new ("+ffffffff", 16);
+console.log (test6);
+
+test1.Mult (false, 4096);
+// console.log(test1);
+console.log(test1.toBaseOfTwo (16));
+test1.Div (false, 4096);
+console.log(test1.toBaseOfTwo (16));
+test1.Add (new bbi (true, 2));
+console.log(test1.toBaseOfTwo (16));
+test1.Add (new bbi (false, 900));
+console.log(test1.toBaseOfTwo (16));
+
+test4.Log (false, 2);
+console.log (test4.toBaseOfTwo (16));

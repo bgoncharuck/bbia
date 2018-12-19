@@ -185,7 +185,6 @@ class bbi {
 			// 2. Set saved bits
 			// for all levels lesser then top
 			// we set saved bits
-			this.lvlButton = (this.lvlButton === 0) ? 0 : this.lvlButton - 1;
 			for (let lvl = Constants.LEVEL_TOP; uint.bigger (lvl, this.lvlButton); this.at[lvl] = uint.bitshift_left (this.at[lvl], value), lvl--) {
 				bitMask[1] = uint.bitand (this.at[lvl], bitMask[0]);
 				bitMask[1] = uint.bitshift_right (bitMask[1], Constants.INTEGER_SIZE-value);
@@ -195,6 +194,8 @@ class bbi {
 
 			for (let lvl = this.lvlButton; uint.lesser (lvl < Constants.LEVEL_TOP); lvl++)
 				this.at[lvl] = uint.bitor (this.at[lvl], savedBits[lvl]);
+
+			this.LvlButton_Configure();
 		}
 		else if (uint.biggerequal (value, Constants.INTEGER_SIZE))
 			this.Set_Zero();
@@ -376,7 +377,7 @@ class bbi {
 
 					// enable or disable bit in to
 					if (curBit === 1) this.at[level] = uint.bitor (this.at[level], uint.bitflag (bitPos));
-					else this.at[level] = uint.bitnotand (this.at[lvl], uint.bitflag (bigPos));
+					else this.at[level] = uint.bitnotand (this.at[level], uint.bitflag (bitPos));
 				}
 				// OUT OF BOUNDERS
 				if (level === 0 && outBit !== 0) {
@@ -483,17 +484,17 @@ class bbi {
 			if (arguments.length !== 1) return;
 			else if (typeis (arguments[0], "bbi")) {
 
-				if (this.sign === second.sign)
-					this._add_bbi_op (second);
+				if (this.sign === arguments[0].sign)
+					this._add_bbi_op (arguments[0]);
 				else
-					this._sub_bbi_op (second);
+					this._sub_bbi_op (arguments[0]);
 			}
 			else if (typeis (arguments[0], "number")) {
 
 				if (this.sign === false)
-					this.Add_Level (integer, Constants.LEVEL_TOP);
+					this.Add_Level (arguments[0], Constants.LEVEL_TOP);
 				else if (this.sign === true)
-					this.Sub_Level (integer, Constants.LEVEL_TOP);
+					this.Sub_Level (arguments[0], Constants.LEVEL_TOP);
 			}
 
 		}
@@ -561,19 +562,19 @@ class bbi {
 
 		Sub () {
 			if (arguments.length !== 1) return;
-			if (typeis (second, "bbi")) {
+			if (typeis (arguments[0], "bbi")) {
 
-				if (this.sign === second.sign)
-					this._sub_bbi_op (second);
+				if (this.sign === arguments[0].sign)
+					this._sub_bbi_op (arguments[0]);
 				else
-					this._add_bbi_op (second);
+					this._add_bbi_op (arguments[0]);
 			}
 			else if (typeis (arguments[0], "number")) {
 
 				if (this.sign === false)
-					this.Sub_Level (integer, Constants.LEVEL_TOP);
+					this.Sub_Level (arguments[0], Constants.LEVEL_TOP);
 				else if (this.sign === true)
-					this.Add_Level (integer, Constants.LEVEL_TOP);
+					this.Add_Level (arguments[0], Constants.LEVEL_TOP);
 			}
 		}
 
@@ -670,8 +671,8 @@ class bbi {
 				if ((this.sign !== arguments[0]) || (this.sign === true && sign === arguments[0])) this.Sign_Change();
 			}
 			else if (arguments.length === 1 && typeis (arguments[0], "bbi")) {
-				let toChangeSign = ((this.sign !== second.sign) || (this.sign === true && second.sign === true)) ? true : false;
-				this.Mult_Unsigned (second);
+				let toChangeSign = ((this.sign !== arguments[0].sign) || (this.sign === true && arguments[0].sign === true)) ? true : false;
+				this.Mult_Unsigned (arguments[0]);
 				if (toChangeSign === true) this.Sign_Change();
 			}
 		}
@@ -683,7 +684,7 @@ class bbi {
 					this.Pow (2);
 					return;
 				}
-				this._multiplicationByBitAnd_op (new BitBigInt (second));
+				this._multiplicationByBitAnd_op (new bbi (second));
 			}
 		}
 
@@ -691,6 +692,10 @@ class bbi {
 
 		Pow (power) {
 			if (typeis (power, "number")) {
+				if (power === 0) {
+					this.Set_Value(false,1);
+					return;
+				}
 
 				let temp = new bbi(this);
 				let saved = new bbi(this);
@@ -727,7 +732,7 @@ class bbi {
 			currentMultiplierOfDivision.at[Constants.LEVEL_TOP] = 2;
 
 			// create temporary to store what must be subtrahended from mod
-			let currentDifference = new BitBigInt (division);
+			let currentDifference = new bbi (division);
 
 			for (; this.CompareUnsigned (currentDifference) === 1;
 			       currentMultiplierOfDivision.Add (1) )
@@ -822,7 +827,7 @@ class bbi {
 				}
 
 				let curPower = 1;
-			 	let compare = new BitBigInt (arguments[0], arguments[1]);
+			 	let compare = new bbi (arguments[0], arguments[1]);
 				while (this.CompareUnsigned (compare) === 1) {
 					compare.Set_SystemInteger (arguments[0], arguments[1]);
 					compare.Pow (++curPower);
@@ -861,7 +866,7 @@ class bbi {
 				}
 
 				let curPower = 1;
-				let compare = new BitBigInt (arguments[0], arguments[1]);
+				let compare = new bbi (arguments[0], arguments[1]);
 				while (this.CompareUnsigned (compare) === 1) {
 					compare.Set_SystemInteger (arguments[0], arguments[1]);
 					compare.Pow (++curPower);
@@ -973,14 +978,10 @@ class bbi {
 			return reverse.split("").reverse().join("");
 		}
 
-		Validate_inBase (str) {
-			return true;
-		}
-
 		fromBaseOfTwo (str, base) {
 			if ( !(typeis (str, "string") && typeis (base, "number")) ) return;
 			let powerOfTwo = uint.inBaseOfTwo (base);
-			if (powerOfTwo === -2 || Validate_inBase (str) === false) return;
+			if (powerOfTwo === -2 || uint.validate_inBase (str) === false) return;
 
 			this.Set_Zero();
 			this.Sign_Set (str.charCodeAt(0) === '-');
@@ -1018,7 +1019,7 @@ class bbi {
 		fromBaseOfTwo_new (str, base) {
 			if ( !(typeis (str, "string") && typeis (base, "number")) ) return;
 			let powerOfTwo = uint.inBaseOfTwo (base);
-			if (powerOfTwo === -2 || Validate_inBase (str) === false) return;
+			if (powerOfTwo === -2 || uint.validate_inBase (str) === false) return;
 
 			let result = new bbi();
 			result.fromBaseOfTwo (str, base);

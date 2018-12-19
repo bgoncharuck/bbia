@@ -97,8 +97,8 @@ function outofmin (to, test) {
 	let curToBit = 0, curTestBit = 0;
 
 	for (let curBit = INTEGER_SIZE; curBit > 0; curBit--) {
-		curToBit = to & stuaa_bitflag (curBit);
-		curTestBit = test & stuaa_bitflag (curBit);
+		curToBit = to & bitflag (curBit);
+		curTestBit = test & bitflag (curBit);
 
 		if ( curToBit != curTestBit ) {
 			if (curTestBit != 0) return true;
@@ -179,9 +179,9 @@ module.exports = {
 
 	bitnot: (num) => ~num,
 
-	bitnotand: (num, bit) => a & ~(b),
+	bitnotand: (num, bit) => num & ~(bit),
 
-	bitnotor: (num, bit) => a | ~(b),
+	bitnotor: (num, bit) => num | ~(bit),
 
 	bitxor: (a, b) => a ^ b,
 
@@ -216,6 +216,8 @@ module.exports = {
 	mod: (a, division) => a % division,
 
 	pow: (a, power) => a ** power,
+
+	validate_inBase: () => true,
 
 	numerics: numerics,
 
