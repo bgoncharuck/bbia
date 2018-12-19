@@ -109,8 +109,15 @@ function outofmin (to, test) {
 	return false;
 }
 
+function log2 (num) {
+	for (let curBit = 1; curBit <= INTEGER_SIZE; curBit++)
+		if (num === bitflag (curBit))
+			return curBit - 1;
+	return 0;
+}
+
 function inBaseOfTwo (num) {
-	for (let curBit = 2; curBit <= INTEGER_SIZE; curBit++)
+	for (let curBit = 1; curBit <= INTEGER_SIZE; curBit++)
 		if (num === bitflag (curBit))
 			return curBit - 1;
 
@@ -143,6 +150,7 @@ function toBaseOfTwo (num, base) {
 
 	return "ERROR_incorrect_base";
 }
+
 
 function fromBaseOfTwo (str, base) {
 
@@ -222,6 +230,8 @@ module.exports = {
 	numerics: numerics,
 
 	inBaseOfTwo: (num) => inBaseOfTwo (num),
+
+	log2: (num) => log2 (num),
 
 	toBaseOfTwo: (num, base) => toBaseOfTwo (num, base),
 
