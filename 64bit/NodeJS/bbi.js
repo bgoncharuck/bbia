@@ -943,9 +943,14 @@ class bbi {
 			if (powerOfTwo === -2) return "+0";
 
 			let position =
+			 (this.at[this.lvlButton] < 0) ?
 			1 // for sign in zero position
-			+ uint.log2 (this.at[this.lvlButton]) / uint.log2 (base)
+			+ uint.log2 (this.at[this.lvlButton]) / Math.log2 (base)
 			+ Math.ceil (Constants.INTEGER_SIZE/powerOfTwo) * (Constants.LEVEL_TOP-this.lvlButton)
+			:
+			1
+			+ Math.log2 (this.at[this.lvlButton]) / Math.log2 (base)
+			+ Math.ceil (Constants.INTEGER_SIZE/powerOfTwo) * (Constants.LEVEL_TOP-this.lvlButton);
 
 			// console.log (position);
 			position |= 0;
