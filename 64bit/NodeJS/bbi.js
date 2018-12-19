@@ -43,7 +43,7 @@ class bbi {
 				this.lvlButton = curLvl;
 				return;
 			}
-			this.lvlButton = Constants.LEVEL_TOP;
+		this.lvlButton = Constants.LEVEL_TOP;
 	}
 
 	LvlButton_Set (level) {
@@ -273,7 +273,7 @@ class bbi {
 			if (bit !== 0)
 				this.at[lvl] = uint.bitor (this.at[lvl], uint.bitflag (bit));
 			else
-				this.at[lvl+1] |= uint.bitor (this.at[lvl], uint.bitflag (Constants.INTEGER_SIZE));
+				this.at[lvl+1] = uint.bitor (this.at[lvl], uint.bitflag (Constants.INTEGER_SIZE));
 			this.LvlButton_Configure();
 		}
 	}
