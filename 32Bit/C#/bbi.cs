@@ -1121,4 +1121,88 @@ public class BitBigInt
             }
             return compare;
         }
-    }}
+
+	const string numerics = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/,"; //base64
+	public string toBaseOfTwo(uint _base)
+	{
+	    int powerOfTwo = uintArithmetics.BaseOf2(_base);
+	    if (powerOfTwo == -2) return "+0";
+
+	    string reverse = "";
+
+	    for (
+		uint curLvl = Constants.LEVEL_TOP,
+		curBit = 0,
+		curBitInTwo = 0,
+		curDigit = 0;
+
+		curLvl >= this.lvlButton;
+	    )
+	    {
+		for (curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++)
+		{
+
+		    if (curBit == Constants.INTEGER_SIZE)
+		    {
+			curBit = 0;
+			curLvl--;
+		    }
+
+		    curDigit |= (uintArithmetics.Bitflag(++curBit) & this.at[curLvl]) != 0
+		    ? uintArithmetics.Bitflag(curBitInTwo)
+		    : 0;
+		}
+
+		reverse += numerics[(int)curDigit];
+		curDigit = 0;
+	    }
+
+	    reverse += (this.sign == false) ? '+' : '-';
+
+	    char[] temp = reverse.ToCharArray();
+	    Array.Reverse(temp);
+	    return new string(temp);
+	}
+
+	public string ToString() => this.toBaseOfTwo (16);
+	public void fromBaseOfTwo(string str, uint _base)
+	{
+	    int powerOfTwo = uintArithmetics.BaseOf2(_base);
+	    if (powerOfTwo == -2) return;
+
+	    this.Set_Zero();
+	    this.Sign_Set(str[0] == '-');
+
+	    int position = str.Length - 1;
+	    int curDigit = 0;
+
+	    for (
+		uint curLvl = Constants.LEVEL_TOP,
+		curBit = 0,
+		curBitInTwo = 0;
+
+		position > 0;
+
+		position--
+	    )
+	    {
+		curDigit = numerics.IndexOf(str[position]);
+
+		for (curBitInTwo = 1; curBitInTwo <= powerOfTwo; curBitInTwo++)
+		{
+
+		    if (curBit == Constants.INTEGER_SIZE)
+		    {
+			curBit = 0;
+			curLvl--;
+		    }
+
+		    if ((uintArithmetics.Bitflag(curBitInTwo) & curDigit) != 0)
+			this.at[curLvl] |= uintArithmetics.Bitflag(++curBit);
+		    else
+			++curBit;
+		}
+	    }
+	}
+    }
+}
