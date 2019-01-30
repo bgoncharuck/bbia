@@ -17,7 +17,7 @@ Decimal Binary Code == "8,4,2,1" (direct)
 (for any signed integer datatype used as level)
 
 ## Releases
-First release will be in 24 january of 2019
+FREEZED
 
 ## Syntax
 Algorithm will be written in C language syntax.
